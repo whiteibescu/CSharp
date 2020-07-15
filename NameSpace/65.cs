@@ -17,6 +17,7 @@ namespace NameSpace
                     Console.Write(", ");
                 }
             }
+
             Console.WriteLine();
 
             foreach ( int n in ar2)
