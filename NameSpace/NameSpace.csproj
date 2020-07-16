@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="24.cs" />
+    <Compile Remove="35.cs" />
+    <Compile Remove="37.cs" />
+    <Compile Remove="38.cs" />
+    <Compile Remove="40.cs" />
+    <Compile Remove="41.cs" />
+    <Compile Remove="45.cs" />
+    <Compile Remove="63.cs" />
+    <Compile Remove="64.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="63.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="35.cs" />
+    <None Include="37.cs" />
+    <None Include="24.cs" />
+    <None Include="38.cs" />
+    <None Include="40.cs" />
+    <None Include="41.cs" />
+    <None Include="45.cs" />
+    <None Include="64.cs" />
+  </ItemGroup>
+
+</Project>
