@@ -32,6 +32,8 @@ namespace _05_DrawLine
             Pen myPen = new Pen(Brushes.Red, 10);
             g.DrawLine(myPen, 0, 0, this.ClientRectangle.Right,
                 this.ClientRectangle.Bottom);
+            g.DrawLine(myPen, this.ClientRectangle.Right, this.ClientRectangle.Top, this.ClientRectangle.Left,
+                this.ClientRectangle.Bottom);
         }
     }
 }
