@@ -41,7 +41,7 @@ namespace _23_AddressManager
     }
     class Address
     {
-        public string name = "";
+        public string Name = "";
         public string phone = "";
         public string address = "";
     }

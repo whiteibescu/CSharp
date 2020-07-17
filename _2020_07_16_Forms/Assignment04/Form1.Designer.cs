@@ -1,4 +1,4 @@
-﻿namespace _06_DrawRectangle
+﻿namespace Assignment04
 {
     partial class Form1
     {

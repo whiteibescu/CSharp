@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_09_Timer", "..\_09_Timer\_
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_10_MoveEllipseTimer", "..\_10_MoveEllipseTimer\_10_MoveEllipseTimer.csproj", "{1A1A1D93-075A-4FA4-8F87-D6AC53269A2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment03", "Assignment03\Assignment03.csproj", "{5BF36C8B-86AA-4EC6-8BE4-5A472333A601}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment04", "Assignment04\Assignment04.csproj", "{3EC92E07-1029-469B-AA2F-F58578FD40BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{1A1A1D93-075A-4FA4-8F87-D6AC53269A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A1A1D93-075A-4FA4-8F87-D6AC53269A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A1A1D93-075A-4FA4-8F87-D6AC53269A2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BF36C8B-86AA-4EC6-8BE4-5A472333A601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BF36C8B-86AA-4EC6-8BE4-5A472333A601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BF36C8B-86AA-4EC6-8BE4-5A472333A601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BF36C8B-86AA-4EC6-8BE4-5A472333A601}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EC92E07-1029-469B-AA2F-F58578FD40BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EC92E07-1029-469B-AA2F-F58578FD40BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EC92E07-1029-469B-AA2F-F58578FD40BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EC92E07-1029-469B-AA2F-F58578FD40BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

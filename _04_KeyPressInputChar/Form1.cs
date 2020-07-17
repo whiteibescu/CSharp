@@ -38,12 +38,12 @@ namespace _04_KeyPressInputChar
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            // DrawString을 안 쓰고 알래처럼 한 이유는
-            // 개행 문자가 적응되도록 하려고 
+            // DrawString을 안 쓰고 아래처럼 한 이유는
+            // 개행 문자가 적용되도록 하려고
             TextFormatFlags flags = TextFormatFlags.WordBreak;
             string str = inputStr.ToString();
             Font f = new Font("Consolas", 64);
-            TextRenderer.DrawText(e.Graphics, str, Font,
+            TextRenderer.DrawText(e.Graphics, str, f,
                 this.ClientRectangle, Color.DarkBlue, flags);
         }
     }

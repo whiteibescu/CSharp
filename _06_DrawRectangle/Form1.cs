@@ -36,5 +36,10 @@ namespace _06_DrawRectangle
             rc.Inflate(-50, -50);
             g.FillRectangle(Brushes.Purple, rc);
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

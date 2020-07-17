@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FC2668CC-94FF-46E4-BC14-018E63BFFD74}</ProjectGuid>
+    <ProjectGuid>{3EC92E07-1029-469B-AA2F-F58578FD40BF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>_06_DrawRectangle</RootNamespace>
-    <AssemblyName>_06_DrawRectangle</AssemblyName>
+    <RootNamespace>Assignment04</RootNamespace>
+    <AssemblyName>Assignment04</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

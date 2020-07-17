@@ -4,58 +4,63 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace _08_MoveEllipse
+namespace Assignment04
 {
     public partial class Form1 : Form
     {
-
+        bool goTimer = false;
         const int DIA = 100;
         const int MOVE_VAL = 10;
-        int x = 10, y = 10;    //590 //250
-
+        int direction = 1;
+        int x = 10, y = 10;
+        Timer timer = new Timer();
         public Form1()
         {
             InitializeComponent();
             this.Paint += Form1_Paint;
             this.KeyDown += Form1_KeyDown;
+            timer.Interval = 100;
+            timer.Tick += Timer_Tick;
         }
 
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            this.x += MOVE_VAL;
+            Invalidate();
+        }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            /*            this.ClientRectangle.Right, this.ClientRectangle.Top, this.ClientRectangle.Left,
-                           this.ClientRectangle.Bottom*/
-
             switch (e.KeyCode)
             {
-                case Keys.Left:
-                    if (!(this.x <= this.ClientRectangle.Left))
+                case Keys.Enter:
+
+                    if (goTimer == false)
                     {
-                        this.x -= MOVE_VAL;
+                        timer.Start();
+                        goTimer = true;
                     }
+                    else
+                    {
+                        timer.Stop();
+                        goTimer = false;
+                    }
+                    break;
+                case Keys.Left:
+                    direction = 0;
                     break;
                 case Keys.Right:
-                    if (!(this.x >= this.ClientRectangle.Right - DIA))
-                    {
-                        this.x += MOVE_VAL;
-                    }
+                    direction = 1;
                     break;
                 case Keys.Up:
-                    if (!(this.y <= this.ClientRectangle.Top))
-                    {
-                        this.y -= MOVE_VAL;
-                    }                       
+                    direction = 2;
                     break;
                 case Keys.Down:
-                    if (!(this.y >= this.ClientRectangle.Bottom - DIA))
-                    {
-                        this.y += MOVE_VAL;
-                    }
+                    direction = 3;
                     break;
             }
             Invalidate();
