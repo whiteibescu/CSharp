@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_11_MouseSelectEllipse", "..\_11_MouseSelectEllipse\_11_MouseSelectEllipse.csproj", "{EB7E873B-D0A6-46EA-8A6D-902F9D8E5B50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_12_MouseSelectEllipseMove", "..\_12_MouseSelectEllipseMove\_12_MouseSelectEllipseMove.csproj", "{74CF2C5A-9108-4AE7-A90E-495AC5E0BD2D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB7E873B-D0A6-46EA-8A6D-902F9D8E5B50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB7E873B-D0A6-46EA-8A6D-902F9D8E5B50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB7E873B-D0A6-46EA-8A6D-902F9D8E5B50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB7E873B-D0A6-46EA-8A6D-902F9D8E5B50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74CF2C5A-9108-4AE7-A90E-495AC5E0BD2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74CF2C5A-9108-4AE7-A90E-495AC5E0BD2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74CF2C5A-9108-4AE7-A90E-495AC5E0BD2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74CF2C5A-9108-4AE7-A90E-495AC5E0BD2D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BECE3A49-0F3D-4F40-9FCA-3C634C72FE27}
+	EndGlobalSection
+EndGlobal
