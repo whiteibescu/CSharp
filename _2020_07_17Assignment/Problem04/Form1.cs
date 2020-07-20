@@ -39,7 +39,7 @@ namespace Problem04
             {
                 case Keys.Left:                  
                     this.a -= MOVE_VAL;
-                break;
+                break; 
                 case Keys.Right:
                     this.a += MOVE_VAL;
                 break;
@@ -72,10 +72,11 @@ namespace Problem04
             }
 
             if(this.y + DIA >= this.b && this.y <= this.b + 10 && this.x >= this.a && this.x <=this.a + 100)
+                //if(this.y + DIA >= Rectangle.bottom && this.y <= Rectangle.bottom + 10 && this.x >= this.Top && this.x <= this.Top + 100
             {
                 dirY *= -1;
+                score += 1;
             }
-
             Invalidate();
         }
 

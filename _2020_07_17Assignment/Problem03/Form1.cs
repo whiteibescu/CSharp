@@ -16,7 +16,7 @@ namespace Problem03
         int y = 10;
         int DIA = 50;
         const int MOVE_VAL = 10;
-        int dirX = 1; // 밑으로
+        int dirX = 1; 
         int dirY = 1;
         Timer timer = new Timer();
         public Form1()
