@@ -13,6 +13,7 @@ namespace _43_DefaultParameter
             for (int i = 0; i < n; i++)
                 Console.WriteLine(m);
         }
+        
         static void Main(string[] args)
         {
             PrintMessage("안녕하세요", 2);
@@ -22,3 +23,4 @@ namespace _43_DefaultParameter
         }
     }
 }
+                            
