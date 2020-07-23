@@ -41,7 +41,6 @@ namespace Problem05
             ellipses.Add(new Rectangle(newEllipseX, newEllipseY, width, height)); //리스트 추가
             rectX = 0; //초기화 = Invalidate();할때마다 새로 그리는데 사각형이 시작하는 좌표or커서 초기화
             rectY = 0; //초기화 = Invalidate();할때마다 새로 그리는데 사각형이 시작하는 좌표or커서 초기화
-
             Invalidate();
         }
 
@@ -71,8 +70,9 @@ namespace Problem05
 
             //ellipses 안에 있는 각 맴버에 대한 별칭 alias =>는 람다식
 
-            ellipses.ForEach(ellipse => {
-                if (ellipseCount % 2 == 0)
+            ellipses.ForEach(ellipse => 
+            {
+                if (ellipseCount % 2 == 0) 
                     g.DrawEllipse(penRed, new Rectangle(ellipse.X, ellipse.Y, width, height));
                 else
                     g.DrawEllipse(penBlue, new Rectangle(ellipse.X, ellipse.Y, width, height));

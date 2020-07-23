@@ -63,7 +63,7 @@ namespace Problem01
             }
             cats.ForEach(cat => e.Graphics.DrawImage(Cat, cat));
             puppies.ForEach(puppy => e.Graphics.DrawImage(Puppy, puppy));
-
+            
         }
     }
 }

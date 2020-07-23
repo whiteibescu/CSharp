@@ -122,7 +122,7 @@ namespace Snake
             // Initializing Snake
             head = new Snake(3, 7);
             snake.AddFirst(head);
-            snake.AddLast(new Snake(3, 6));
+            snake.AddLast(new Snake(3, 6)); //linkedlist
             snake.AddLast(new Snake(3, 5));
             snake.AddLast(new Snake(3, 4));
             snake.AddLast(new Snake(3, 3));
