@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "20_Buttons", "..\20_Buttons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "21_CodeButtons", "..\21_CodeButtons\21_CodeButtons.csproj", "{506EBA99-47CE-46CD-9BEB-E1A572C1303F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_2020_07_23_FormAssignment", "_2020_07_23_FormAssignment\_2020_07_23_FormAssignment.csproj", "{3D54C51E-EEF4-41CD-9177-2AEFA6B50359}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{506EBA99-47CE-46CD-9BEB-E1A572C1303F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{506EBA99-47CE-46CD-9BEB-E1A572C1303F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{506EBA99-47CE-46CD-9BEB-E1A572C1303F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D54C51E-EEF4-41CD-9177-2AEFA6B50359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D54C51E-EEF4-41CD-9177-2AEFA6B50359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D54C51E-EEF4-41CD-9177-2AEFA6B50359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D54C51E-EEF4-41CD-9177-2AEFA6B50359}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,45 +9,54 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace _19_Cannon
+namespace _2020_07_23_FormAssignment
 {
     public partial class Form1 : Form
     {
+        int WIDTH = 20;
+        int HEIGHT = 20;
+
         int ballLeft, ballTop;
+        int ax, ay;
         const int BALL_SIZE = 50;
         double speed = 100;             // 초속
         double degree = 45;             // 각도
         const double G = 9.80665D;      // 중력가속도
         Brush ballBrush = Brushes.DarkRed;
         Font font = new Font("Consolas", 30);
-        
-
+        List<Rectangle> rectangles = new List<Rectangle>();
+        Random r = new Random();
 
         public Form1()
         {
             this.DoubleBuffered = true;
             InitializeComponent();
+            this.Paint += Form1_Paint;
             this.Load += Form1_Load;
             this.KeyDown += Form1_KeyDown;
-            this.Paint += Form1_Paint;
-        }
-
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            e.Graphics.FillEllipse(this.ballBrush,
-                this.ballLeft, this.ballTop,
-                BALL_SIZE, BALL_SIZE);
-
-            e.Graphics.DrawString("각도 :" + degree, font, Brushes.Gold, this.ClientRectangle.Right / 2, this.ClientRectangle.Bottom / 2);
-            e.Graphics.DrawString("속도 :" + speed, font, Brushes.Gold, this.ClientRectangle.Right / 2 + 100, this.ClientRectangle.Bottom / 2 + 100);
-            Invalidate();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            
             switch (e.KeyCode)
             {
+                case Keys.Up:
+                    {
+
+                    }
+                        break;
+                case Keys.Down:
+                    {
+                    }
+                        break;
+                case Keys.Right:
+                    {
+                    }
+                        break;
+                case Keys.Left:
+                    {
+                    }
+                        break;
                 case Keys.A:
                     {
                         speed -= 10;
@@ -72,7 +81,7 @@ namespace _19_Cannon
                     {
                         Graphics g = CreateGraphics();
                         double x, y;
-                        for(int t=0; ; t++)
+                        for (int t = 0; ; t++)
                         {
                             g.Clear(Color.Black);
                             double radian = degree * Math.PI / 180;
@@ -101,7 +110,7 @@ namespace _19_Cannon
                          * 사용하지 않을 때는 Dispose()메서드를 호출해서
                          * 객체 내부의 리소스를 해제하도록 한다
                          */
-                        g.Dispose();    
+                        g.Dispose();
                     }
                     break;
             }
@@ -109,11 +118,39 @@ namespace _19_Cannon
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             this.Width = 1024;
             this.Height = 768;
             this.BackColor = Color.Black;
             this.ballLeft = this.Width / 10;
             this.ballTop = this.Height / 10 * 7;
+
+            for (int i = 0; i < 10; i++)
+            {
+                ax = r.Next(700);
+                ay = r.Next(700);
+                rectangles.Add(new Rectangle(ax, ay, WIDTH, HEIGHT));
+            }
+
+        }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.FillEllipse(this.ballBrush,
+             this.ballLeft, this.ballTop,
+                BALL_SIZE, BALL_SIZE);
+
+            e.Graphics.DrawString("각도 :" + degree, font, Brushes.Gold, this.ClientRectangle.Right / 2, this.ClientRectangle.Bottom / 2);
+            e.Graphics.DrawString("속도 :" + speed, font, Brushes.Gold, this.ClientRectangle.Right / 2 + 100, this.ClientRectangle.Bottom / 2 + 100);
+
+
+
+            rectangles.ForEach(rectangle =>
+            { e.Graphics.FillRectangle(Brushes.Red, rectangle); });
+
+
+
+            Invalidate();
         }
     }
 }
