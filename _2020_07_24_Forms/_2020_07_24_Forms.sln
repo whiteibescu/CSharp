@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_22_TextBox", "..\_22_TextBox\_22_TextBox.csproj", "{AC2A1CAE-625F-44A5-8105-9E4D85902BA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_23_RadioCheckBox", "..\_23_RadioCheckBox\_23_RadioCheckBox.csproj", "{239329DC-8E77-493E-B81C-9256426B9B28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_24_ListBox", "..\_24_ListBox\_24_ListBox.csproj", "{F4EE1C40-4CC7-4525-8D83-D6EEBCD6D626}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_25_ListBox_ComboBox", "..\_25_ListBox_ComboBox\_25_ListBox_ComboBox.csproj", "{6891BD90-C1AD-4E24-AAAA-135C4BC17057}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_26_Progress", "..\_26_Progress\_26_Progress.csproj", "{EE54EC93-F1D7-4C04-8342-F3E287589574}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_27_Panel", "..\_27_Panel\_27_Panel.csproj", "{25FC4A45-F2C2-440D-B56B-F7E619609C97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_28_Splitter", "..\_28_Splitter\_28_Splitter.csproj", "{D5A96945-24FD-4521-851A-D7B80A881DD8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC2A1CAE-625F-44A5-8105-9E4D85902BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC2A1CAE-625F-44A5-8105-9E4D85902BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC2A1CAE-625F-44A5-8105-9E4D85902BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC2A1CAE-625F-44A5-8105-9E4D85902BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{239329DC-8E77-493E-B81C-9256426B9B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{239329DC-8E77-493E-B81C-9256426B9B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{239329DC-8E77-493E-B81C-9256426B9B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{239329DC-8E77-493E-B81C-9256426B9B28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4EE1C40-4CC7-4525-8D83-D6EEBCD6D626}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4EE1C40-4CC7-4525-8D83-D6EEBCD6D626}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4EE1C40-4CC7-4525-8D83-D6EEBCD6D626}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4EE1C40-4CC7-4525-8D83-D6EEBCD6D626}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6891BD90-C1AD-4E24-AAAA-135C4BC17057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6891BD90-C1AD-4E24-AAAA-135C4BC17057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6891BD90-C1AD-4E24-AAAA-135C4BC17057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6891BD90-C1AD-4E24-AAAA-135C4BC17057}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE54EC93-F1D7-4C04-8342-F3E287589574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE54EC93-F1D7-4C04-8342-F3E287589574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE54EC93-F1D7-4C04-8342-F3E287589574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE54EC93-F1D7-4C04-8342-F3E287589574}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25FC4A45-F2C2-440D-B56B-F7E619609C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25FC4A45-F2C2-440D-B56B-F7E619609C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25FC4A45-F2C2-440D-B56B-F7E619609C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25FC4A45-F2C2-440D-B56B-F7E619609C97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5A96945-24FD-4521-851A-D7B80A881DD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5A96945-24FD-4521-851A-D7B80A881DD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5A96945-24FD-4521-851A-D7B80A881DD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5A96945-24FD-4521-851A-D7B80A881DD8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA09004D-D80B-414F-B8A3-2A853227A7EA}
+	EndGlobalSection
+EndGlobal

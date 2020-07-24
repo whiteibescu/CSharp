@@ -6,7 +6,12 @@ namespace _2020_07_23_Problem09
     {
         static void Main(string[] args)
         {
-            for (int i = 0; i < 5; ++i)
+
+            Console.WriteLine("정수를 입력해주세요 : ");
+            string input = Console.ReadLine();
+            int num = Convert.ToInt32(input);
+
+            for (int i = 0; i < num; ++i)
             {
                 for (int j = 0; j <= i; ++j)
                 {
