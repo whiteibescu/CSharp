@@ -10,7 +10,7 @@ namespace _2020_07_24Assignment
             Console.WriteLine("영문자를 입력해주세요 : ");
             string input = Console.ReadLine();
 
-            Console.WriteLine(input.Any(char.IsUpper) ? "Yes" : "No");
+            Console.WriteLine(input.Any(char.IsUpper) ? "대문자" : "소문자");
 
 
 /*            if (input.Any(char.IsUpper))
