@@ -6,17 +6,24 @@ namespace _2020_07_24Problem06
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("첫번째 정수를 입력해주세요");
-            int x = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("두번째 정수를 입력해주세요");
-            int y = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("세번째 정수를 입력해주세요");
-            int z = Convert.ToInt32(Console.ReadLine());
+            int year = 0;
+            Console.WriteLine("연도를 입력하세요 : ");
+            year = Convert.ToInt32(Console.ReadLine());
 
-            Console.WriteLine((x + y > z && x + z > y && z + y > x) ? ("가능합니다") : ("불가합니다"));
+            if(year % 4 == 0 && year % 100 != 0 || year % 400 == 0)
+            {
+                Console.WriteLine("윤년입니다", year);
+            }
+            else
+            {
+                Console.WriteLine("평년입니다", year);
+            }
         } 
     }
 }
 /*
-정수 3개를 입력받고 이 3개의 수로 삼각형을 만들 수 있는지를 판별하세요
-삼각형이 가능하려면 두 변의 합이 다른 한 변의 합보다 반드시 커야 합니다. (조건 연산자를 사용하세요)*/
+6. 연도를 입력받으세요
+   윤년인지 아닌지를 판별하세요
+   4로 나누어 떨어지는 해는 일단 윤년에 포함시킵니다
+   하지만 윤년중에 100으로 나누어떨어지는 해는 평년으로 하되
+   평년중에 400으로 나누어 떨어지는 해는 윤년에 해당합니다*/
