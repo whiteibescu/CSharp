@@ -21,7 +21,7 @@ namespace Problem01
         public PuppyAndCat()
         {
             this.BackColor = Color.Black;
-            this.DoubleBuffered = true;
+                this.DoubleBuffered = true;
             InitializeComponent();
             this.Paint += PuppyAndCat_Paint;
             this.MouseClick += PuppyAndCat_MouseClick;
