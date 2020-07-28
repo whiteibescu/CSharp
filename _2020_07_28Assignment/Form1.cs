@@ -12,13 +12,19 @@ namespace _2020_07_28Assignment
 {
     class Pos
     {
+
+        // 필드 (this로 접근할 변수)
         int startX, startY, endX, endY;
-        public Pos(int _startX, int _startY, int _endX, int _endY)
+
+        // 생성자
+        // 파라미터로 받은 변수들을 필드에 매핑하는 함수
+        // All Arguments Required Constructor
+        public Pos(int x1, int y1, int x2, int y2)
         {
-            StartX = startX;
-            StartY = startY;
-            EndX = endX;
-            EndY = endY;
+            this.StartX = x1;
+            this.StartY = y1;
+            this.EndX = x2;
+            this.EndY = y2;
         }
 
         public int StartX { get => startX; set => startX = value; }
@@ -39,7 +45,6 @@ namespace _2020_07_28Assignment
             this.MouseUp += Form1_MouseUp;
             this.MouseMove += Form1_MouseMove;
             this.Load += Form1_Load;
-            
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -53,7 +58,6 @@ namespace _2020_07_28Assignment
             {
                 endX = e.X;
                 endY = e.Y;
-
             }
             Invalidate();
         }
@@ -64,20 +68,17 @@ namespace _2020_07_28Assignment
             {
                 endX = e.X;
                 endY = e.Y;
-                
+                pos.Add(new Pos(startX, startY, endX, endY));
             }
-
-            Invalidate();
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left) 
+            if (e.Button == MouseButtons.Left)
             {
                 this.startX = e.X;
                 this.startY = e.Y;
-                
-            }                                                            
+            }
             Invalidate();
         }
 
@@ -85,7 +86,13 @@ namespace _2020_07_28Assignment
         {
             Pen pen = new Pen(Brushes.Gold, 5);
             e.Graphics.DrawLine(pen, startX, startY, endX, endY);
-            
+
+            foreach (Pos p in pos)
+            {
+                e.Graphics.DrawLine(pen, p.StartX, p.StartY, p.EndX, p.EndY);
+            }
         }
     }
 }
+
+
