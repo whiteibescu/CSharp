@@ -39,14 +39,13 @@ namespace _29_Circle
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             DrawWatchNum(e.Graphics, 360);
-        }
+        }                                                                                                         
 
         private void Form1_Load(object sender, EventArgs e)
         {
             this.BackColor = Color.Black;
             this.centX = this.Width / 2;
-            this.centY = this.Height / 2;
-                        
+            this.centY = this.Height / 2;                        
         }
     }
 }
