@@ -66,7 +66,6 @@ namespace Problem05
                 rectY += height;
             }
 
-            int ellipseCount = 0;
 
             //ellipses 안에 있는 각 맴버에 대한 별칭 alias =>는 람다식
 
@@ -76,7 +75,7 @@ namespace Problem05
                     g.DrawEllipse(penRed, new Rectangle(ellipse.X, ellipse.Y, width, height));
                 else
                     g.DrawEllipse(penBlue, new Rectangle(ellipse.X, ellipse.Y, width, height));
-                ellipseCount++;
+
             });
         }
     }
