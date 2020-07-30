@@ -22,7 +22,7 @@ namespace _48_NetworkStreamAddConnectCommentClient
             // 찾아가야할 서버의 주소 객체를 생성
             IPEndPoint ipep = new IPEndPoint(IPAddress.Parse(IP), PORT);
             Console.WriteLine("서버에 접속 요청~");
-            // 서버에 접속 요청            
+            // 서버에 접속 요청
             clientSocket.Connect(ipep);
             Console.WriteLine("서버에 접속 완료~");
 
