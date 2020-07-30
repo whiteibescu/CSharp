@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_43_NetworkStreamLoopServer", "..\_43_NetworkStreamLoopServer\_43_NetworkStreamLoopServer.csproj", "{23261D26-8C5E-4DC1-B5B5-43EA00496640}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_44_NetworkStreamLoopClient", "..\_44_NetworkStreamLoopClient\_44_NetworkStreamLoopClient.csproj", "{DA8511F1-EECA-428A-836F-9ED266788C37}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_45_NetworkStreamEchoLoopServer", "..\_45_NetworkStreamEchoLoopServer\_45_NetworkStreamEchoLoopServer.csproj", "{D0AF259B-A74C-4750-97EB-0C1FCDA84ABC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_46_NetworkStreamEchoLoopClient", "..\_46_NetworkStreamEchoLoopClient\_46_NetworkStreamEchoLoopClient.csproj", "{AC00E400-1A8E-43A4-8EF2-58671526C388}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_47_NetworkStreamLoopAcceptServer", "..\_47_NetworkStreamLoopAcceptServer\_47_NetworkStreamLoopAcceptServer.csproj", "{8266CDE2-FE31-4C70-9914-F7DA3CB66D41}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_48_NetworkStreamAddConnectCommentClient", "..\_48_NetworkStreamAddConnectCommentClient\_48_NetworkStreamAddConnectCommentClient.csproj", "{9214CBD3-5260-4C81-B780-077BD039756E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23261D26-8C5E-4DC1-B5B5-43EA00496640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23261D26-8C5E-4DC1-B5B5-43EA00496640}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23261D26-8C5E-4DC1-B5B5-43EA00496640}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23261D26-8C5E-4DC1-B5B5-43EA00496640}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA8511F1-EECA-428A-836F-9ED266788C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA8511F1-EECA-428A-836F-9ED266788C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA8511F1-EECA-428A-836F-9ED266788C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA8511F1-EECA-428A-836F-9ED266788C37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0AF259B-A74C-4750-97EB-0C1FCDA84ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0AF259B-A74C-4750-97EB-0C1FCDA84ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0AF259B-A74C-4750-97EB-0C1FCDA84ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0AF259B-A74C-4750-97EB-0C1FCDA84ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC00E400-1A8E-43A4-8EF2-58671526C388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC00E400-1A8E-43A4-8EF2-58671526C388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC00E400-1A8E-43A4-8EF2-58671526C388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC00E400-1A8E-43A4-8EF2-58671526C388}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8266CDE2-FE31-4C70-9914-F7DA3CB66D41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8266CDE2-FE31-4C70-9914-F7DA3CB66D41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8266CDE2-FE31-4C70-9914-F7DA3CB66D41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8266CDE2-FE31-4C70-9914-F7DA3CB66D41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9214CBD3-5260-4C81-B780-077BD039756E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9214CBD3-5260-4C81-B780-077BD039756E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9214CBD3-5260-4C81-B780-077BD039756E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9214CBD3-5260-4C81-B780-077BD039756E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EB9AD193-0BA6-4ECF-8262-2AB7AD99FE5A}
+	EndGlobalSection
+EndGlobal
