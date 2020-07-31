@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_60_Monitor", "..\_60_Monit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_61_ParamThread", "..\_61_ParamThread\_61_ParamThread.csproj", "{17C094A0-4BA2-407A-92DA-EC9E4D758D02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_62_RunThreadImage", "..\_62_RunThreadImage\_62_RunThreadImage.csproj", "{30F98B7E-29C7-4D9B-8717-930A046AD741}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_63_NetworkStreamMultiThreadServerForm", "..\_63_NetworkStreamMultiThreadServerForm\_63_NetworkStreamMultiThreadServerForm.csproj", "{E25D4B7A-79D7-4D46-BBA4-B4DDAB1CA32D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,14 @@ Global
 		{17C094A0-4BA2-407A-92DA-EC9E4D758D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17C094A0-4BA2-407A-92DA-EC9E4D758D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17C094A0-4BA2-407A-92DA-EC9E4D758D02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30F98B7E-29C7-4D9B-8717-930A046AD741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30F98B7E-29C7-4D9B-8717-930A046AD741}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30F98B7E-29C7-4D9B-8717-930A046AD741}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30F98B7E-29C7-4D9B-8717-930A046AD741}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E25D4B7A-79D7-4D46-BBA4-B4DDAB1CA32D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E25D4B7A-79D7-4D46-BBA4-B4DDAB1CA32D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E25D4B7A-79D7-4D46-BBA4-B4DDAB1CA32D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E25D4B7A-79D7-4D46-BBA4-B4DDAB1CA32D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
