@@ -48,7 +48,7 @@ namespace _2020_07_27_Problem02
 
             rectangles.ForEach(rectangle => e.Graphics.DrawRectangle(pen, rectangle));
 
-
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
