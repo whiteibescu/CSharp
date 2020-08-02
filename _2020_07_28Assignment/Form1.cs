@@ -12,7 +12,6 @@ namespace _2020_07_28Assignment
 {
     class Pos
     {
-
         // 필드 (this로 접근할 변수)
         int startX, startY, endX, endY;
 
@@ -24,8 +23,7 @@ namespace _2020_07_28Assignment
             this.StartX = x1;
             this.StartY = y1;
             this.EndX = x2;
-            this.EndY = y2;
-        }
+            this.EndY = y2;        }
 
         public int StartX { get => startX; set => startX = value; }
         public int StartY { get => startY; set => startY = value; }
