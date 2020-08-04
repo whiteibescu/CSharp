@@ -34,10 +34,9 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Gulim", 30F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button1.Location = new System.Drawing.Point(159, 130);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button1.Location = new System.Drawing.Point(139, 104);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(533, 220);
+            this.button1.Size = new System.Drawing.Size(466, 176);
             this.button1.TabIndex = 0;
             this.button1.Text = "요리 중입니다 ><";
             this.button1.UseVisualStyleBackColor = true;
@@ -45,11 +44,10 @@
             // 
             // CookingForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(914, 562);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "CookingForm";
             this.Text = "CookingForm";
             this.ResumeLayout(false);
