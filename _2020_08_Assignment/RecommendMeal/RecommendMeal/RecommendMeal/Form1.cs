@@ -10,20 +10,26 @@ using System.Windows.Forms;
 
 namespace RecommendMeal
 {
-    
+
     public partial class Form1 : Form
     {
-        
+
         public Form1()
         {
             InitializeComponent();
-
         }
 
         private void btnModalForm_Click(object sender, EventArgs e)
         {
-            CookingForm cookingForm = new CookingForm();
-            cookingForm.ShowDialog();
+/*            CookingForm cookingForm = new CookingForm();
+
+            cookingForm.ShowDialog();*/
+
+
+            CookingForm cookingForm = new CookingForm(this);
+            cookingForm.Show();
+
+
         }
 
         private void btnEggs_Click(object sender, EventArgs e)
@@ -59,12 +65,12 @@ namespace RecommendMeal
         private void btnLeftMove_Click(object sender, EventArgs e)
         {
             /*listBox1.SelectedIndex*/
-            
+
             try
             {
                 listBox1.Items.RemoveAt(listBox1.SelectedIndex);
             }
-            catch(ArgumentException)
+            catch (ArgumentException)
             {
                 MessageBox.Show("제거할 재료를 선택하세요!");
             }
@@ -72,8 +78,7 @@ namespace RecommendMeal
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
-        }
 
+        }
     }
 }

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_2020_08_Assignment", "_2020_08_Assignment\_2020_08_Assignment.csproj", "{50A6C89C-9DDB-49DA-9FD4-BB87A46F0B8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendMeal", "..\..\..\..\..\Downloads\RecommendMeal\RecommendMeal\RecommendMeal\RecommendMeal.csproj", "{45182E1F-4C0E-4860-81AE-FFE613AD39A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendMeal", "RecommendMeal\RecommendMeal\RecommendMeal\RecommendMeal.csproj", "{45182E1F-4C0E-4860-81AE-FFE613AD39A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
