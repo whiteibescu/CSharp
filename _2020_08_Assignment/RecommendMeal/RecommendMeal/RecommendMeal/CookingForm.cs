@@ -45,8 +45,19 @@ namespace RecommendMeal
         {
             foreach (string ingredient in combine)
             {
+                if (ingredient == "양파" && ingredient == "참치" && ingredient == "김치")
+                {
+                    Console.WriteLine("김치찌개 있습니다");
+                    
+                }
+                else if (ingredient == "계란" && ingredient == "밥")
+                {
+                    Console.WriteLine("계란밥, 계란말이, 계란찜, 계란국 있습니다");
+                }
+                
                 Console.WriteLine(ingredient);
             }
+            
         }
     }
 }
