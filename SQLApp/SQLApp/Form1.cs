@@ -92,22 +92,49 @@ namespace SQLApp
 
         private void btnSelectSQL_Click(object sender, EventArgs e)
         {
+            try
+            {
 
+            }catch(Exception ex)
+            {
+                AddResultLogListBox(ex.Message);
+            }
         }
 
         private void btnInsertSQL_Click(object sender, EventArgs e)
         {
+            try
+            {
 
+            }
+            catch (Exception ex)
+            {
+                AddResultLogListBox(ex.Message);
+            }
         }
 
         private void btnUpdateSQL_Click(object sender, EventArgs e)
         {
+            try
+            {
 
+            }
+            catch (Exception ex)
+            {
+                AddResultLogListBox(ex.Message);
+            }
         }
 
         private void btnDeleteSQL_Click(object sender, EventArgs e)
         {
+            try
+            {
 
+            }
+            catch (Exception ex)
+            {
+                AddResultLogListBox(ex.Message);
+            }
         }
 
 
