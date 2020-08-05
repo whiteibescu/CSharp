@@ -94,7 +94,41 @@ namespace SQLApp
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT * FROM dbo.Human";
 
+                // 2) SELECT 문은 실행 후 결과를 받아온다
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                // 3) dbo.Human테이블의 컬럼을 얻자
+                string[] colNames = new string[reader.FieldCount];
+                for(int i = 0; i < reader.FieldCount; i++)
+                {
+                    colNames[i] = reader.GetName(i);
+                    AddResultLogListBox("컬럼명_" + i + ":" + colNames[i]);
+                }
+                AddResultLogListBox("");
+
+                // 3) 행(레코드) 데이터를 가져오자
+                while (reader.Read())
+                {
+                    string[] datas = new string[reader.FieldCount];
+                    for (int i = 0; i < reader.FieldCount; i++)
+                        datas[i] = reader.GetValue(i).ToString();
+
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string result = String.Format("{0} : {1}",
+                                    colNames[i], datas[i]);
+                        AddResultLogListBox(result);
+                    }
+
+                    AddResultLogListBox("");
+                }
+
+                reader.Close();
+                cmd.Dispose();
             }catch(Exception ex)
             {
                 AddResultLogListBox(ex.Message);
