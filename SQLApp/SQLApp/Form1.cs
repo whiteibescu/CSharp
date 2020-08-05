@@ -145,9 +145,16 @@ namespace SQLApp
                  */
                 using(SqlCommand cmd = new SqlCommand())
                 {
-
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"INSERT INTO dbo.Human" +
+                                    @"VALUES(@번호, @이름, @전화, @주소)";
+                    cmd.Parameters.AddWithValue("@번호", "2154");
+                    cmd.Parameters.AddWithValue("@이름", "문채원");
+                    cmd.Parameters.AddWithValue("@전화", "010-777-4485");
+                    cmd.Parameters.AddWithValue("@주소", "강원도 강릉");
+                    int nRun = cmd.ExecuteNonQuery();
+                    AddResultLogListBox(String.Format("INSERT {0} 행이 실행됨", nRun));
                 }
-
             }
             catch (Exception ex)
             {
