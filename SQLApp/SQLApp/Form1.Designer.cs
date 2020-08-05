@@ -36,6 +36,7 @@
             this.btnUpdateSQL = new System.Windows.Forms.Button();
             this.btnDeleteSQL = new System.Windows.Forms.Button();
             this.tbConnectInfo = new System.Windows.Forms.TextBox();
+            this.btnErase = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbResultLog
@@ -122,12 +123,24 @@
             this.tbConnectInfo.Size = new System.Drawing.Size(728, 45);
             this.tbConnectInfo.TabIndex = 2;
             // 
+            // btnErase
+            // 
+            this.btnErase.Font = new System.Drawing.Font("휴먼편지체", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnErase.Location = new System.Drawing.Point(784, 617);
+            this.btnErase.Name = "btnErase";
+            this.btnErase.Size = new System.Drawing.Size(242, 66);
+            this.btnErase.TabIndex = 1;
+            this.btnErase.Text = "Erase";
+            this.btnErase.UseVisualStyleBackColor = true;
+            this.btnErase.Click += new System.EventHandler(this.btnErase_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1072, 725);
             this.Controls.Add(this.tbConnectInfo);
+            this.Controls.Add(this.btnErase);
             this.Controls.Add(this.btnDeleteSQL);
             this.Controls.Add(this.btnUpdateSQL);
             this.Controls.Add(this.btnInsertSQL);
@@ -152,6 +165,7 @@
         private System.Windows.Forms.Button btnUpdateSQL;
         private System.Windows.Forms.Button btnDeleteSQL;
         private System.Windows.Forms.TextBox tbConnectInfo;
+        private System.Windows.Forms.Button btnErase;
     }
 }
 

@@ -129,6 +129,7 @@ namespace SQLApp
 
                 reader.Close();
                 cmd.Dispose();
+
             }catch(Exception ex)
             {
                 AddResultLogListBox(ex.Message);
@@ -139,6 +140,13 @@ namespace SQLApp
         {
             try
             {
+                /* using 절이 끝날 때 cmd.Dispose()가 자동 호출된다.
+                 * cmd객체를 using에서만 사용하고 해제하겠다.
+                 */
+                using(SqlCommand cmd = new SqlCommand())
+                {
+
+                }
 
             }
             catch (Exception ex)
@@ -171,6 +179,9 @@ namespace SQLApp
             }
         }
 
-
+        private void btnErase_Click(object sender, EventArgs e)
+        {
+            lbResultLog.Items.Clear();
+        }
     }
 }
