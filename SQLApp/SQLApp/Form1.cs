@@ -146,7 +146,7 @@ namespace SQLApp
                 using(SqlCommand cmd = new SqlCommand())
                 {
                     cmd.Connection = conn;
-                    cmd.CommandText = @"INSERT INTO dbo.Human" +
+                    cmd.CommandText = @"INSERT INTO dbo.Human" + "\r\n" + 
                                     @"VALUES(@번호, @이름, @전화, @주소)";
                     cmd.Parameters.AddWithValue("@번호", "2154");
                     cmd.Parameters.AddWithValue("@이름", "문채원");
@@ -166,7 +166,18 @@ namespace SQLApp
         {
             try
             {
-
+                using(SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"UPDATE dbo.Human SET" + "\r\n" +
+                                    @"name=@이름0" + "\r\n" +
+                                    @"WHERE name=@이름1";
+                    cmd.Parameters.AddWithValue("@이름0", "문근영");
+                    cmd.Parameters.AddWithValue("@이름1", "문채원");
+                    int nRun = cmd.ExecuteNonQuery();
+                    AddResultLogListBox(String.Format("UPDATE {0} 행이 실행됨",
+                                        nRun));
+                }
             }
             catch (Exception ex)
             {
@@ -178,7 +189,16 @@ namespace SQLApp
         {
             try
             {
-
+                using(SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"DELETE FROM dbo.Human" + "\r\n" +
+                                    @"WHERE name=@이름";
+                    cmd.Parameters.AddWithValue("@이름", "문근영");
+                    int nRun = cmd.ExecuteNonQuery();
+                    AddResultLogListBox(String.Format("DELETE {0} 행이 실행됨",
+                                        nRun));
+                }
             }
             catch (Exception ex)
             {
