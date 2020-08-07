@@ -10,10 +10,9 @@ using System.Windows.Forms;
 
 namespace RecommendMeal
 {
-
     public partial class Form1 : Form
     {
-
+        List<string> list = new List<string>();
         public Form1()
         {
             InitializeComponent();
@@ -30,7 +29,7 @@ namespace RecommendMeal
             cookingForm.Show();*/
             LoadingForm loadingForm = new LoadingForm();
             loadingForm.Show();
-             
+            list.ItemsAdd("계란", "양파", "김치", "두부", "냉동밥", "참치");
 
         }
 
@@ -38,6 +37,7 @@ namespace RecommendMeal
         {
             listBox1.Items.Add("계란");
             btnEggs.Hide();
+            
         }
 
         private void btnTuna_Click(object sender, EventArgs e)
@@ -77,6 +77,7 @@ namespace RecommendMeal
             try
             {
                 listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+                                
             }
             catch (ArgumentException)
             {
@@ -86,7 +87,7 @@ namespace RecommendMeal
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         private void btnHome_Click(object sender, EventArgs e)
