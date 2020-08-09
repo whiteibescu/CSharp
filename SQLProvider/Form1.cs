@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Data.SqlClient;    // MS-SQL 사용 네임스페이스
+using System.Data.SqlClient;    // MS-SQL 사용 네임스페이스//
 
 namespace _02_SQLProvider
 {
