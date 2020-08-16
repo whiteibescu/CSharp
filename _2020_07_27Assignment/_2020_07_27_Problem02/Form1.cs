@@ -53,7 +53,7 @@ namespace _2020_07_27_Problem02
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.BackColor = Color.White;
+            this.BackColor = Color.Black;
         }
     }
 }
