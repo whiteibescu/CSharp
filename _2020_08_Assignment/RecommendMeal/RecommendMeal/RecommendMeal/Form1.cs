@@ -35,31 +35,38 @@ namespace RecommendMeal
         private void btnEggs_Click(object sender, EventArgs e)
         {
             listBox1.Items.Add("계란");
+            btnEggs.Hide();
+            
         }
 
         private void btnTuna_Click(object sender, EventArgs e)
         {
             listBox1.Items.Add("참치");
+            btnTuna.Hide();
         }
 
         private void btnOnion_Click(object sender, EventArgs e)
         {
             listBox1.Items.Add("양파");
+            btnOnion.Hide();
         }
 
         private void btnKimchi_Click(object sender, EventArgs e)
         {
             listBox1.Items.Add("김치");
+            btnKimchi.Hide();
         }
 
         private void btnTofu_Click(object sender, EventArgs e)
         {
             listBox1.Items.Add("두부");
+            btnTofu.Hide();
         }
 
         private void btnRice_Click(object sender, EventArgs e)
         {
             listBox1.Items.Add("냉동밥");
+            btnRice.Hide();
         }
 
         private void btnLeftMove_Click(object sender, EventArgs e)
@@ -68,7 +75,31 @@ namespace RecommendMeal
 
             try
             {
-                listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+                if (!listBox1.Items.Contains("계란"))
+                {
+                    btnEggs.Show();
+                }
+                if (!listBox1.Items.Contains("참치"))
+                {
+                    btnTuna.Show();
+                }
+                if (!listBox1.Items.Contains("양파"))
+                {
+                    btnOnion.Show();
+                }
+                if (!listBox1.Items.Contains("김치"))
+                {
+                    btnKimchi.Show();
+                }
+                if (!listBox1.Items.Contains("두부"))
+                {
+                    btnTofu.Show();
+                }
+                if (!listBox1.Items.Contains("냉동밥"))
+                {
+                    btnRice.Show();
+                }
+                listBox1.Items.RemoveAt(listBox1.SelectedIndex);                
             }
             catch (ArgumentException)
             {
