@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace _2020_07_27_Problem02
 {
     public partial class Form1 : Form
-    {
+    {//7월 27일 문제2번
         int mx, my;
         int cycle = 2;
         List<Rectangle> rectangles = new List<Rectangle>();
