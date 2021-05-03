@@ -6,7 +6,7 @@ namespace HustarDay01
     {
         static void Main(string[] args)
         {
-            int x;
+            int x; //기계어 코드가 없어서 break point가 걸리지가 않는다
             int y;
             int z;
 
