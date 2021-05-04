@@ -13,6 +13,9 @@ namespace HustarDay01
                     //찰스 시머니*/
 
         public void SetAge(int iAge)
+        //public void SetAge(Cat this, int iAge)
+        //public void SetAge(Cat this = 1000, int iAge = 10)
+
         {
             if (iAge < 0)
             {
@@ -23,9 +26,11 @@ namespace HustarDay01
         }
 
         public int GetAge()
+        //public int GetAge(Cat this)
+        //public int GetAge(Cat this = 1000)
         {
             return m_iAge;
-            //int lmsi = this.m_iAge;
+            //int imsi = this.m_iAge;
             //int imsi = 10;
         }
 
@@ -36,12 +41,20 @@ namespace HustarDay01
         static void Main(string[] args)
         {
             Cat c1 = new Cat(); //힙 메모리로 들어가게 되진다
+            //Cat c1 = 1000
             Cat c2 = new Cat();
+            //Cat c2 = 1500
             c1.SetAge(10);
             //SetAge(c1, 10);
+            //       (1000, 10)
             int iAge = c1.GetAge();
-            //int iAge = c1.GetAge(c1);
+            //int iAge = GetAge(c1);
+            //                  1000
             Console.WriteLine("c1.SetAge : {0}", c1.GetAge());
+
+            c2.SetAge(20);
+            int iAge2 = c2.GetAge();
+            Console.WriteLine("c2.SetAge : {0}", c2.GetAge());
         }
     }
 }
