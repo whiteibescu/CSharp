@@ -6,46 +6,37 @@ namespace HustarDay02
 {
     class Cat
     {
-        public Cat()
+        private Cat()
         {
-            int cnt = 0;
-            cnt = ++m_iStaticCount;
-            Console.WriteLine("객체 갯수: ", cnt);
+            ++m_iStaticCount;
         }
         public void MyFunc() // public void MyFunc(Cat this)
         {
             Console.WriteLine("public void MyFunc()함수 호출");
-            MyFunc2();
-            //this.MyFunc2(); MyFunc2 함수와 같은 의미이다
-        } 
-
-        public void MyFunc2()
-        {
-            Console.WriteLine("public void MyFunc2()함수 호출");
         }
-        public static void MyStaticFunc() //public static void MyStaticVoid()
-            //static 멤버 함수는 없어
+        public static Cat CreateObject()
         {
-            Console.WriteLine("public static void MyStaticFunc()함수호출");
-            MyStaticFunc2();
+            if (m_iStaticCount < 5)
+            {
+                return new Cat();
+            }
+            return null; //주소 0번지를 넣는다
         }
-
-        public static void MyStaticFunc2() //public static void MyStaticVoid()
-                                          //static 멤버 함수는 없어
+        public void SetAge(int iAge)
         {
-            Console.WriteLine("public static void MyStaticFunc()함수호출");
-
+            m_iAge = iAge;
         }
         private int m_iAge;
         private static int m_iStaticCount;
-    }
 
-    class CSharp
-    {
-        static void Main(string[] args)
+        class CSharp
         {
-            Cat c = new Cat();
-            Cat c2 = new Cat();
+            static void Main(string[] args)
+            {
+                Cat c = Cat.CreateObject();
+
+            }
         }
     }
 }
+
