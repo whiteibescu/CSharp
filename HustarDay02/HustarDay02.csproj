@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,10 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CallByReference.cs" />
+    <Compile Remove="CSharp.cs" />
+    <Compile Remove="DoesTheValueChange.cs" />
+    <Compile Remove="Important.cs" />
     <Compile Remove="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="CallByReference.cs" />
+    <None Include="CSharp.cs" />
+    <None Include="DoesTheValueChange.cs" />
+    <None Include="Important.cs" />
     <None Include="Program.cs" />
   </ItemGroup>
 
