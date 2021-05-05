@@ -17,11 +17,11 @@ namespace HustarDay02
             Cat c2 = new Cat();
             c2.m_iAge = 20; 
             Console.WriteLine("c1.m_iAge : {0},c2.m_iAge : {1}", c1.m_iAge, c2.m_iAge);
-            MySwap(c1, c2);
+            MySwap(ref c1, ref c2);
             Console.WriteLine("c1.m_iAge : {0},c2.m_iAge : {1}", c1.m_iAge, c2.m_iAge);
         }
 
-        static void MySwap(Cat pc1, Cat pc2)
+        static void MySwap(ref Cat pc1, ref Cat pc2)
         {
             int temp = pc1.m_iAge;
             pc1.m_iAge = pc2.m_iAge;
