@@ -9,12 +9,14 @@
     <Compile Remove="StackandHeap.cs" />
     <Compile Remove="StackandHeap02.cs" />
     <Compile Remove="StackandHeap03.cs" />
+    <Compile Remove="SystemObject.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="StackandHeap.cs" />
     <None Include="StackandHeap02.cs" />
     <None Include="StackandHeap03.cs" />
+    <None Include="SystemObject.cs" />
   </ItemGroup>
 
 </Project>
