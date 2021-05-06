@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace HustarDay03
+namespace Test1
 {
     class Cat
     {
         public int m_iAge;
     }
-
-    class SystemObject
+    class Program
     {
-        static void main(string[] args)
-        {            
-            int i = 10;
-            object oi = i;
-            Console.WriteLine("{0}", i.ToString());
+        static void Main(string[] args)
+        {
             Cat c1 = new Cat();
-            object oc = c1;
-            Console.WriteLine("{0}", c1.ToString());
+            Console.WriteLine(c1.ToString());
+            Console.WriteLine("c1.m_iAge : {0}", c1.m_iAge);
+            Object o1 = c1;
+            Console.WriteLine("o1.m_iAge : {0}", o1.m_iAge);
         }
     }
 }
