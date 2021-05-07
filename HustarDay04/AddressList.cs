@@ -1,53 +1,166 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace HustarDay04
 {
     class Member
     {
         public void InputData()
+        //                                     Member this = 2100
         {
-            Console.Write("이름:");
-            m_MemName = Console.ReadLine();
+            Console.Write("이름 : ");
+            this.m_MemName = Console.ReadLine();
             Console.Write("주소 : ");
-            m_MemAdd = Console.ReadLine();
+            this.m_MemAddr = Console.ReadLine();
             Console.Write("전화번호 : ");
-            m_MemTelNo = Console.ReadLine(); ;
+            this.m_MemTelNo = Console.ReadLine();
         }
         public void PrintData()
+        //                                    Member this = 1100
         {
             Console.WriteLine("이름 : {0}", m_MemName);
-            Console.WriteLine("주소 : {0}", m_MemAdd);
+            Console.WriteLine("주소 : {0}", m_MemAddr);
             Console.WriteLine("전화번호 : {0}", m_MemTelNo);
         }
-        private string m_MemName;
-        private string m_MemAdd;
-        private string m_MemTelNo;
-    }
-    class AddressList
-    {
-        static void Main(string[] args)
+
+        public bool CompareName(string SearchName)
         {
-            ArrayList MemList = new ArrayList();
+            return m_MemName == SearchName;
+        }
+        private string m_MemName;
+        private string m_MemAddr;
+        private string m_MemTelNo;
+
+    }
+    class MemberMgr
+    {
+        public void InputMember()
+        {
+            Member m = new Member();
+            m.InputData();
+            MemList.Add(m);
+        }
+        public void PrintMember()
+        {
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                m.PrintData();
+            }
+        }
+
+        public void SearchMember()
+        {
+            Console.WriteLine("검색하실 이름을 입력해주세요! : ");
+            string check = Console.ReadLine();
+
+            for (int i = 0; i < MemList.Count; ++i)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareName(check))
+                {
+                    m.PrintData();
+                    return;
+                }
+            }
+            Console.WriteLine("찾으려는 데이터는 없습니다");
+        }
+        public void DeleteMember()  
+        {
+            Console.WriteLine("삭제하실 이름을 입력해주세요! : ");
+            string check = Console.ReadLine();
+
+            for (int i = 0; i < MemList.Count; ++i)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareName(check))
+                {
+                    MemList.RemoveAt(i);
+                    Console.WriteLine("삭제 완료하였습니다.");
+                    return;
+                }
+            }
+            Console.WriteLine("찾으려는 데이터는 없습니다");
+        }
+
+        public void EditMember()
+        {
+            Console.WriteLine("수정하실 이름을 입력해주세요! : ");
+            string check = Console.ReadLine();
+            for (int i = 0; i < MemList.Count; ++i)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareName(check))
+                {
+                    MemList.RemoveAt(i);
+                    m.InputData();
+                    MemList.Insert(i, m);
+                    Console.WriteLine("수정 완료하였습니다.");
+                    return;
+                }
+            }
+            Console.WriteLine("찾으려는 데이터는 없습니다");
+        }
+        public void Menu()
+        {
             int iChoice = 1;
             while (iChoice != 0)
             {
-                Console.WriteLine("1.회원등록");
-                Console.WriteLine("2.회원출력");
+                Console.WriteLine("1. 회원등록");
+                Console.WriteLine("2. 회원출력");
+                Console.WriteLine("3. 회원검색");
+                Console.WriteLine("4. 회원삭제");
+                Console.WriteLine("5. 회원수정");
+                iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        {
+                            InputMember();
+                        }
+                        break;
+                    case 2:
+                        {
+                            PrintMember();
+                        }
+                        break;
+                    case 3:
+                        {
+                            SearchMember();
+                        }
+                        break;
+                    case 4:
+                        {
+                            DeleteMember();
+                        }
+                        break;
+                    case 5:
+                        {
+                            EditMember();
+                        }
+                        break;
+                    default:
+                        {
+                            Console.WriteLine("잘못 입력하셨습니다.");
+                        }
+                        break;
+                }
             }
-            for (int i = 0; i < 2; ++i)
-            {
-                Member m1 = new Member();
-                m1.InputData();
-                MemList.Add(m1); //오브젝트를 받는다
-            }
-            for (int i = 0; i < MemList.Count; ++i)
-            {
-                Member m1 = (Member)MemList[i];
-                m1.PrintData();
-            }
+        }
+        private ArrayList MemList = new ArrayList();
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            MemberMgr mgr = new MemberMgr();
+            mgr.Menu();
         }
     }
 }
