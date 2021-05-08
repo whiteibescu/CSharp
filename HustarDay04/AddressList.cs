@@ -31,12 +31,22 @@ namespace HustarDay04
         {
             return m_MemName == SearchName;
         }
+
+        public void CompareAllNames(string SearchName)
+        {
+            char[] searchName = SearchName.ToCharArray();
+            Console.WriteLine("되냐 {0}", SearchName);
+            Console.WriteLine("char로 간다", searchName[0]);
+            Console.WriteLine("char로 간다", searchName[1]);
+            Console.WriteLine("char로 간다", searchName[2]);
+        }
+
         private string m_MemName;
         private string m_MemAddr;
         private string m_MemTelNo;
 
     }
-    class MemberMgr
+    class MemberMgr 
     {
         public void InputMember()
         {
@@ -51,6 +61,19 @@ namespace HustarDay04
                 Member m = (Member)MemList[i];
                 m.PrintData();
             }
+        }
+
+        public void SearchAllMembers()
+        {
+            Member m = new Member();
+            string check = Console.ReadLine();
+            m.CompareAllNames(check);
+        }
+
+
+        public void DeleteAllMembers()
+        {
+
         }
 
         public void SearchMember()
@@ -73,7 +96,7 @@ namespace HustarDay04
         {
             Console.WriteLine("삭제하실 이름을 입력해주세요! : ");
             string check = Console.ReadLine();
-
+            
             for (int i = 0; i < MemList.Count; ++i)
             {
                 Member m = (Member)MemList[i];
@@ -115,6 +138,8 @@ namespace HustarDay04
                 Console.WriteLine("3. 회원검색");
                 Console.WriteLine("4. 회원삭제");
                 Console.WriteLine("5. 회원수정");
+                Console.WriteLine("6. 다중검색");
+                Console.WriteLine("7. 다중삭제");
                 iChoice = int.Parse(Console.ReadLine());
                 switch (iChoice)
                 {
@@ -145,6 +170,17 @@ namespace HustarDay04
                             EditMember();
                         }
                         break;
+                    case 6:
+                        {
+                            SearchAllMembers();
+                        }
+                        break;
+                    case 7:
+                        {
+                            DeleteAllMembers();
+                        }
+                        break;
+                        
                     default:
                         {
                             Console.WriteLine("잘못 입력하셨습니다.");
