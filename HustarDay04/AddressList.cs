@@ -65,15 +65,16 @@ namespace HustarDay04
 
         public void SearchAllMembers()
         {
-            Member m = new Member();
-            string check = Console.ReadLine();
-            m.CompareAllNames(check);
+            /*          Member m = new Member();
+                        string check = Console.ReadLine();
+                        m.CompareAllNames(check);*/
+            Console.WriteLine("구현중입니다. 다른 메뉴를 선택해주세요~");
         }
 
 
         public void DeleteAllMembers()
         {
-
+            Console.WriteLine("구현중입니다. 다른 메뉴를 선택해주세요~");
         }
 
         public void SearchMember()
@@ -84,6 +85,7 @@ namespace HustarDay04
             for (int i = 0; i < MemList.Count; ++i)
             {
                 Member m = (Member)MemList[i];
+                
                 if (m.CompareName(check))
                 {
                     m.PrintData();
