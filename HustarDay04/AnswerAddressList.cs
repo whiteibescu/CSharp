@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnswerAddressList
+namespace AnswerAdressList
 {
     class Member
     {
@@ -20,12 +20,11 @@ namespace AnswerAddressList
             ModifyData();
             return true;
         }
-
         public void ModifyData()
         {
-            Console.Write("주소 :");
+            Console.Write("주소 : ");
             m_MemAddr = Console.ReadLine();
-            Console.Write("전화번호:");
+            Console.Write("전화번호 : ");
             m_MemTelNo = Console.ReadLine();
         }
         public void PrintData()
@@ -49,6 +48,7 @@ namespace AnswerAddressList
     class MemberMgr
     {
         public void InputMember()
+        //                                          MemberMgr this
         {
             Member m = new Member();
             if (m.InputData(this) == true)
@@ -117,7 +117,6 @@ namespace AnswerAddressList
                 Console.WriteLine("수정하려는 데이터는 없습니다.");
             }
         }
-
         public void DeleteMember()
         {
             Console.Write("삭제하려는 이름 : ");
