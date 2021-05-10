@@ -1,8 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Array.cs" />
+    <Compile Remove="Constructor.cs" />
+    <Compile Remove="Enumerator.cs" />
+    <Compile Remove="String.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Array.cs" />
+    <None Include="Constructor.cs" />
+    <None Include="Enumerator.cs" />
+    <None Include="String.cs" />
+  </ItemGroup>
 
 </Project>
