@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,14 +9,27 @@
     <Compile Remove="Array.cs" />
     <Compile Remove="Constructor.cs" />
     <Compile Remove="Enumerator.cs" />
+    <Compile Remove="Inheritance.cs" />
+    <Compile Remove="Memorize.cs" />
+    <Compile Remove="Override.cs" />
+    <Compile Remove="Singleton.cs" />
     <Compile Remove="String.cs" />
+    <Compile Remove="Virtual.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Inheritance.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Array.cs" />
     <None Include="Constructor.cs" />
     <None Include="Enumerator.cs" />
+    <None Include="Memorize.cs" />
+    <None Include="Override.cs" />
+    <None Include="Singleton.cs" />
     <None Include="String.cs" />
+    <None Include="Virtual.cs" />
   </ItemGroup>
 
 </Project>
