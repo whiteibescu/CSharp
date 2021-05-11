@@ -4,59 +4,126 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HustarDay06
+namespace Test3
 {
-    class VideoGubun
+    interface VideoGubun
     {
-        public virtual string GetVideoGubun()
-        {
-            return "";
-        }
-        public virtual int GetRentalPrice()
-        {
-            return 0;
-        }
+        VideoGubun DownVideoGubun();
+        VideoGubun UpVideoGubun();
+        string GetVideoGubun();
+        int GetRentalPrice();
     }
     class HotVideo : VideoGubun
     {
-        public override string GetVideoGubun()
+        private HotVideo()
+        { }
+        public VideoGubun DownVideoGubun()
+        {
+            return NewVideo.CreateObject();
+        }
+        public VideoGubun UpVideoGubun()
+        {
+            return this;
+        }
+        private static VideoGubun m_StaticVideoGubun = null;
+        public static VideoGubun CreateObject()
+        {
+            if (m_StaticVideoGubun == null)
+            {
+                m_StaticVideoGubun = new HotVideo();
+            }
+            return m_StaticVideoGubun;
+        }
+        public string GetVideoGubun()
         {
             return "최신비디오";
         }
-        public override int GetRentalPrice()
+        public int GetRentalPrice()
         {
             return 2500;
         }
     }
     class NewVideo : VideoGubun
     {
-        public override string GetVideoGubun()
+        public VideoGubun DownVideoGubun()
+        {
+            return NormalVideo.CreateObject();
+        }
+        public VideoGubun UpVideoGubun()
+        {
+            return HotVideo.CreateObject();
+        }
+        private static VideoGubun m_StaticVideoGubun = null;
+        public static VideoGubun CreateObject()
+        {
+            if (m_StaticVideoGubun == null)
+            {
+                m_StaticVideoGubun = new NewVideo();
+            }
+            return m_StaticVideoGubun;
+        }
+        public string GetVideoGubun()
         {
             return "신규비디오";
         }
-        public override int GetRentalPrice()
+        public int GetRentalPrice()
         {
             return 2000;
         }
     }
     class NormalVideo : VideoGubun
     {
-        public override string GetVideoGubun()
+        public VideoGubun DownVideoGubun()
+        {
+            return OldVideo.CreateObject();
+        }
+        public VideoGubun UpVideoGubun()
+        {
+            return NewVideo.CreateObject();
+        }
+        private static VideoGubun m_StaticVideoGubun = null;
+        public static VideoGubun CreateObject()
+        {
+            if (m_StaticVideoGubun == null)
+            {
+                m_StaticVideoGubun = new NormalVideo();
+            }
+            return m_StaticVideoGubun;
+        }
+        public string GetVideoGubun()
         {
             return "일반비디오";
         }
-        public override int GetRentalPrice()
+        public int GetRentalPrice()
         {
             return 1000;
         }
     }
     class OldVideo : VideoGubun
     {
-        public override string GetVideoGubun()
+        public VideoGubun DownVideoGubun()
+        {
+            return this;
+        }
+        public VideoGubun UpVideoGubun()
+        {
+            return NormalVideo.CreateObject();
+        }
+
+        private static VideoGubun m_StaticVideoGubun = null;
+        public static VideoGubun CreateObject()
+        {
+            if (m_StaticVideoGubun == null)
+            {
+                m_StaticVideoGubun = new OldVideo();
+            }
+            return m_StaticVideoGubun;
+        }
+        public string GetVideoGubun()
         {
             return "구비디오";
         }
-        public override int GetRentalPrice()
+        public int GetRentalPrice()
         {
             return 500;
         }
@@ -65,10 +132,10 @@ namespace HustarDay06
     {
         public VideoGubunInputBase()
         {
-            m_VideoGubunList.Add(new HotVideo());
-            m_VideoGubunList.Add(new NormalVideo());
-            m_VideoGubunList.Add(new NewVideo());
-            m_VideoGubunList.Add(new OldVideo());
+            m_VideoGubunList.Add(HotVideo.CreateObject());
+            m_VideoGubunList.Add(NormalVideo.CreateObject());
+            m_VideoGubunList.Add(NewVideo.CreateObject());
+            m_VideoGubunList.Add(OldVideo.CreateObject());
         }
         public virtual void DisplayMenu()
         {
@@ -103,6 +170,14 @@ namespace HustarDay06
     }
     class Video
     {
+        public void UpVideoGubun()
+        {
+            m_VideoGubun = m_VideoGubun.UpVideoGubun();
+        }
+        public void DownVideoGubun()
+        {
+            m_VideoGubun = m_VideoGubun.DownVideoGubun();
+        }
         public void InputData(VideoGubunInputBase vInput)
         {
             Console.Write("영화제목 : ");
@@ -133,6 +208,12 @@ namespace HustarDay06
             Video v = new Video();
             VideoGubunInputBase vInput = new VideoGubunInputRow();
             v.InputData(vInput);
+            v.PrintData();
+            v.DownVideoGubun();
+            v.PrintData();
+            v.DownVideoGubun();
+            v.PrintData();
+            v.DownVideoGubun();
             v.PrintData();
         }
     }
