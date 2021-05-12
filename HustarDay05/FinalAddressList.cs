@@ -29,9 +29,9 @@ namespace FinalAddressList
         }
         public void PrintData()
         {
-            Console.WriteLine("이름 : {0}", m_MemName);
-            Console.WriteLine("주소 : {0}", m_MemAddr);
-            Console.WriteLine("전화번호 : {0}", m_MemTelNo);
+                Console.WriteLine("이름 : {0}", m_MemName);
+                Console.WriteLine("주소 : {0}", m_MemAddr);
+                Console.WriteLine("전화번호 : {0}", m_MemTelNo);
         }
         public bool CompareName(string SearchName)
         {
