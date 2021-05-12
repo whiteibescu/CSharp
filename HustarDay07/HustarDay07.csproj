@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="LateBinding.cs" />
+    <Compile Remove="Out.cs" />
+    <Compile Remove="ReviewPaint.cs" />
+    <Compile Remove="Template.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="LateBinding.cs" />
+    <None Include="Out.cs" />
+    <None Include="ReviewPaint.cs" />
+    <None Include="Template.cs" />
+  </ItemGroup>
+
+</Project>
