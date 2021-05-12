@@ -6,13 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="GoodVersionPaint.cs" />
     <Compile Remove="GoodVersionProgram.cs" />
     <Compile Remove="NotaGoodProgram.cs" />
+    <Compile Remove="Paint.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="GoodVersionPaint.cs" />
     <None Include="GoodVersionProgram.cs" />
     <None Include="NotaGoodProgram.cs" />
+    <None Include="Paint.cs" />
   </ItemGroup>
 
 </Project>
