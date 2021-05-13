@@ -4,14 +4,14 @@ namespace HustarDay08
 {
     class TryCatch
     {
-        static bool MyFunc1()
+        static void MyFunc1()
         {
             Console.WriteLine("Error 발생");
             throw new Exception("");
         }
 
 
-        static bool MyFunc()
+        static void MyFunc()
         {
             Console.WriteLine("MyFunc1() 함수 호출 이전");
             MyFunc1();
