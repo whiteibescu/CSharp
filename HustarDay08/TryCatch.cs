@@ -2,7 +2,7 @@
 
 namespace HustarDay08
 {
-    class Program
+    class TryCatch
     {
         static bool MyFunc1()
         {
@@ -14,11 +14,6 @@ namespace HustarDay08
         static bool MyFunc()
         {
             Console.WriteLine("MyFunc1() 함수 호출 이전");
-            bool bResult = MyFunc1();
-            if (bResult == false)
-            {
-                return false;
-            }
             Console.WriteLine("MyFunc1() 함수 호출 이후");
             return true;
         }
@@ -27,11 +22,13 @@ namespace HustarDay08
         static void Main(string[] args)
         {
             Console.WriteLine("MyFunc() 함수 호출 이전");
-            bool bResult = MyFunc();
-            if (bResult == false)
+            try
+            {
+                MyFunc();
+            }
+            catch (Exception)
             {
                 Console.WriteLine("Error 발생");
-                return;
             }
             Console.WriteLine("MyFunc() 함수 호출 이후");
         }
