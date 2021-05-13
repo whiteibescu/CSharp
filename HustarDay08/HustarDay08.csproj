@@ -40,7 +40,9 @@
     <None Include="TryCatch.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lamda.cs" />
+    <None Include="ForEach.cs" />
+    <None Include="Lamda.cs" />
+    <Compile Include="ListMember.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
