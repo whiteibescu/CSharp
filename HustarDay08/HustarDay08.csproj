@@ -36,7 +36,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TryCatch.cs" />
+    <None Include="Delegate.cs" />
+    <None Include="TryCatch.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lamda.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
