@@ -20,9 +20,9 @@ namespace HustarLibraryAssignment
             InputAuthorData();
             InputIndexData();
         }
-
         public void InputAuthorData()
         {
+            AuthorList.Clear();
             int iChoice = 1;
             while (iChoice != 0)
             {
@@ -38,6 +38,7 @@ namespace HustarLibraryAssignment
 
         public void InputIndexData()
         {
+            AuthorList.Clear();
             int iChoice = 1;
             while (iChoice != 0)
             {
@@ -233,18 +234,188 @@ namespace HustarLibraryAssignment
                 Console.WriteLine("1. 책 제목으로 검색후 삭제");
                 Console.WriteLine("2. 저자로 검색후 삭제");
                 Console.WriteLine("3. 목차로 검색후 삭제");
+                Console.WriteLine("4. 메뉴로 돌아가기");
                 iChoice = int.Parse(Console.ReadLine());
                 switch (iChoice)
                 {
                     case 1:
+                        DeleteByTitle();
                         break;
                     case 2:
+                        DeleteByAuthor();
                         break;
                     case 3:
+                        DeleteByIndex();
+                        break;
+                    case 4:
+                        iChoice = 0;
                         break;
                 }
-
             }
+        }
+
+        public void DeleteByTitle()
+        {
+            PrintMember();
+            Console.WriteLine("삭제하려는 제목을 입력하세요 : ");
+            string DeleteTitle = Console.ReadLine();
+            int iIndex = FindMemberIndex(DeleteTitle);
+            if (iIndex != -1)
+            {
+                MemList.RemoveAt(iIndex);
+                Console.WriteLine("{0} 삭제 완료되었습니다. ", DeleteTitle);
+            }
+            else
+            {
+                Console.WriteLine("삭제하려는 데이터가 없습니다.");
+            }
+        }
+        
+        public void DeleteByAuthor()
+        {
+            PrintMember();
+            Console.WriteLine("삭제하려는 저자를 입력하세요: ");
+            string DeleteAuthor = Console.ReadLine();
+            ArrayList iIndexList = FindMultiAuthorIndex(DeleteAuthor);
+            if (iIndexList.Count > 0)
+            {
+                for (int i = iIndexList.Count -1; i>= 0; i--)
+                {
+                    MemList.RemoveAt((int)iIndexList[i]);
+                    Console.WriteLine("{0} 삭제 완료되었습니다. ", DeleteAuthor);
+                }                
+            }
+            else
+            {
+                Console.WriteLine("삭제하려는 데이터가 없습니다. ");
+            }
+        }
+
+        public void DeleteByIndex()
+        {
+            PrintMember();
+            Console.WriteLine("삭제하려는 목차를 입력하세요: ");
+            string DeleteIndex = Console.ReadLine();
+            ArrayList iIndexList = FindMultiIndexIndex(DeleteIndex);
+            if (iIndexList.Count > 0)
+            {
+                for (int i = iIndexList.Count - 1; i >= 0; i--)
+                {
+                    MemList.RemoveAt((int)iIndexList[i]);
+                    Console.WriteLine("{0} 삭제 완료되었습니다. ", DeleteIndex);
+                }
+            }
+            else
+            {
+                Console.WriteLine("삭제하려는 데이터가 없습니다. ");
+            }
+        }
+
+        public ArrayList FindMultiAuthorIndex(string DeleteAuthor)
+        {
+            ArrayList Result = new ArrayList();
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareAuthor(DeleteAuthor))
+                {
+                    Result.Add(i);
+                }
+            }
+            return Result;
+        }
+
+        public ArrayList FindMultiIndexIndex(string IndexAuthor)
+        {
+            ArrayList Result = new ArrayList();
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareIndex(IndexAuthor))
+                {
+                    Result.Add(i);
+                }
+            }
+            return Result;
+        }
+
+        public void ModifyMemberMenu()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("1. 책 제목으로 검색후 수정");
+                Console.WriteLine("2. 저자로 검색후 수정");
+                Console.WriteLine("3. 목차로 검색후 수정");
+                Console.WriteLine("4. 메뉴로 돌아가기");
+                iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 1:
+                        ModifyByTitle();
+                        break;
+                    case 2:
+                        ModifyByAuthor();
+                        break;
+                    case 3:
+                        ModifyByIndex();
+                        break;
+                    case 4:
+                        iChoice = 0;
+                        break;
+                }
+            }
+        }
+
+        public void ModifyByTitle()
+        {
+            Console.WriteLine("수정하려는 책 제목을 입력해주세요 : ");
+            string SearchTitle = Console.ReadLine();
+            Member m = FindMember(SearchTitle);
+            if (m != null)
+            {
+                m.InputData();
+            }
+            else
+            {
+                Console.WriteLine("찾으려는 데이터가 없습니다.");
+            }
+        }
+
+        public void ModifyByAuthor()
+        {
+            Console.WriteLine("수정하려는 저자를 입력해주세요 : ");
+            string SearchAuthor = Console.ReadLine();
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareAuthor(SearchAuthor))
+                {
+                    m.InputData();
+                }
+                else
+                {
+                    Console.WriteLine("찾으려는 데이터가 없습니다.");
+                }
+            }            
+        }
+
+        public void ModifyByIndex()
+        {
+            Console.WriteLine("수정하려는 목차를 입력해주세요 : ");
+            string SearchIndex = Console.ReadLine();
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareIndex(SearchIndex))
+                {
+                    m.InputData();
+                }
+                else
+                {
+                    Console.WriteLine("찾으려는 데이터가 없습니다.");
+                }
+            }            
         }
 
         public void MainMenu()
@@ -270,6 +441,12 @@ namespace HustarLibraryAssignment
                         break;
                     case 3:
                         SearchMemberMenu();
+                        break;
+                    case 4:
+                        DeleteMemberMenu();
+                        break;
+                    case 5:
+                        ModifyMemberMenu();
                         break;
                     default:
                         break;
