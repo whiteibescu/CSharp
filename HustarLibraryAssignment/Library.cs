@@ -88,7 +88,7 @@ namespace HustarLibraryAssignment
 
         public bool CompareIndex(string SearchIndex)
         {
-            for (int i = 0; i < AuthorList.Count; i++)
+            for (int i = 0; i < IndexList.Count; i++)
             {
                 return (string)IndexList[i] == SearchIndex;
             }
@@ -184,7 +184,7 @@ namespace HustarLibraryAssignment
             for (int i = 0; i < MemList.Count; i++)
             {
                 Member m = (Member)MemList[i];
-                if (m.CompareAuthor(SearchIndex))
+                if (m.CompareIndex(SearchIndex))
                 {
                     m.PrintData();
                 }
@@ -196,10 +196,6 @@ namespace HustarLibraryAssignment
             return null;
         }
 
-        public int Main()
-        {
-            return 0;
-        }
         public void SearchMemberMenu()
         {
             int iChoice = 1;
@@ -222,10 +218,32 @@ namespace HustarLibraryAssignment
                         SearchByIndex();
                         break;
                     case 4:
-                        iChoice = Main();
+                        iChoice = 0;
                         break;
                 }
                 
+            }
+        }
+
+        public void DeleteMemberMenu()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("1. 책 제목으로 검색후 삭제");
+                Console.WriteLine("2. 저자로 검색후 삭제");
+                Console.WriteLine("3. 목차로 검색후 삭제");
+                iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                }
+
             }
         }
 
