@@ -38,7 +38,7 @@ namespace HustarLibraryAssignment
 
         public void InputIndexData()
         {
-            AuthorList.Clear();
+            IndexList.Clear();
             int iChoice = 1;
             while (iChoice != 0)
             {
@@ -187,7 +187,7 @@ namespace HustarLibraryAssignment
                 Member m = (Member)MemList[i];
                 if (m.CompareIndex(SearchIndex))
                 {
-                    m.PrintData();
+                        m.PrintData();
                 }
                 else
                 {
