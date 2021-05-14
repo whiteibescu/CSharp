@@ -1,0 +1,272 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HustarLibraryAssignment
+{
+    class Member
+    {
+        public void InputData()
+        {
+            Console.WriteLine("ISBN을 입력해주세요 : ");
+            m_MemIsbn = Console.ReadLine();
+            Console.WriteLine("책 제목을 입력해주세요 : ");
+            m_MemTitle = Console.ReadLine();
+            Console.WriteLine("출판사를 입력해주세요 : ");
+            m_MemPublisher = Console.ReadLine();
+            InputAuthorData();
+            InputIndexData();
+        }
+
+        public void InputAuthorData()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("저자를 입력해주세요 : ");
+                string MemAuthor = Console.ReadLine();
+                if (MemAuthor == "")
+                {
+                    return;
+                }
+                AuthorList.Add(MemAuthor);                             //함수로 만들것
+            }
+        }
+
+        public void InputIndexData()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("목차를 입력해주세요 : ");
+                string MemIndex = Console.ReadLine();
+
+                if (MemIndex == "")
+                {
+                    return;
+                }
+                IndexList.Add(MemIndex);                                //함수로 만들것
+            }
+        }
+
+        public void PrintData()
+        {
+            Console.WriteLine("ISBN : {0}", m_MemIsbn);
+            Console.WriteLine("책 제목 : {0}", m_MemTitle);
+            Console.WriteLine("출판사 : {0}", m_MemPublisher);
+
+            for (int i = 0; i < AuthorList.Count; i++)
+            {
+                Console.WriteLine("저자 {0}: {1}", i+1, AuthorList[i]);                 //함수로 만들것
+            }
+
+            for (int i = 0; i < IndexList.Count; i++)
+            {
+                Console.WriteLine("목차 {0}: {1}", i + 1, IndexList[i]);                //함수로 만들것
+            }
+        }
+
+        public bool CompareTitle(string SearchTitle)
+        {
+            return m_MemTitle == SearchTitle;
+        }
+        public bool CompareISBN(string SearchISBN)
+        {
+            return m_MemIsbn == SearchISBN;
+        }
+        public bool CompareAuthor(string SearchAuthor)
+        {
+            for (int i = 0; i < AuthorList.Count; i++)
+            {
+                return (string)AuthorList[i] == SearchAuthor;
+            }
+            return false;
+        }
+
+        public bool CompareIndex(string SearchIndex)
+        {
+            for (int i = 0; i < AuthorList.Count; i++)
+            {
+                return (string)IndexList[i] == SearchIndex;
+            }
+            return false;
+        }
+
+        private string m_MemTitle;
+        private string m_MemIsbn;
+        private string m_MemPublisher;
+        ArrayList AuthorList = new ArrayList();
+        ArrayList IndexList = new ArrayList();
+    }
+
+    class LibraryMgr
+    {
+        public void InputMember()
+        {
+            Member m = new Member();
+            m.InputData();
+            MemList.Add(m);
+        }
+
+        public void PrintMember()
+        {
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                m.PrintData();
+            }
+        }
+
+        public int FindMemberIndex(string Search)
+        {
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareTitle(Search))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public Member FindMember(string Search)
+        {
+            int iIndex = FindMemberIndex(Search);
+            if (iIndex != -1)
+            {
+                return (Member)MemList[iIndex];
+            }
+            return null;
+        }
+
+        public void SearchByTitle()
+        {
+            Console.WriteLine("제목을 입력해주세요 : ");
+            string SearchTitle = Console.ReadLine();
+            Member m = FindMember(SearchTitle);
+            if (m != null)
+            {
+                m.PrintData();
+            }
+            else
+            {
+                Console.WriteLine("찾으려는 데이터가 없습니다.");
+            }            
+        }
+
+        public Member SearchByAuthor()
+        {
+            Console.WriteLine("저자 검색");
+            string SearchAuthor = Console.ReadLine();
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareAuthor(SearchAuthor))
+                {
+                    m.PrintData();
+                }
+                else
+                {
+                    Console.WriteLine("찾으려는 데이터가 없습니다.");
+                }
+            }
+            return null;
+        }
+
+        public Member SearchByIndex()
+        {
+            Console.WriteLine("목차 검색");
+            string SearchIndex = Console.ReadLine();
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareAuthor(SearchIndex))
+                {
+                    m.PrintData();
+                }
+                else
+                {
+                    Console.WriteLine("찾으려는 데이터가 없습니다.");
+                }
+            }
+            return null;
+        }
+
+        public int Main()
+        {
+            return 0;
+        }
+        public void SearchMemberMenu()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("1. 책 제목으로 검색");
+                Console.WriteLine("2. 저자로 검색");
+                Console.WriteLine("3. 목차로 검색");
+                Console.WriteLine("4. 메뉴로 돌아가기");
+                iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 1:
+                        SearchByTitle();
+                        break;
+                    case 2:
+                        SearchByAuthor();
+                        break;
+                    case 3:
+                        SearchByIndex();
+                        break;
+                    case 4:
+                        iChoice = Main();
+                        break;
+                }
+                
+            }
+        }
+
+        public void MainMenu()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("도서관리에 오신것을 환영합니다");
+                Console.WriteLine("1.도서입력");
+                Console.WriteLine("2.도서출력");
+                Console.WriteLine("3.도서검색");
+                Console.WriteLine("4.도서삭제");
+                Console.WriteLine("5.도서수정");
+                Console.WriteLine("0.종료");
+                iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 1:
+                        InputMember();
+                        break;
+                    case 2:
+                        PrintMember();
+                        break;
+                    case 3:
+                        SearchMemberMenu();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        private ArrayList MemList = new ArrayList();
+    }
+    class Library
+    {
+        static void Main(string[] args)
+        {
+            LibraryMgr l = new LibraryMgr();
+            l.MainMenu();
+        }
+    }
+}
+
