@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace HustarLibraryAssignment
 {
-    delegate bool CompareVar(string str, Member M);
     class Member
     {
         public void InputData()
@@ -21,30 +20,32 @@ namespace HustarLibraryAssignment
             InputAuthorData();
             InputIndexData();
         }
-        public void InputDatas(ArrayList IndexList, string Mem)
+        public void InputAuthorData()
         {
-            IndexList.Clear();
+            string author = "저자";
+            InputVar(AuthorList, author);
+        }
+
+        public void InputIndexData()
+        {
+            string index = "목차";
+            InputVar(IndexList, index);
+        }
+
+        public void InputVar(ArrayList List, string text)
+        {
             int iChoice = 1;
             while (iChoice != 0)
             {
-                if (Mem == "")
+                Console.WriteLine("{0}를 입력해주세요 : ", text);
+                string data = Console.ReadLine();
+
+                if (data == "")
                 {
                     return;
                 }
-                IndexList.Add(Mem);                               
+                List.Add(data);                                
             }
-        }
-        public void InputAuthorData()
-        {
-            Console.WriteLine("저자를 입력해주세요 : ");
-            string MemAuthor = Console.ReadLine();
-            InputDatas(IndexList, MemAuthor);
-        }
-        public void InputIndexData()
-        {
-            Console.WriteLine("목차를 입력해주세요 : ");
-            string MemIndex = Console.ReadLine();
-            InputDatas(IndexList, MemIndex);
         }
 
         public void SearchCount(ArrayList list)
@@ -154,14 +155,7 @@ namespace HustarLibraryAssignment
             }
         }
 
-        delegate bool CompareVar(string str, Member M);
 
-        public bool SearchVar(string str, Member M, CompareVar compareVar)
-        {
-
-
-            return false;
-        }
 
         public Member SearchByAuthor()
         {
@@ -275,24 +269,27 @@ namespace HustarLibraryAssignment
             }
         }
 
-        public void DeleteByAuthor()
+        public void DeleteFunc(ArrayList iIndexList)
         {
-            PrintMember();
-            Console.WriteLine("삭제하려는 저자를 입력하세요: ");
-            string DeleteAuthor = Console.ReadLine();
-            ArrayList iIndexList = FindMultiAuthorIndex(DeleteAuthor);
             if (iIndexList.Count > 0)
             {
                 for (int i = iIndexList.Count - 1; i >= 0; i--)
                 {
                     MemList.RemoveAt((int)iIndexList[i]);
-                    Console.WriteLine("{0} 삭제 완료되었습니다. ", DeleteAuthor);
                 }
             }
             else
             {
                 Console.WriteLine("삭제하려는 데이터가 없습니다. ");
             }
+        }
+        public void DeleteByAuthor()
+        {
+            PrintMember();
+            Console.WriteLine("삭제하려는 저자를 입력하세요: ");
+            string DeleteAuthor = Console.ReadLine();
+            ArrayList iIndexList = FindMultiAuthorIndex(DeleteAuthor);
+            DeleteFunc(iIndexList);
         }
 
         public void DeleteByIndex()
@@ -301,18 +298,7 @@ namespace HustarLibraryAssignment
             Console.WriteLine("삭제하려는 목차를 입력하세요: ");
             string DeleteIndex = Console.ReadLine();
             ArrayList iIndexList = FindMultiIndexIndex(DeleteIndex);
-            if (iIndexList.Count > 0)
-            {
-                for (int i = iIndexList.Count - 1; i >= 0; i--)
-                {
-                    MemList.RemoveAt((int)iIndexList[i]);
-                    Console.WriteLine("{0} 삭제 완료되었습니다. ", DeleteIndex);
-                }
-            }
-            else
-            {
-                Console.WriteLine("삭제하려는 데이터가 없습니다. ");
-            }
+            DeleteFunc(iIndexList);
         }
 
         public ArrayList FindMultiAuthorIndex(string DeleteAuthor)
