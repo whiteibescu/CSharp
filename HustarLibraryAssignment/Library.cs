@@ -48,11 +48,11 @@ namespace HustarLibraryAssignment
             }
         }
 
-        public void SearchCount(ArrayList list)
+        public void SearchCount(ArrayList list, string text)
         {
             for (int i = 0; i < list.Count; i++)
             {
-                Console.WriteLine("저자 {0}: {1}", i + 1, list[i]);
+                Console.WriteLine("{0} {1}: {2}", text, i + 1, list[i]);
             }
         }
 
@@ -62,8 +62,10 @@ namespace HustarLibraryAssignment
             Console.WriteLine("ISBN : {0}", m_MemIsbn);
             Console.WriteLine("책 제목 : {0}", m_MemTitle);
             Console.WriteLine("출판사 : {0}", m_MemPublisher);
-            SearchCount(AuthorList);
-            SearchCount(IndexList);
+            string author = "저자";
+            string index = "목차";
+            SearchCount(AuthorList, author);
+            SearchCount(IndexList, index);
         }
 
         public bool CompareTitle(string SearchTitle)
