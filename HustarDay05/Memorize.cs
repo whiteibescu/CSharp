@@ -11,7 +11,7 @@ namespace FinalAddressList
     {
         public void InputData()
         {
-            Console.Write("")
+            Console.Write("");
         }
 
         public void PrintData()
