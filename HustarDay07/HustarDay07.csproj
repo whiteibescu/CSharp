@@ -8,8 +8,17 @@
   <ItemGroup>
     <Compile Remove="LateBinding.cs" />
     <Compile Remove="Out.cs" />
+    <Compile Remove="Practice.cs" />
     <Compile Remove="ReviewPaint.cs" />
     <Compile Remove="Template.cs" />
+    <Compile Remove="Zoo.cs" />
+    <Compile Remove="Zoo_OOP.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Practice.cs" />
+    <None Include="Zoo.cs" />
+    <None Include="Zoo_OOP.cs" />
   </ItemGroup>
 
   <ItemGroup>
