@@ -23,14 +23,79 @@ namespace HustarDay07
 
         public void InputData()
         {
-            Console.WR
+            Console.Write("이름 : ");
+            m_Name = Console.ReadLine();
+            Console.Write("나이 : ");
         }
-
 
         private string m_Name;
         private int m_iAge;
     }
-    class Practice
+    class Cat : Animal
     {
+        public override Animal Clone()
+        {
+            return new Cat();
+        }
+        public override string GetAnimalType()
+        {
+            return "고양이";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("야옹");
+        }
+    }
+
+    class AnimalMenu
+    {
+        public Animal Menu()
+        {
+            for (int i = 0; i < AnimalMenuList.Count; i++)
+            {
+                Console.WriteLine("{0}.{1}", i + 1, AnimalMenuList[i].GetAnimalType());
+            }
+            int iChoice = int.Parse(Console.ReadLine());
+            if (iChoice > 0 && iChoice <= AnimalMenuList.Count)
+            {
+                return Anim
+                    alMenuList[iChoice - 1].Clone();
+            }
+            return null;
+        }
+
+        private List<Animal> AnimalMenuList = new List<Animal>()
+        {
+            new Cat(), new Dog(), new Pig(), new Horse(), new Tiger().
+        };
+    }
+
+    class AnimalCountNode
+    {
+        public AnimalCountNode(string AnimalType)
+        {
+            m_AnimalType = AnimalType;
+        }
+        public void Increment()
+        {
+            ++m_iAnimalCount;
+        }
+        public bool CompareAnimalType(string animalType)
+        {
+            return animalType == m_AnimalType;
+        }
+        private string m_AnimalType;
+        private int m_iAnimalCount = 1;
+    }
+
+    class AnimalCountMgr
+    {
+        public void CountAnimal(List<Animal> AnimalList)
+        {
+            for (int i = 0; i < AnimalList.Count; i++)
+            {
+                AnimalCountNode animalCountNode = SearchANimalCountNode(AnimalList[i].GetAnimalType())
+            }
+        }
     }
 }
