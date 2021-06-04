@@ -94,8 +94,28 @@ namespace HustarDay07
         {
             for (int i = 0; i < AnimalList.Count; i++)
             {
-                AnimalCountNode animalCountNode = SearchANimalCountNode(AnimalList[i].GetAnimalType())
+                AnimalCountNode animalCountNode = SearchANimalCountNode(AnimalList[i].GetAnimalType());
+                if (animalCountNode == null)
+                {
+                    m_AnimalCountList.Add(new AnimalCountNode(AnimalList[i].GetAnimalType()));
+                }
+                else
+                {
+                    animalCountNode.Increment();
+                }
+
+            }
+            PrintAnimalCount();
+        }
+        public void PrintAnimalCount()
+        {
+            for (int i = 0; i < m_AnimalCountList.Count ; i++)
+            {
+                m_AnimalCountList[i].PrintAnimalCount();
             }
         }
+        private List<AnimalCountNode> m_AnimalCountList = new List<AnimalCountNode>();
     }
+
+
 }
