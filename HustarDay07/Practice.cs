@@ -109,13 +109,34 @@ namespace HustarDay07
         }
         public void PrintAnimalCount()
         {
-            for (int i = 0; i < m_AnimalCountList.Count ; i++)
+            for (int i = 0; i < m_AnimalCountList.Count; i++)
             {
                 m_AnimalCountList[i].PrintAnimalCount();
             }
         }
+        public AnimalCountNode SearchAnimalCountNode(string animalType)
+        {
+            for (int i = 0; i < m_AnimalCountList.Count; i++)
+            {
+                if (m_AnimalCountList[i].CompareAnimalType(animalType))
+                {
+                    return m_AnimalCountList[i];
+                }
+            }
+            return null;
+        }
         private List<AnimalCountNode> m_AnimalCountList = new List<AnimalCountNode>();
     }
 
-
+    class Zoo
+    {
+        public void Menu(Zoo zooTarget)
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine()
+            }
+        }
+    }
 }
