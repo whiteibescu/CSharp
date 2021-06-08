@@ -47,6 +47,54 @@ namespace HustarDay07
         }
     }
 
+    class Dog : Animal
+    {
+        public override Animal Clone()
+        {
+            return new Dog();
+        }
+        public override string GetAnimalType()
+        {
+            return "개";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("멍멍");
+        }
+    }
+
+    class Pig : Animal
+    {
+        public override Animal Clone()
+        {
+            return new Pig();
+        }
+        public override string GetAnimalType()
+        {
+            return "돼지";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("꿀꿀");
+        }
+    }
+
+    class Horse : Animal
+    {
+        public override Animal Clone()
+        {
+            return new Horse();
+        }
+        public override string GetAnimalType()
+        {
+            return "말";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("히이");
+        }
+    }
+
     class AnimalMenu
     {
         public Animal Menu()
@@ -135,8 +183,48 @@ namespace HustarDay07
             int iChoice = 1;
             while (iChoice != 0)
             {
-                Console.WriteLine()
+                Console.WriteLine("1. 동물등록");
+                Console.WriteLine("2. 동물출력");
+                Console.WriteLine("3. Speak");
+                Console.WriteLine("4. 동물이송");
+                Console.WriteLine("5. 동물Count");
+                Console.WriteLine("0. 종료");
+                iChoice = int.Parse(Console.ReadLine(Console));
+                switch (iChoice)
+                {
+                    case 1:
+                        RegistAnimal();
+                        break;
+                    case 2:
+                        PrintAllAnimals()
+                        break;
+                    case 3:
+                        SpeakAllAnimals();
+                        break;
+                    case 4:
+                        MoveAnimal(zooTarget);
+                        break;
+                    case 5:
+                        AnimalCount();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
+        public void AnimalCount()
+        {
+            AnimalCountMgr CountMgr = new AnimalCountMgr();
+            CountMgr.CountAnimal(m_AnimalList);
+        }
+        public int AnimalMoveMenu()
+        {
+            for (int i = 0; i < m_AnimalList.COunt; i++)
+            {
+
+            }
+        }
+        private AnimalMenu m_AnimalMenu = new AnimalMenu();
+        private List<Animal> m_AnimalList = new List<Animal>();
     }
 }
