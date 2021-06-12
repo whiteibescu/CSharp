@@ -36,6 +36,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Practice.cs" />
     <None Include="LibraryFinalVersion.cs" />
     <None Include="Delegation2.cs" />
     <None Include="Delegate.cs" />
