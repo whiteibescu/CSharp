@@ -46,4 +46,20 @@ namespace ZooManager
         }
     }
 
+    class Dog: Animal
+    {
+        public override Animal Clone()
+        {
+            return new Dog();
+        }
+        public override string GetAnimalType()
+        {
+            return "개";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("왈왈");
+        }
+    }
+
 }
