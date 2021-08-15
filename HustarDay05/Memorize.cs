@@ -48,5 +48,34 @@ namespace FinalAddressList
         private string m_MemName;
         private string m_MemAddr;
         private string m_MemTelNo;
+
+        class MemberMGr
+        {
+            public void InputMember()
+            {
+                Member m = new Member();
+                if (m.InputData(this) == true)
+                {
+                    MemList.Add(m);
+                }
+                else
+                {
+                    Console.WriteLine("이미 등록된 회원입니다.");
+                }
+            }
+            public void PrintMember()
+            {
+                for (int i = 0; i < MemList.Count; i++)
+                {
+                    Member m = (Member)MemList[(int)iIndexList[i]];
+                    m.PrintData();
+                }
+            }
+            public void MultiearchMember()
+            {
+
+            }
+            private ArrayList MemList = new ArrayList();
+        }
     }
 }
