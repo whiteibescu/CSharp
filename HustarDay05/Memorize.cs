@@ -49,12 +49,4 @@ namespace FinalAddressList
         private string m_MemAddr;
         private string m_MemTelNo;
     }
-    class MemberMgr
-    {
-        MemberMgr
-    }
-    class Program
-    {
-
-    }
 }
