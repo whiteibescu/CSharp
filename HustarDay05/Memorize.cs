@@ -71,7 +71,19 @@ namespace FinalAddressList
                     m.PrintData();
                 }
             }
-            public void MultiearchMember()
+            public int FindMemberIndex(string SearchName)
+            {
+                for (int i = 0; i < MemList.Count; i++)
+                {
+                    Member m = (Member)MemList[i];
+                    if (m.CompareName(SearchName))
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+            public void MultiSearchMember()
             {
 
             }
