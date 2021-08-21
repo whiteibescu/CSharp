@@ -134,7 +134,19 @@ namespace FinalAddressList
                     Console.WriteLine("삭제하려는 데이터는 없습니다.");
                 }
             }
-
+            public ArrayList FindMultiMemberIndex(string SearchName)
+            {
+                ArrayList Result = new ArrayList();
+                for (int i = 0; i < MemList.Count; i++)
+                {
+                    Member m = (Member)MemList[i];
+                    if (m.ContainName(SearchName))
+                    {
+                        Result.Add(i);
+                    }
+                }
+                return Result;
+            }
 
 
 
