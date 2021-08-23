@@ -147,21 +147,36 @@ namespace FinalAddressList
                 }
                 return Result;
             }
-
-
-
-
-
-
-
-
-
-
-
+            public void PrintMember(ArrayList iIndexList)
+            {
+                for (int i = 0; i < iIndexList.Count; i++)
+                {
+                    Member m = (Member)MemList[(int)iIndexList[i]];
+                    m.PrintData();
+                }
+            }
             public void MultiSearchMember()
             {
-
+                Console.Write("찾으려는 이름 문자열: ");
+                string SearchName = Console.ReadLine();
+                ArrayList iIndexList = FindMultiMemberIndex(SearchName);
+                if (iIndexList.Count > 0)
+                {
+                    PrintMember(iIndexList);
+                }
+                else
+                {
+                    Console.WriteLine("찾으려는 데이터는 없습니다.");
+                }
             }
+
+
+
+
+
+
+
+
             private ArrayList MemList = new ArrayList();
         }
     }
