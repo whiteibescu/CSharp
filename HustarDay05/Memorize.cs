@@ -169,8 +169,27 @@ namespace FinalAddressList
                     Console.WriteLine("찾으려는 데이터는 없습니다.");
                 }
             }
-
-
+            public void DeleteMember(ArrayList iIndexList)
+            {
+                for (int i = iIndexList.Count - 1; i >= 0; i--)
+                {
+                    MemList.RemoveAt((int)iIndexList[i]);
+                }
+            }
+            public void MultiDeleteMember()
+            {
+                Console.Write("삭제하려는 이름 문자열: ");
+                string SearchName = Console.ReadLine();
+                ArrayList iIndexList = FindMultiMemberIndex(SearchName);
+                if (iIndexList.Count > 0)
+                {
+                    DeleteMember(iIndexList);
+                }
+                else
+                {
+                    Console.WriteLine("삭제하려는 데이터는 없습니다.");
+                }
+            }
 
 
 
