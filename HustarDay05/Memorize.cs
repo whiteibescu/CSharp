@@ -7,5 +7,22 @@ using System.Threading.Tasks;
 
 namespace FinalAddressList
 {
+    class Member
+    {
 
+    }
+
+    class MemberMgr
+    {
+
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            MemberMgr m = new MemberMgr();
+            m.Menu();
+        }
+    }
 }
