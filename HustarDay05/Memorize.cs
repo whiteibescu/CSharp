@@ -48,7 +48,39 @@ namespace FinalAddressList
 
     class MemberMgr
     {
-
+        public void InputMember()
+        //                                          MemberMgr this
+        {
+            Member m = new Member();
+            if (m.InputData(this) == true)
+            {
+                MemList.Add(m);
+            }
+            else
+            {
+                Console.WriteLine("이미 등록된 회원입니다.");
+            }
+        }
+        public void PrintMember()
+        {
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                m.PrintData();
+            }
+        }
+        public int FindMemberIndex(string SearchName)
+        {
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.CompareName(SearchName))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
     }
 
     class Program
