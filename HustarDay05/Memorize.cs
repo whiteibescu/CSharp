@@ -153,6 +153,7 @@ namespace FinalAddressList
                 m.PrintData();
             }
         }
+<<<<<<< HEAD
         public void MultiSearchMember()
         {
             Console.Write("찾으려는 이름 문자열: ");
@@ -174,6 +175,66 @@ namespace FinalAddressList
                 MemList.RemoveAt((int)iIndexList[i]);
             }
         }
+        public void Menu()
+
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("1. 회원등록");
+                Console.WriteLine("2. 회원출력");
+                Console.WriteLine("3. 회원검색");
+                Console.WriteLine("4. 회원수정");
+                Console.WriteLine("5. 회원삭제");
+                Console.WriteLine("6. 다중검색");
+                Console.WriteLine("7. 다중삭제");
+                iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        {
+                            InputMember();
+                        }
+                        break;
+                    case 2:
+                        {
+                            PrintMember();
+                        }
+                        break;
+                    case 3:
+                        {
+                            SearchMember();
+                        }
+                        break;
+                    case 4:
+                        {
+                            ModifyMember();
+                        }
+                        break;
+                    case 5:
+                        {
+                            DeleteMember();
+                        }
+                        break;
+                    case 6:
+                        {
+                            MultiSearchMember();
+                        }
+                        break;
+                    case 7:
+                        {
+                            MultiDeleteMember();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+=======
+>>>>>>> 3ae4a020fc978862a8687eaa1c78396cef74de68
         private ArrayList MemList = new ArrayList();
     }
 
