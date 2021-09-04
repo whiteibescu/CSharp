@@ -132,6 +132,48 @@ namespace FinalAddressList
                 Console.WriteLine("삭제하려는 데이터는 없습니다.");
             }
         }
+        public ArrayList FindMultiMemberIndex(string SearchName)
+        {
+            ArrayList Result = new ArrayList();
+            for (int i = 0; i < MemList.Count; i++)
+            {
+                Member m = (Member)MemList[i];
+                if (m.ContainName(SearchName))
+                {
+                    Result.Add(i);
+                }
+            }
+            return Result;
+        }
+        public void PrintMember(ArrayList iIndexList)
+        {
+            for (int i = 0; i < iIndexList.Count; i++)
+            {
+                Member m = (Member)MemList[(int)iIndexList[i]];
+                m.PrintData();
+            }
+        }
+        public void MultiSearchMember()
+        {
+            Console.Write("찾으려는 이름 문자열: ");
+            string SearchName = Console.ReadLine();
+            ArrayList iIndexList = FindMultiMemberIndex(SearchName);
+            if (iIndexList.Count > 0)
+            {
+                PrintMember(iIndexList);
+            }
+            else
+            {
+                Console.WriteLine("찾으려는 데이터는 없습니다.");
+            }
+        }
+        public void DeleteMember(ArrayList iIndexList)
+        {
+            for (int i = iIndexList.Count - 1; i >= 0; i--)
+            {
+                MemList.RemoveAt((int)iIndexList[i]);
+            }
+        }
         private ArrayList MemList = new ArrayList();
     }
 
