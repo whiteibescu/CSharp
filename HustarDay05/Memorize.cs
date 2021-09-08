@@ -81,7 +81,29 @@ namespace FinalAddressList
             }
             return -1;
         }
-
+        public Member FindMember(string SearchName)
+        {
+            int iIndex = FindMemberIndex(SearchName);
+            if (iIndex != -1)
+            {
+                return (Member)MemList[iIndex];
+            }
+            return null;
+        }
+        public void SearchMember()
+        {
+            Console.Write("찾으려는 이름 : ");
+            string SearchName = Console.ReadLine();
+            Member m = FindMember(SearchName);
+            if (m != null)
+            {
+                m.PrintData();
+            }
+            else
+            {
+                Console.WriteLine("찾으려는 데이터는 없습니다.");
+            }
+        }
 
 
 
