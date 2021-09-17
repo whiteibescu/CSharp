@@ -2,38 +2,32 @@
 
 namespace Derived_Class
 {
+    class Vehicle  // base class (parent) 
+    {
+        public string brand = "Ford";  // Vehicle field
+        public void honk()             // Vehicle method 
+        {
+            Console.WriteLine("Tuut, tuut!");
+        }
+    }
+
+    class Car : Vehicle  // derived class (child)
+    {
+        public string modelName = "Mustang";  // Car field       
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
-            new Program().Test();
-        }
+            // Create a myCar object
+            Car myCar = new Car();
 
-        // 델리게이트 정의
-        delegate int MyDelegate(string s);
+            // Call the honk() method (From the Vehicle class) on the myCar object
+            myCar.honk();
 
-        void Test()
-        {
-            //델리게이트 객체 생성
-            MyDelegate m = new MyDelegate(StringToInt);
-
-            //델리게이트 객체를 메서드로 전달
-            Run(m);
-        }
-
-        // 델리게이트 대상이 되는 어떤 메서드
-        int StringToInt(string s)
-        {
-            return int.Parse(s);
-        }
-
-        // 델리게이트를 전달 받는 메서드
-        void Run(MyDelegate m)
-        {
-            // 델리게이트로부터 메서드 실행
-            int i = m("123");
-
-            Console.WriteLine(i);
+            // Display the value of the brand field (from the Vehicle class) and the value of the modelName from the Car class
+            Console.WriteLine(myCar.brand + " " + myCar.modelName);
         }
     }
 }
