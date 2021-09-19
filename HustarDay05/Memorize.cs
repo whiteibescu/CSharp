@@ -5,263 +5,93 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinalAddressList
+namespace HustarDay05
 {
-    class Member
+    class Weapon
     {
-        public bool InputData(MemberMgr mgr)
+        public virtual void Attack()
         {
-            Console.Write("이름 : ");
-            m_MemName = Console.ReadLine();
-            if (mgr.FindMember(m_MemName) != null)
-            {
-                return false;
-            }
-            ModifyData();
-            return true;
         }
-        public void ModifyData()
-        {
-            Console.Write("주소 : ");
-            m_MemAddr = Console.ReadLine();
-            Console.Write("전화번호 : ");
-            m_MemTelNo = Console.ReadLine();
-        }
-        public void PrintData()
-        {
-            Console.WriteLine("이름 : {0}", m_MemName);
-            Console.WriteLine("주소 : {0}", m_MemAddr);
-            Console.WriteLine("전화번호 : {0}", m_MemTelNo);
-        }
-        public bool CompareName(string SearchName)
-        {
-            return m_MemName == SearchName;
-        }
-        public bool ContainName(string SearchName)
-        {
-            return m_MemName.Contains(SearchName);
-        }
-        private string m_MemName;
-        private string m_MemAddr;
-        private string m_MemTelNo;
     }
-
-    class MemberMgr
+    class Gun : Weapon
     {
-        public void InputMember()
-        //                                          MemberMgr this
+        private Gun()
+        { }
+        public override void Attack()
         {
-            Member m = new Member();
-            if (m.InputData(this) == true)
-            {
-                MemList.Add(m);
-            }
-            else
-            {
-                Console.WriteLine("이미 등록된 회원입니다.");
-            }
+            Console.WriteLine("총 공격");
         }
-        public void PrintMember()
+        public static Weapon CreateObject()
         {
-            for (int i = 0; i < MemList.Count; i++)
+            if (m_weapon == null)
             {
-                Member m = (Member)MemList[i];
-                m.PrintData();
+                m_weapon = new Gun();
             }
+            return m_weapon;
         }
-        public int FindMemberIndex(string SearchName)
+        private static Weapon m_weapon = null;
+    }
+    class Missile : Weapon
+    {
+        private Missile()
+        { }
+        public override void Attack()
         {
-            for (int i = 0; i < MemList.Count; i++)
-            {
-                Member m = (Member)MemList[i];
-                if (m.CompareName(SearchName))
-                {
-                    return i;
-                }
-            }
-            return -1;
+            Console.WriteLine("미사일 공격");
         }
-        public Member FindMember(string SearchName)
+        public static Weapon CreateObject()
         {
-            int iIndex = FindMemberIndex(SearchName);
-            if (iIndex != -1)
+            if (m_weapon == null)
             {
-                return (Member)MemList[iIndex];
+                m_weapon = new Missile();
             }
-            return null;
+            return m_weapon;
         }
-        public void SearchMember()
+        private static Weapon m_weapon = null;
+    }
+    class Sword : Weapon
+    {
+        private Sword()
+        { }
+        public override void Attack()
         {
-            Console.Write("찾으려는 이름 : ");
-            string SearchName = Console.ReadLine();
-            Member m = FindMember(SearchName);
-            if (m != null)
-            {
-                m.PrintData();
-            }
-            else
-            {
-                Console.WriteLine("찾으려는 데이터는 없습니다.");
-            }
+            Console.WriteLine("칼 공격");
         }
-        public void ModifyMember()
+        public static Weapon CreateObject()
         {
-            Console.Write("수정하려는 이름 : ");
-            string SearchName = Console.ReadLine();
-            Member m = FindMember(SearchName);
-            if (m != null)
+            if (m_weapon == null)
             {
-                m.ModifyData();
+                m_weapon = new Sword();
             }
-            else
-            {
-                Console.WriteLine("수정하려는 데이터는 없습니다.");
-            }
+            return m_weapon;
         }
-        public void DeleteMember()
-        {
-            Console.Write("삭제하려는 이름 : ");
-            string SearchName = Console.ReadLine();
-            int iIndex = FindMemberIndex(SearchName);
-            if (iIndex != -1)
-            {
-                MemList.RemoveAt(iIndex);
-            }
-            else
-            {
-                Console.WriteLine("삭제하려는 데이터는 없습니다.");
-            }
-        }
-        public ArrayList FindMultiMemberIndex(string SearchName)
-        {
-            ArrayList Result = new ArrayList();
-            for (int i = 0; i < MemList.Count; i++)
-            {
-                Member m = (Member)MemList[i];
-                if (m.ContainName(SearchName))
-                {
-                    Result.Add(i);
-                }
-            }
-            return Result;
-        }
-<<<<<<< HEAD
-        public void PrintMember(ArrayList iIndexList)
-        {
-            for (int i = 0; i < iIndexList.Count; i++)
-            {
-                Member m = (Member)MemList[(int)iIndexList[i]];
-                m.PrintData();
-            }
-        }
-        public void MultiSearchMember()
-        {
-            Console.Write("찾으려는 이름 문자열: ");
-            string SearchName = Console.ReadLine();
-            ArrayList iIndexList = FindMultiMemberIndex(SearchName);
-            if (iIndexList.Count > 0)
-            {
-                PrintMember(iIndexList);
-            }
-            else
-            {
-                Console.WriteLine("찾으려는 데이터는 없습니다.");
-            }
-        }
-        public void DeleteMember(ArrayList iIndexList)
-        {
-            for (int i = iIndexList.Count - 1; i >= 0; i--)
-            {
-                MemList.RemoveAt((int)iIndexList[i]);
-            }
-        }
-        public void MultiDeleteMember()
-        {
-            Console.Write("삭제하려는 이름 문자열: ");
-            string SearchName = Console.ReadLine();
-            ArrayList iIndexList = FindMultiMemberIndex(SearchName);
-            if (iIndexList.Count > 0)
-            {
-                DeleteMember(iIndexList);
-            }
-            else
-            {
-                Console.WriteLine("삭제하려는 데이터는 없습니다.");
-            }
-        }
-        public void Menu()
+        private static Weapon m_weapon = null;
 
+    }
+    class Robot
+    {
+        public void ChangeWeapon(Weapon weapon)
         {
-            int iChoice = 1;
-            while (iChoice != 0)
-            {
-                Console.WriteLine("1. 회원등록");
-                Console.WriteLine("2. 회원출력");
-                Console.WriteLine("3. 회원검색");
-                Console.WriteLine("4. 회원수정");
-                Console.WriteLine("5. 회원삭제");
-                Console.WriteLine("6. 다중검색");
-                Console.WriteLine("7. 다중삭제");
-                iChoice = int.Parse(Console.ReadLine());
-                switch (iChoice)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        {
-                            InputMember();
-                        }
-                        break;
-                    case 2:
-                        {
-                            PrintMember();
-                        }
-                        break;
-                    case 3:
-                        {
-                            SearchMember();
-                        }
-                        break;
-                    case 4:
-                        {
-                            ModifyMember();
-                        }
-                        break;
-                    case 5:
-                        {
-                            DeleteMember();
-                        }
-                        break;
-                    case 6:
-                        {
-                            MultiSearchMember();
-                        }
-                        break;
-                    case 7:
-                        {
-                            MultiDeleteMember();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+            m_Weapon = weapon;
         }
-        private ArrayList MemList = new ArrayList();
+        public void Attack()
+        {
+            m_Weapon.Attack();
+        }
+        private Weapon m_Weapon = Gun.CreateObject();
     }
     class Program
     {
         static void Main(string[] args)
         {
-            MemberMgr m = new MemberMgr();
-            m.Menu();
+            Robot r = new Robot();
+            r.Attack();
+            r.ChangeWeapon(Missile.CreateObject());
+            r.Attack();
+            r.ChangeWeapon(Sword.CreateObject());
+            r.Attack();
+            r.ChangeWeapon(Missile.CreateObject());
+            r.Attack();
         }
-=======
-
-
-
-        private ArrayList MemList = new ArrayList(); 
->>>>>>> 3927b919a99d275f84721fc17e96fd7a72b90299
     }
-
 }
