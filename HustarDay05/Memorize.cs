@@ -1,97 +1,39 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace HustarDay05
 {
-    class Weapon
+    class Cat
     {
-        public virtual void Attack()
-        {
-        }
+        public int m_iAge;
     }
-    class Gun : Weapon
-    {
-        private Gun()
-        { }
-        public override void Attack()
-        {
-            Console.WriteLine("총 공격");
-        }
-        public static Weapon CreateObject()
-        {
-            if (m_weapon == null)
-            {
-                m_weapon = new Gun();
-            }
-            return m_weapon;
-        }
-        private static Weapon m_weapon = null;
-    }
-    class Missile : Weapon
-    {
-        private Missile()
-        { }
-        public override void Attack()
-        {
-            Console.WriteLine("미사일 공격");
-        }
-        public static Weapon CreateObject()
-        {
-            if (m_weapon == null)
-            {
-                m_weapon = new Missile();
-            }
-            return m_weapon;
-        }
-        private static Weapon m_weapon = null;
-    }
-    class Sword : Weapon
-    {
-        private Sword()
-        { }
-        public override void Attack()
-        {
-            Console.WriteLine("칼 공격");
-        }
-        public static Weapon CreateObject()
-        {
-            if (m_weapon == null)
-            {
-                m_weapon = new Sword();
-            }
-            return m_weapon;
-        }
-        private static Weapon m_weapon = null;
 
-    }
-    class Robot
+    class Solution
     {
-        public void ChangeWeapon(Weapon weapon)
+        int noStatic = 0;
+        static int yesStatic = 0;
+
+        public static void yes()
         {
-            m_Weapon = weapon;
+            int noStatic = 0;
+            yesStatic = 0;
         }
-        public void Attack()
+
+        public void no()
         {
-            m_Weapon.Attack();
+            noStatic = 1;
+            yesStatic = 1;
         }
-        private Weapon m_Weapon = Gun.CreateObject();
     }
-    class Program
+
+
+    class ChangeByValueorReference
     {
         static void Main(string[] args)
         {
-            Robot r = new Robot();
-            r.Attack();
-            r.ChangeWeapon(Missile.CreateObject());
-            r.Attack();
-            r.ChangeWeapon(Sword.CreateObject());
-            r.Attack();
-            r.ChangeWeapon(Missile.CreateObject());
-            r.Attack();
+            Cat c1 = new Cat();
+            c1.m_iAge = 10;
         }
     }
 }
