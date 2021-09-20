@@ -45,6 +45,7 @@ namespace FinalAddressList
         private string m_MemAddr;
         private string m_MemTelNo;
     }
+
     class MemberMgr
     {
         public void InputMember()
@@ -144,6 +145,7 @@ namespace FinalAddressList
             }
             return Result;
         }
+<<<<<<< HEAD
         public void PrintMember(ArrayList iIndexList)
         {
             for (int i = 0; i < iIndexList.Count; i++)
@@ -254,5 +256,12 @@ namespace FinalAddressList
             MemberMgr m = new MemberMgr();
             m.Menu();
         }
+=======
+
+
+
+        private ArrayList MemList = new ArrayList(); 
+>>>>>>> 3927b919a99d275f84721fc17e96fd7a72b90299
     }
+
 }
