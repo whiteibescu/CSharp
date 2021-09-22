@@ -1,36 +1,85 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace HustarDay05
+namespace Override
 {
-    class CallWorker
+    class Animal
     {
-        public CallWorker() : this("분신술 사용!!", 5000)
+        public Animal()
         {
-            Console.WriteLine("1번 생성자 호출!!");
-            Console.WriteLine("계산대에서 멍때리기");
+            Console.WriteLine("public Animal()생성자 호출");
         }
-
-        public CallWorker(string clean)
+        public virtual void Speak()
         {
-            Console.WriteLine("2번 생성자: 매개변수가 1개 ");
-            Console.WriteLine("사장왈 " + clean + "\n\n");
-
+            Console.WriteLine("Animal Speak!!!");
         }
-
-        public CallWorker(string clean, int calculation)
+    }
+    class Cat : Animal
+    {
+        public Cat()
         {
-            Console.WriteLine("3번 생성자: 매개변수가 2개");
-            Console.WriteLine("손님 왈 : 계산 좀 해주세요~" + calculation);
-            Console.WriteLine("사장 왈: " + clean + "\n\n");
+            Console.WriteLine("public Cat()생성자 호출");
         }
-
-        public static void Main(string[] args)
+        public override void Speak()
         {
-            CallWorker call1 = new CallWorker();
-            CallWorker call2 = new CallWorker("법사야 청소 좀 해라");
-            CallWorker call3 = new CallWorker("법사야 청소좀 해라", 5000);
+            Console.WriteLine("야옹!!!");
+        }
+    }
+    class Dog : Animal
+    {
+        public Dog()
+        {
+            Console.WriteLine("public Dog()생성자 호출");
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("멍멍!!!");
+        }
+    }
+    class Horse : Animal
+    {
+        public Horse()
+        {
+            Console.WriteLine("public Horse()생성자 호출");
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("히잉!!!");
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ArrayList animalList = new ArrayList();
+            for (int i = 0; i < 5; i++)
+            {
+                Console.WriteLine("1.Cat");
+                Console.WriteLine("2.Dog");
+                Console.WriteLine("3.Horse");
+                int iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 1:
+                        animalList.Add(new Cat());
+                        break;
+                    case 2:
+                        animalList.Add(new Dog());
+                        break;
+                    case 3:
+                        animalList.Add(new Horse());
+                        break;
+                }
+            }
+            for (int i = 0; i < animalList.Count; i++)
+            {
+                Animal a = (Animal)animalList[i];
+                a.Speak();
+            }
         }
     }
 }
