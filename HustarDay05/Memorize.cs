@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Override
+namespace Test2
 {
     class Animal
     {
@@ -17,12 +17,21 @@ namespace Override
         {
             Console.WriteLine("Animal Speak!!!");
         }
+        public virtual void Speak2()
+        {
+            Console.WriteLine("Animal2 Speak!!!");
+        }
+        private int m_iAge;
     }
     class Cat : Animal
     {
         public Cat()
         {
             Console.WriteLine("public Cat()생성자 호출");
+        }
+        public override void Speak2()
+        {
+            Console.WriteLine("야옹2!!!");
         }
         public override void Speak()
         {
@@ -55,31 +64,10 @@ namespace Override
     {
         static void Main(string[] args)
         {
-            ArrayList animalList = new ArrayList();
-            for (int i = 0; i < 5; i++)
-            {
-                Console.WriteLine("1.Cat");
-                Console.WriteLine("2.Dog");
-                Console.WriteLine("3.Horse");
-                int iChoice = int.Parse(Console.ReadLine());
-                switch (iChoice)
-                {
-                    case 1:
-                        animalList.Add(new Cat());
-                        break;
-                    case 2:
-                        animalList.Add(new Dog());
-                        break;
-                    case 3:
-                        animalList.Add(new Horse());
-                        break;
-                }
-            }
-            for (int i = 0; i < animalList.Count; i++)
-            {
-                Animal a = (Animal)animalList[i];
-                a.Speak();
-            }
+            Animal a = new Animal();
+            a.Speak();
+            Animal a1 = new Cat();
+            a1.Speak2();
         }
     }
 }
