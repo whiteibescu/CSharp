@@ -7,10 +7,12 @@
 
   <ItemGroup>
     <Compile Remove="Array.cs" />
+    <Compile Remove="ChangeByValueorReference.cs" />
     <Compile Remove="Constructor.cs" />
     <Compile Remove="Enumerator.cs" />
     <Compile Remove="FinalAddressList.cs" />
     <Compile Remove="Inheritance.cs" />
+    <Compile Remove="Keyword_this.cs" />
     <Compile Remove="Override.cs" />
     <Compile Remove="Singleton.cs" />
     <Compile Remove="String.cs" />
@@ -18,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="ChangeByValueorReference.cs" />
     <None Include="FinalAddressList.cs" />
     <None Include="Inheritance.cs" />
   </ItemGroup>
@@ -26,6 +29,7 @@
     <None Include="Array.cs" />
     <None Include="Constructor.cs" />
     <None Include="Enumerator.cs" />
+    <None Include="Keyword_this.cs" />
     <None Include="Override.cs" />
     <None Include="Singleton.cs" />
     <None Include="String.cs" />
