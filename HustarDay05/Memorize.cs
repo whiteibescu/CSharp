@@ -7,67 +7,54 @@ using System.Threading.Tasks;
 
 namespace Test2
 {
-    class Animal
+    class Cat
     {
-        public Animal()
+        static Cat()
         {
-            Console.WriteLine("public Animal()생성자 호출");
+            Console.WriteLine("static Cat() 생성자 호출");
+            m_iCount = 0;
         }
-        public virtual void Speak()
+        public Cat(float pi = 3.14f)
         {
-            Console.WriteLine("Animal Speak!!!");
+            Console.WriteLine("public Cat(float pi) 생성자 호출");
+            m_pi = pi;
         }
-        public virtual void Speak2()
+        public void MyFunc()
         {
-            Console.WriteLine("Animal2 Speak!!!");
+            AGE = 10;
         }
+        public int AGE
+        {
+            get { return m_iAge; }
+            private set
+            {
+                if(value < 0)
+                {
+                    Console.WriteLine("나이는 0보다 작을 수 없습니다.");
+                    return;
+                }
+                m_iAge = value;
+            }
+        }
+        public static int COUNT
+        {
+            get { return m_iCount; }
+        }
+
         private int m_iAge;
+        private static int m_iCount;
+        public readonly float m_pi;
     }
-    class Cat : Animal
-    {
-        public Cat()
-        {
-            Console.WriteLine("public Cat()생성자 호출");
-        }
-        public override void Speak2()
-        {
-            Console.WriteLine("야옹2!!!");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("야옹!!!");
-        }
-    }
-    class Dog : Animal
-    {
-        public Dog()
-        {
-            Console.WriteLine("public Dog()생성자 호출");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("멍멍!!!");
-        }
-    }
-    class Horse : Animal
-    {
-        public Horse()
-        {
-            Console.WriteLine("public Horse()생성자 호출");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("히잉!!!");
-        }
-    }
+
     class Program
     {
         static void Main(string[] args)
         {
-            Animal a = new Animal();
-            a.Speak();
-            Animal a1 = new Cat();
-            a1.Speak2();
+            Console.WriteLine("------------------------------");
+            Console.WriteLine("{0}", Cat.COUNT);
+            Console.WriteLine("------------------------------");
+            Cat c1 = new Cat(3.141592f);
+            Console.WriteLine("{0}", c1.m_pi);
         }
     }
 }
