@@ -7,16 +7,35 @@ using System.Threading.Tasks;
 
 namespace Test2
 {
-    class Array
+    class Cat
+    {
+        public int m_iAge;
+    }
+
+    class Solution
+    {
+        int noStatic = 0;
+        static int yesStatic = 0;
+
+        public static void yes()
+        {
+            int noStatic = 0;
+            yesStatic = 0;
+        }
+
+        public void no()
+        {
+            noStatic = 1;
+            yesStatic = 1;
+        }
+    }
+
+    class ChangeByValueorReference
     {
         static void Main(string[] args)
         {
-            int[] iArray = { 1, 2, 3, 4, 5 };
-            Console.WriteLine(iArray);
-            for (int i = 0; i < iArray.Length; i++)
-            {
-                Console.WriteLine("iArray[{0}] = {1}", i, iArray[i]);
-            }
+            Cat c1 = new Cat();
+            c1.m_iAge = 10;
         }
     }
 }
