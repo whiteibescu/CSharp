@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DecisionMakerApp.MainPage">
+    <StackLayout>
+        <Label Text="Discover" TextColor="Black" FontSize="24" FontAttributes="Bold" Margin="15"/>
+
+        <Frame HeightRequest="280" WidthRequest="180"
+               BackgroundColor="White" Padding="0" CornerRadius="10"
+               HasShadow="true" Margin="10"
+               HorizontalOptions="CenterAndExpand">
+            <StackLayout>
+                <Image Source="https://images.pexels.com/photos/1232594/pexels-photo-1232594.jpeg" Aspect="Fill"/>
+
+            </StackLayout>
+
+
+        </Frame>
+
+    </StackLayout>
+
+</ContentPage>
