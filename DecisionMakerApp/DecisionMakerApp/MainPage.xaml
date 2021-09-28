@@ -9,14 +9,27 @@
                BackgroundColor="White" Padding="0" CornerRadius="10"
                HasShadow="true" Margin="10"
                HorizontalOptions="CenterAndExpand">
-            <StackLayout>
-                <Image Source="https://images.pexels.com/photos/1232594/pexels-photo-1232594.jpeg" Aspect="Fill"/>
+            <Grid>
+                <StackLayout>
+                    <Image Source="https://images.pexels.com/photos/1232594/pexels-photo-1232594.jpeg"
+                           HeightRequest="350" Opacity="0.8"
+                           Aspect="AspectFill"/>
+                </StackLayout>
+                <StackLayout>
+                    <Label Text="Discover" TextColor="White" FontSize="18"
+                            FontAttributes="None" Margin="15"
+                            VerticalOptions="EndAndExpand"/>
 
-            </StackLayout>
-
-
+                    <StackLayout Orientation="Horizontal">
+                        <Image Source="https://images.pexels.com/photos/1232594/pexels-photo-1232594.jpeg"
+                           HeightRequest="350"
+                           Aspect="AspectFill"/>
+                        <Label Text="Norway" TextColor="White" FontSize="16"
+                            FontAttributes="None"
+                            VerticalOptions="EndAndExpand"/>
+                    </StackLayout>
+                </StackLayout>
+            </Grid>
         </Frame>
-
     </StackLayout>
-
 </ContentPage>
