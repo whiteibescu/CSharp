@@ -7,35 +7,31 @@ using System.Threading.Tasks;
 
 namespace Test2
 {
-    class Cat
+    public class MyClass
     {
-        public int m_iAge;
-    }
+        private int val = 1;
 
-    class Solution
-    {
-        int noStatic = 0;
-        static int yesStatic = 0;
-
-        public static void yes()
+        public int InstRun()
         {
-            int noStatic = 0;
-            yesStatic = 0;
+            return val;
         }
 
-        public void no()
+        public static int Run()
         {
-            noStatic = 1;
-            yesStatic = 1;
+            return 1;
         }
     }
 
-    class ChangeByValueorReference
+    public class Client
     {
-        static void Main(string[] args)
+        public void Test()
         {
-            Cat c1 = new Cat();
-            c1.m_iAge = 10;
+            MyClass myClass = new MyClass();
+            int i = myClass.InstRun();
+
+            int j = MyClass.Run();
         }
+
+
     }
 }

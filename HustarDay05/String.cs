@@ -8,8 +8,6 @@ namespace HustarDay05
     {
         public void main()
         {
-
-
             string s1 = "홍길동";
             string s2 = "박길동";
             string s3 = "이길동";
@@ -21,9 +19,7 @@ namespace HustarDay05
             sBuilder.Appends(s2);
             sBuilder.Appends(s3);
             string result = sBuilder.ToString();
-            Console.WriteLine("result:{0}", result);
-
-
+             
         }
     }
 }
