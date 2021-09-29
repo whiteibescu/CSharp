@@ -31,7 +31,5 @@ namespace Test2
 
             int j = MyClass.Run();
         }
-
-
     }
 }
