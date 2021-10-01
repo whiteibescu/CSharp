@@ -7,29 +7,17 @@ using System.Threading.Tasks;
 
 namespace Test2
 {
-    public class MyClass
+    class Program
     {
-        private int val = 1;
-
-        public int InstRun()
+        static int Add(int a)
         {
-            return val;
+            return a + 1;
         }
 
-        public static int Run()
+        static void Main(string[] args)
         {
-            return 1;
-        }
-    }
-
-    public class Client
-    {
-        public void Test()
-        {
-            MyClass myClass = new MyClass();
-            int i = myClass.InstRun();
-
-            int j = MyClass.Run();
+            int k = Add(3);
+            Console.WriteLine("k = " + k);
         }
     }
 }
