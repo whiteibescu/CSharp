@@ -13,7 +13,7 @@ namespace Test2
     {
         static void Main(string[] args)
         {
-            dele d = delegate (int a) { return a + 1; };
+            dele d = a => a + 1;
             int k = d(3);
             Console.WriteLine("k = " + k);
         }
