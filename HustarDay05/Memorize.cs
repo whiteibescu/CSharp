@@ -24,11 +24,11 @@ namespace HustarDay08
         {
             List<Member> MemList = new List<Member>()
             {
-                new Member() {NAME = "홍길동", ADDR = "서울",TELNO = "123-1234" ,MEMGUBUN = 1},
-                new Member() {NAME = "김길동", ADDR = "부산",TELNO = "234-1234" ,MEMGUBUN = 2},
-                new Member() {NAME = "이길동", ADDR = "대구",TELNO = "345-1234" ,MEMGUBUN = 3},
-                new Member() {NAME = "박길동", ADDR = "포항",TELNO = "456-1234" ,MEMGUBUN = 1},
-                new Member() {NAME = "최길동", ADDR = "광주",TELNO = "567-1234" ,MEMGUBUN = 2}
+                new Member() {NAME = "홍길동", ADDR = "서울", TELNO = "123-1234" ,MEMGUBUN = 1},
+                new Member() {NAME = "김길동", ADDR = "부산", TELNO = "234-1234" ,MEMGUBUN = 2},
+                new Member() {NAME = "이길동", ADDR = "대구", TELNO = "345-1234" ,MEMGUBUN = 3},
+                new Member() {NAME = "박길동", ADDR = "포항", TELNO = "456-1234" ,MEMGUBUN = 1},
+                new Member() {NAME = "최길동", ADDR = "광주", TELNO = "567-1234" ,MEMGUBUN = 2}
             };
             List<Memgubun> MemGubunList = new List<Memgubun>()
             {
@@ -38,7 +38,7 @@ namespace HustarDay08
             };
 
             var result = from m in MemList
-                         select new { NAME = m.NAME, ADDR = m.ADDR };
+                         select new { NAME = m.NAME, ADDR = m.ADDR, TELNO = m.TELNO };
             foreach (var r in result)
             {
                 Console.WriteLine("NAME : {0}", r.NAME);
