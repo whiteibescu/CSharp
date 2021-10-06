@@ -36,8 +36,9 @@ namespace CreatingJsonFile2
             this.Resetbtn = new System.Windows.Forms.Button();
             this.Endbtn = new System.Windows.Forms.Button();
             this.WatchValue = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.ProgressList = new System.Windows.Forms.ListBox();
             this.Progress_txt = new System.Windows.Forms.Label();
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // Startbtn
@@ -108,14 +109,15 @@ namespace CreatingJsonFile2
             this.WatchValue.TabIndex = 6;
             this.WatchValue.Text = "00:00:00.00";
             // 
-            // listBox1
+            // ProgressList
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 12;
-            this.listBox1.Location = new System.Drawing.Point(93, 55);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(352, 268);
-            this.listBox1.TabIndex = 7;
+            this.ProgressList.FormattingEnabled = true;
+            this.ProgressList.ItemHeight = 12;
+            this.ProgressList.Location = new System.Drawing.Point(93, 55);
+            this.ProgressList.Name = "ProgressList";
+            this.ProgressList.Size = new System.Drawing.Size(352, 268);
+            this.ProgressList.TabIndex = 7;
+            this.ProgressList.SelectedIndexChanged += new System.EventHandler(this.ProgressList_SelectedIndexChanged);
             // 
             // Progress_txt
             // 
@@ -127,6 +129,10 @@ namespace CreatingJsonFile2
             this.Progress_txt.TabIndex = 8;
             this.Progress_txt.Text = "Progress List";
             // 
+            // timer2
+            // 
+            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -134,7 +140,7 @@ namespace CreatingJsonFile2
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.Progress_txt);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.ProgressList);
             this.Controls.Add(this.WatchValue);
             this.Controls.Add(this.Endbtn);
             this.Controls.Add(this.Resetbtn);
@@ -156,8 +162,9 @@ namespace CreatingJsonFile2
         private System.Windows.Forms.Button Resetbtn;
         private System.Windows.Forms.Button Endbtn;
         private System.Windows.Forms.Label WatchValue;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox ProgressList;
         private System.Windows.Forms.Label Progress_txt;
+        private System.Windows.Forms.Timer timer2;
     }
 }
 

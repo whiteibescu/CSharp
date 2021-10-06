@@ -31,26 +31,53 @@ namespace CreatingJsonFile2
         private void timer1_Tick(object sender, EventArgs e)
         {
             WatchValue.Text = string.Format("{0:hh\\:mm\\:ss\\.ff}", stopWatch.Elapsed);
+/*            string currentSeconds = string.Format("{0}", stopWatch.Elapsed.Seconds);
+            int checkSeconds = Convert.ToInt32(currentSeconds);
+            if (checkSeconds % 5 == 0 && checkSeconds != 0)
+            {
+                if (ProgressList.Items.Contains(cgmDataText))
+                {
+
+                }
+                else
+                {
+                    ProgressList.Items.Add(cgmDataText);
+                }
+            }*/
         }
 
         private void Startbtn_Click(object sender, EventArgs e)
         {
             stopWatch.Start();
+            timer2.Interval = 5000;
+            timer2.Start();
         }
 
         private void Endbtn_Click(object sender, EventArgs e)
         {
             stopWatch.Stop();
+            timer2.Stop();
         }
 
         private void Resetbtn_Click(object sender, EventArgs e)
         {
             stopWatch.Reset();
+            ProgressList.Items.Clear();
         }
 
         private void CGM_Jsondata()
         {
-            JsonData
+            
+        }
+
+        private void ProgressList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            ProgressList.Items.Add("CGM data has been transferred.");
         }
     }
 }
