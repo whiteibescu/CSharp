@@ -113,7 +113,7 @@ namespace CreatingJsonFile2
             // 
             this.ProgressList.FormattingEnabled = true;
             this.ProgressList.ItemHeight = 12;
-            this.ProgressList.Location = new System.Drawing.Point(93, 55);
+            this.ProgressList.Location = new System.Drawing.Point(115, 55);
             this.ProgressList.Name = "ProgressList";
             this.ProgressList.Size = new System.Drawing.Size(352, 268);
             this.ProgressList.TabIndex = 7;
