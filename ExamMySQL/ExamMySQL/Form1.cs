@@ -14,7 +14,7 @@ namespace ExamMySQL
     public partial class Form1 : Form
     {
         string _server = "localhost";
-        int _port = 3308;
+        int _port = 3306;
         string _database = "new_schema";
         string _id = "root";
         string _pw = "root";
