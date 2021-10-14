@@ -4,195 +4,312 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test8
+namespace ZooManager
 {
-    interface IShape
+    abstract class Animal
     {
-        string GetShapeName();
-        void DrawShape();
-        IShape Clone();
+        public abstract Animal Clone();
+        public abstract void Speak();
+        public abstract string GetAnimalType();
+        public string GetName()
+        {
+            return m_Name;
+        }
+        public void PrintData()
+        {
+            Console.WriteLine("이름 : {0}", m_Name);
+            Console.WriteLine("나이 : {0}", m_iAge);
+        }
+        public void InputData()
+        {
+            Console.Write("이름 : ");
+            m_Name = Console.ReadLine();
+            Console.Write("나이 : ");
+            m_iAge = int.Parse(Console.ReadLine());
+        }
+        private string m_Name;
+        private int m_iAge;
     }
-    class Line : IShape
+    class Cat : Animal
     {
-        public void DrawShape()
+        public override Animal Clone()
         {
-            Console.WriteLine("라인그리기");
+            return new Cat();
         }
-        public string GetShapeName()
+        public override string GetAnimalType()
         {
-            return "라인";
+            return "고양이";
         }
-        public IShape Clone()
+        public override void Speak()
         {
-            return new Line();
-        }
-    }
-    class Triangle : IShape
-    {
-        public void DrawShape()
-        {
-            Console.WriteLine("삼각형그리기");
-        }
-        public string GetShapeName()
-        {
-            return "삼각형";
-        }
-        public IShape Clone()
-        {
-            return new Triangle();
-        }
-    }
-    class Rectangle : IShape
-    {
-        public void DrawShape()
-        {
-            Console.WriteLine("사각형그리기");
-        }
-        public string GetShapeName()
-        {
-            return "사각형";
-        }
-        public IShape Clone()
-        {
-            return new Rectangle();
+            Console.WriteLine("야옹"); ;
         }
     }
-    class FreeLine : IShape
+    class Dog : Animal
     {
-        public void DrawShape()
+        public override Animal Clone()
         {
-            Console.WriteLine("자유곡선 그리기 시작");
-            for (int i = 0; i < m_LineList.Count; i++)
+            return new Dog();
+        }
+        public override string GetAnimalType()
+        {
+            return "개";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("멍멍"); ;
+        }
+    }
+    class Pig : Animal
+    {
+        public override Animal Clone()
+        {
+            return new Pig();
+        }
+        public override string GetAnimalType()
+        {
+            return "돼지";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("꿀꿀"); ;
+        }
+    }
+    class Horse : Animal
+    {
+        public override Animal Clone()
+        {
+            return new Horse();
+        }
+        public override string GetAnimalType()
+        {
+            return "말";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("히이"); ;
+        }
+    }
+    class Tiger : Animal
+    {
+        public override Animal Clone()
+        {
+            return new Tiger();
+        }
+        public override string GetAnimalType()
+        {
+            return "호랑이";
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("어흥"); ;
+        }
+    }
+    class AnimalMenu
+    {
+        public Animal Menu()
+        {
+            for (int i = 0; i < AnimalMenuList.Count; i++)
             {
-                m_LineList[i].DrawShape();
+                Console.WriteLine("{0}.{1}", i + 1, AnimalMenuList[i].GetAnimalType());
             }
-            Console.WriteLine("자유곡선 그리기 종료");
-        }
-        public string GetShapeName()
-        {
-            return "자유곡선";
-        }
-        public IShape Clone()
-        {
-            return new FreeLine();
-        }
-        private List<IShape> m_LineList = new List<IShape>()
-        {
-            new Line(),new Line(),new Line(),new Line(),new Line(),new Line()
-        };
-    }
-    delegate void DispTitle();
-    static class ToolBarMenu
-    {
-        private static void DispEmpty()
-        {
-
-        }
-        private static void DispAddMenuTitle()
-        {
-            Console.WriteLine("=========================");
-            Console.WriteLine("추가할 도형을 선택하세요...");
-            Console.WriteLine("=========================");
-        }
-        private static void DisplayMenu(List<IShape> toolBarMenu, DispTitle dispTitle)
-        {
-            dispTitle();
-            for (int i = 0; i < toolBarMenu.Count; i++)
-            {
-                Console.WriteLine("{0}. {1}", i + 1, toolBarMenu[i].GetShapeName());
-            }
-        }
-        private static void MoveMenuItem(List<IShape> Source, List<IShape> Dest, int iIndex)
-        {
-            Dest.Add(Source[iIndex]);
-            Source.RemoveAt(iIndex);
-        }
-        private static void AddToolBarMenuItem()
-        {
-            DisplayMenu(m_ToolBarMenuBuffer, DispAddMenuTitle);
-            int iDelChoice = int.Parse(Console.ReadLine());
-            MoveMenuItem(m_ToolBarMenuBuffer, m_ToolBarMenu, iDelChoice - 1);
-        }
-        public static IShape Menu()
-        {
-            DisplayMenu(m_ToolBarMenu, DispEmpty);
-            Console.WriteLine("{0}. 툴바메뉴삭제", m_ToolBarMenu.Count + 1);
-            Console.WriteLine("{0}. 툴바메뉴추가", m_ToolBarMenu.Count + 2);
             int iChoice = int.Parse(Console.ReadLine());
-            if (iChoice == m_ToolBarMenu.Count + 1)
+            if (iChoice > 0 && iChoice <= AnimalMenuList.Count)
             {
-                MoveMenuItem(m_ToolBarMenu, m_ToolBarMenuBuffer, 0);
-                return null;
+                return AnimalMenuList[iChoice - 1].Clone();
             }
-            if (iChoice == m_ToolBarMenu.Count + 2)
-            {
-                AddToolBarMenuItem();
-                return null;
-            }
-            if (iChoice <= 0 || iChoice > m_ToolBarMenu.Count)
-            {
-                return null;
-            }
-            return m_ToolBarMenu[iChoice - 1];
+            return null;
         }
-        private static List<IShape> m_ToolBarMenu = new List<IShape>()
+        private List<Animal> AnimalMenuList = new List<Animal>()
         {
-            new Line(),new Triangle(),new Rectangle(), new FreeLine()
+            new Cat(),new Dog(),new Pig(),new Horse(),new Tiger(),
         };
-        private static List<IShape> m_ToolBarMenuBuffer = new List<IShape>();
     }
-    class PaintShop
+    class AnimalCountNode
     {
-        public void PrintShape()
+        public AnimalCountNode(string AnimalType)
         {
-            for (int i = 0; i < m_ShapeList.Count; i++)
+            m_AnimalType = AnimalType;
+        }
+        public void PrintAnimalCount()
+        {
+            Console.WriteLine("{0} : {1}마리", m_AnimalType, m_iAnimalCount);
+        }
+        public void Increment()
+        {
+            ++m_iAnimalCount;
+        }
+        public bool CompareAnimalType(string animalType)
+        {
+            return animalType == m_AnimalType;
+        }
+        private string m_AnimalType;
+        private int m_iAnimalCount = 1;
+    }
+    class AnimalCountMgr
+    {
+        public void CountAnimal(List<Animal> AnimalList)
+        {
+            for (int i = 0; i < AnimalList.Count; i++)
             {
-                m_ShapeList[i].DrawShape();
+                AnimalCountNode animalCountNode = SearchAnimalCountNode(AnimalList[i].GetAnimalType());
+                if (animalCountNode == null)
+                {
+                    m_AnimalCountList.Add(new AnimalCountNode(AnimalList[i].GetAnimalType()));
+                }
+                else
+                {
+                    animalCountNode.Increment();
+                }
+            }
+            PrintAnimalCount();
+        }
+        public AnimalCountNode SearchAnimalCountNode(string animalType)
+        {
+            for (int i = 0; i < m_AnimalCountList.Count; i++)
+            {
+                if (m_AnimalCountList[i].CompareAnimalType(animalType))
+                {
+                    return m_AnimalCountList[i];
+                }
+            }
+            return null;
+        }
+        public void PrintAnimalCount()
+        {
+            for (int i = 0; i < m_AnimalCountList.Count; i++)
+            {
+                m_AnimalCountList[i].PrintAnimalCount();
             }
         }
-        public void AddShape(IShape selShape)
+        private List<AnimalCountNode> m_AnimalCountList = new List<AnimalCountNode>();
+    }
+    class Zoo
+    {
+        public void Menu(Zoo zooTarget)
         {
-            if (selShape != null)
-            {
-                m_ShapeList.Add(selShape.Clone());
-            }
-        }
-        public IShape SelShape()
-        {
-            return ToolBarMenu.Menu();
-        }
-        public void Menu()
-        {
-            IShape selShape = null;
             int iChoice = 1;
             while (iChoice != 0)
             {
-                Console.WriteLine("1. 객체 선택");
-                Console.WriteLine("2. 그림판에 그리기");
-                Console.WriteLine("3. 그림판 보기");
+                Console.WriteLine("1. 동물등록");
+                Console.WriteLine("2. 동물출력");
+                Console.WriteLine("3. Speak");
+                Console.WriteLine("4. 동물이송");
+                Console.WriteLine("5. 동물Count");
+                Console.WriteLine("0. 종료");
                 iChoice = int.Parse(Console.ReadLine());
                 switch (iChoice)
                 {
                     case 1:
-                        selShape = SelShape();
+                        RegistAnimal();
                         break;
                     case 2:
-                        AddShape(selShape);
+                        PrintAllAnimals();
                         break;
                     case 3:
-                        PrintShape();
+                        SpeakAllAnimals();
+                        break;
+                    case 4:
+                        MoveAnimal(zooTarget);
+                        break;
+                    case 5:
+                        AnimalCount();
+                        break;
+                    default:
                         break;
                 }
             }
         }
-        private List<IShape> m_ShapeList = new List<IShape>();
+        public void AnimalCount()
+        {
+            AnimalCountMgr CountMgr = new AnimalCountMgr();
+            CountMgr.CountAnimal(m_AnimalList);
+        }
+        public int AnimalMoveMenu()
+        {
+            for (int i = 0; i < m_AnimalList.Count; i++)
+            {
+                Console.WriteLine("{0}.{1}", i + 1, m_AnimalList[i].GetName());
+            }
+            int iChoice = int.Parse(Console.ReadLine());
+            if (iChoice > 0 && iChoice <= m_AnimalList.Count)
+            {
+                return iChoice - 1;
+            }
+            return -1;
+        }
+        private void MoveAnimal(Animal MoveAnimal)
+        {
+            m_AnimalList.Add(MoveAnimal);
+        }
+        private void MoveAnimal(Zoo zooTarget)
+        {
+            int iChoice = AnimalMoveMenu();
+            if (iChoice != -1)
+            {
+                zooTarget.MoveAnimal(m_AnimalList[iChoice]);
+                m_AnimalList.RemoveAt(iChoice);
+            }
+        }
+        private void RegistAnimal()
+        {
+            Animal NewAnimal = m_AnimalMenu.Menu();
+            if (NewAnimal != null)
+            {
+                NewAnimal.InputData();
+                m_AnimalList.Add(NewAnimal);
+            }
+        }
+        private void PrintAllAnimals()
+        {
+            for (int i = 0; i < m_AnimalList.Count; i++)
+            {
+                m_AnimalList[i].PrintData();
+            }
+        }
+        private void SpeakAllAnimals()
+        {
+            for (int i = 0; i < m_AnimalList.Count; i++)
+            {
+                m_AnimalList[i].Speak();
+            }
+        }
+        private AnimalMenu m_AnimalMenu = new AnimalMenu();
+        private List<Animal> m_AnimalList = new List<Animal>();
+    }
+    class ZooManager
+    {
+        public void Menu()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("1. A동물원");
+                Console.WriteLine("2. B동물원");
+                Console.WriteLine("0. 종료");
+                iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 1:
+                        m_ZooA.Menu(m_ZooB);
+                        break;
+                    case 2:
+                        m_ZooB.Menu(m_ZooA);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        private Zoo m_ZooA = new Zoo();
+        private Zoo m_ZooB = new Zoo();
     }
     class Program
     {
         static void Main(string[] args)
         {
-            PaintShop p = new PaintShop();
-            p.Menu();
+            ZooManager z = new ZooManager();
+            z.Menu();
         }
     }
 }
