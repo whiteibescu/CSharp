@@ -1,315 +1,357 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
-namespace ZooManager
+namespace HustarDay07
 {
-    abstract class Animal
+    interface Animal
     {
-        public abstract Animal Clone();
-        public abstract void Speak();
-        public abstract string GetAnimalType();
-        public string GetName()
-        {
-            return m_Name;
-        }
-        public void PrintData()
-        {
-            Console.WriteLine("이름 : {0}", m_Name);
-            Console.WriteLine("나이 : {0}", m_iAge);
-        }
-        public void InputData()
-        {
-            Console.Write("이름 : ");
-            m_Name = Console.ReadLine();
-            Console.Write("나이 : ");
-            m_iAge = int.Parse(Console.ReadLine());
-        }
-        private string m_Name;
-        private int m_iAge;
+        void Speak();
     }
-    class Cat : Animal
-    {
-        public override Animal Clone()
-        {
-            return new Cat();
-        }
-        public override string GetAnimalType()
-        {
-            return "고양이";
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("야옹"); ;
-        }
-    }
+
     class Dog : Animal
     {
-        public override Animal Clone()
+        public void Speak()
         {
-            return new Dog();
+            Console.WriteLine("멍멍!");
         }
-        public override string GetAnimalType()
+
+        public int GetDogCnt()
         {
-            return "개";
+            return dogCnt;
         }
-        public override void Speak()
+
+        public void SetDogCnt()
         {
-            Console.WriteLine("멍멍"); ;
+            dogCnt += 1;
+            Console.WriteLine("강아지 한마리가 추가되었습니다! 지금 현재 총 {0} 마리 입니다! ", dogCnt);
         }
+
+        public void SubtractDogCnt(int iChoice)
+        {
+            if (dogCnt != 0)
+            {
+                dogCnt -= 1;
+                Console.WriteLine("강아지 몇마뤼? {0} ", dogCnt);
+            }
+            else
+            {
+                Console.WriteLine("삭제할 동물이 없습니다!");
+            }
+        }
+
+        private int dogCnt;
     }
-    class Pig : Animal
+
+    class Cat : Animal
     {
-        public override Animal Clone()
+        public void Speak()
         {
-            return new Pig();
+            Console.WriteLine("냐옹!");
         }
-        public override string GetAnimalType()
+        public int GetCatCnt()
         {
-            return "돼지";
+            return catCnt;
         }
-        public override void Speak()
+
+        public void SetCatCnt()
         {
-            Console.WriteLine("꿀꿀"); ;
+            catCnt += 1;
+            Console.WriteLine("고양이 한마리가 추가되었습니다! 지금 현재 총 {0} 마리 입니다! ", catCnt);
         }
+
+        public void SubtractCatCnt(int iChoice)
+        {
+            if (catCnt != 0)
+            {
+                catCnt -= 1;
+                Console.WriteLine("고양이 한마리가 삭제되었습니다! 지금 현재 총 {0} 마리 입니다! ", catCnt);
+            }
+            else
+            {
+                Console.WriteLine("삭제할 동물이 없습니다!");
+            }
+        }
+
+        private int catCnt;
     }
-    class Horse : Animal
+
+    class Lion : Animal
     {
-        public override Animal Clone()
+        public void Speak()
         {
-            return new Horse();
+            Console.WriteLine("사자!!");
         }
-        public override string GetAnimalType()
+
+        public int GetLionCnt()
         {
-            return "말";
+            return lionCnt;
         }
-        public override void Speak()
+
+        public void SetLionCnt()
         {
-            Console.WriteLine("히이"); ;
+            lionCnt += 1;
+            Console.WriteLine("사자 한마리가 추가되었습니다! 지금 현재 총 {0} 마리 입니다! ", lionCnt);
         }
+
+        public void SubtractLionCnt(int iChoice)
+        {
+            if (lionCnt != 0)
+            {
+                lionCnt -= 1;
+                Console.WriteLine("사자 한마리가 삭제되었습니다! 지금 현재 총 {0} 마리 입니다! ", lionCnt);
+            }
+            else
+            {
+                Console.WriteLine("삭제할 동물이 없습니다!");
+            }
+        }
+
+        private int lionCnt;
     }
+
     class Tiger : Animal
     {
-        public override Animal Clone()
+        public void Speak()
         {
-            return new Tiger();
+            Console.WriteLine("어흥!");
         }
-        public override string GetAnimalType()
+
+        public int GetTigerCnt()
         {
-            return "호랑이";
+            return tigerCnt;
         }
-        public override void Speak()
+
+        public void SetTigerCnt()
         {
-            Console.WriteLine("어흥"); ;
+            tigerCnt += 1;
+            Console.WriteLine("호랑이 한마리가 추가되었습니다! 지금 현재 총 {0} 마리 입니다! ", tigerCnt);
         }
+
+        public void SubtractTigerCnt(int iChoice)
+        {
+            if (tigerCnt != 0)
+            {
+                tigerCnt -= 1;
+                Console.WriteLine("호랑이 한마리가 삭제되었습니다! 지금 현재 총 {0} 마리 입니다! ", tigerCnt);
+            }
+            else
+            {
+                Console.WriteLine("삭제할 동물이 없습니다!");
+            }
+        }
+
+        private int tigerCnt;
     }
-    class AnimalMenu
+
+    class Horse : Animal
     {
-        public Animal Menu()
+        public void Speak()
         {
-            for (int i = 0; i < AnimalMenuList.Count; i++)
-            {
-                Console.WriteLine("{0}.{1}", i + 1, AnimalMenuList[i].GetAnimalType());
-            }
-            int iChoice = int.Parse(Console.ReadLine());
-            if (iChoice > 0 && iChoice <= AnimalMenuList.Count)
-            {
-                return AnimalMenuList[iChoice - 1].Clone();
-            }
-            return null;
+            Console.WriteLine("이히히히힝");
         }
-        private List<Animal> AnimalMenuList = new List<Animal>()
+
+        public int GetHorseCnt()
         {
-            new Cat(),new Dog(),new Pig(),new Horse(),new Tiger(),
-        };
+            return horseCnt;
+        }
+
+        public void SetHorseCnt()
+        {
+            horseCnt += 1;
+            Console.WriteLine("말 한마리가 추가되었습니다! 지금 현재 총 {0} 마리 입니다! ", horseCnt);
+        }
+
+        public void SubtractHorseCnt(int iChoice)
+        {
+            if (horseCnt != 0)
+            {
+                horseCnt -= 1;
+                Console.WriteLine("말 한마리가 삭제되었습니다! 지금 현재 총 {0} 마리 입니다! ", horseCnt);
+            }
+            else
+            {
+                Console.WriteLine("삭제할 동물이 없습니다!");
+            }
+        }
+
+        private int horseCnt;
     }
-    class AnimalCountNode
+
+    class ZooMgr
     {
-        public AnimalCountNode(string AnimalType)
-        {
-            m_AnimalType = AnimalType;
-        }
-        public void PrintAnimalCount()
-        {
-            Console.WriteLine("{0} : {1}마리", m_AnimalType, m_iAnimalCount);
-        }
-        public void Increment()
-        {
-            ++m_iAnimalCount;
-        }
-        public bool CompareAnimalType(string animalType)
-        {
-            return animalType == m_AnimalType;
-        }
-        private string m_AnimalType;
-        private int m_iAnimalCount = 1;
-    }
-    class AnimalCountMgr
-    {
-        public void CountAnimal(List<Animal> AnimalList)
-        {
-            for (int i = 0; i < AnimalList.Count; i++)
-            {
-                AnimalCountNode animalCountNode = SearchAnimalCountNode(AnimalList[i].GetAnimalType());
-                if (animalCountNode == null)
-                {
-                    m_AnimalCountList.Add(new AnimalCountNode(AnimalList[i].GetAnimalType()));
-                }
-                else
-                {
-                    animalCountNode.Increment();
-                }
-            }
-            PrintAnimalCount();
-        }
-        public AnimalCountNode SearchAnimalCountNode(string animalType)
-        {
-            for (int i = 0; i < m_AnimalCountList.Count; i++)
-            {
-                if (m_AnimalCountList[i].CompareAnimalType(animalType))
-                {
-                    return m_AnimalCountList[i];
-                }
-            }
-            return null;
-        }
-        public void PrintAnimalCount()
-        {
-            for (int i = 0; i < m_AnimalCountList.Count; i++)
-            {
-                m_AnimalCountList[i].PrintAnimalCount();
-            }
-        }
-        private List<AnimalCountNode> m_AnimalCountList = new List<AnimalCountNode>();
-    }
-    class Zoo
-    {
-        public void Menu(Zoo zooTarget)
+        public void AddAnimalMenu()
         {
             int iChoice = 1;
             while (iChoice != 0)
             {
-                Console.WriteLine("1. 동물등록");
-                Console.WriteLine("2. 동물출력");
-                Console.WriteLine("3. Speak");
-                Console.WriteLine("4. 동물이송");
-                Console.WriteLine("5. 동물Count");
-                Console.WriteLine("0. 종료");
+                Console.WriteLine("Type Number of the animal you wish to Add!");
+                Console.WriteLine("==========================================");
+                Console.WriteLine("1. Dog");
+                Console.WriteLine("2. Cat");
+                Console.WriteLine("3. Lion");
+                Console.WriteLine("4. Tiger");
+                Console.WriteLine("5. Horse");
+                Console.WriteLine("0. Menu");
+                Console.WriteLine("==========================================");
                 iChoice = int.Parse(Console.ReadLine());
-                switch (iChoice)
-                {
-                    case 1:
-                        RegistAnimal();
-                        break;
-                    case 2:
-                        PrintAllAnimals();
-                        break;
-                    case 3:
-                        SpeakAllAnimals();
-                        break;
-                    case 4:
-                        MoveAnimal(zooTarget);
-                        break;
-                    case 5:
-                        AnimalCount();
-                        break;
-                    default:
-                        break;
-                }
+                AddAnimalFunc(iChoice);
+
             }
         }
-        public void AnimalCount()
+
+        public void DeleteAnimalMenu()
         {
-            AnimalCountMgr CountMgr = new AnimalCountMgr();
-            CountMgr.CountAnimal(m_AnimalList);
-        }
-        public int AnimalMoveMenu()
-        {
-            for (int i = 0; i < m_AnimalList.Count; i++)
+            int iChoice = 1;
+            while (iChoice != 0)
             {
-                Console.WriteLine("{0}.{1}", i + 1, m_AnimalList[i].GetName());
+                Console.WriteLine("Type Number of the animal you wish to Delete!");
+                Console.WriteLine("==========================================");
+                Console.WriteLine("1. Dog");
+                Console.WriteLine("2. Cat");
+                Console.WriteLine("3. Lion");
+                Console.WriteLine("4. Tiger");
+                Console.WriteLine("5. Horse");
+                Console.WriteLine("0. Menu");
+                Console.WriteLine("==========================================");
+                iChoice = int.Parse(Console.ReadLine());
+                DeleteAnimalFunc(iChoice);
             }
-            int iChoice = int.Parse(Console.ReadLine());
-            if (iChoice > 0 && iChoice <= m_AnimalList.Count)
-            {
-                return iChoice - 1;
-            }
-            return -1;
         }
-        private void MoveAnimal(Animal MoveAnimal)
+
+        public void AddAnimalFunc(int iChoice)
         {
-            m_AnimalList.Add(MoveAnimal);
-        }
-        private void MoveAnimal(Zoo zooTarget)
-        {
-            int iChoice = AnimalMoveMenu();
-            if (iChoice != -1)
+            switch (iChoice)
             {
-                zooTarget.MoveAnimal(m_AnimalList[iChoice]);
-                m_AnimalList.RemoveAt(iChoice);
+                case 1:
+                    a.SetDogCnt();
+                    break;
+                case 2:
+                    c.SetCatCnt();
+                    break;
+                case 3:
+                    l.SetLionCnt();
+                    break;
+                case 4:
+                    t.SetTigerCnt();
+                    break;
+                case 5:
+                    h.SetHorseCnt();
+                    break;
             }
         }
-        private void RegistAnimal()
+
+        public void DeleteAnimalFunc(int iChoice)
         {
-            Animal NewAnimal = m_AnimalMenu.Menu();
-            if (NewAnimal != null)
+            switch (iChoice)
             {
-                NewAnimal.InputData();
-                m_AnimalList.Add(NewAnimal);
+                case 1:
+                    a.SubtractDogCnt(iChoice);
+                    break;
+                case 2:
+                    c.SubtractCatCnt(iChoice);
+                    break;
+                case 3:
+                    l.SubtractLionCnt(iChoice);
+                    break;
+                case 4:
+                    t.SubtractTigerCnt(iChoice);
+                    break;
+                case 5:
+                    h.SubtractHorseCnt(iChoice);
+                    break;
+            }
+
+        }
+
+        public void AnimalSpeak()
+        {
+            for (int i = 0; i < a.GetDogCnt(); i++)
+            {
+                a.Speak();
+            }
+            for (int i = 0; i < a.GetDogCnt(); i++)
+            {
+                c.Speak();
+            }
+            for (int i = 0; i < a.GetDogCnt(); i++)
+            {
+                l.Speak();
+            }
+            for (int i = 0; i < a.GetDogCnt(); i++)
+            {
+                t.Speak();
+            }
+            for (int i = 0; i < a.GetDogCnt(); i++)
+            {
+                h.Speak();
             }
         }
-        private void PrintAllAnimals()
+
+        public void AnimalList()
         {
-            for (int i = 0; i < m_AnimalList.Count; i++)
-            {
-                m_AnimalList[i].PrintData();
-            }
+            Console.WriteLine("강아지 {0} 마리", a.GetDogCnt());
+            Console.WriteLine("고양이 {0} 마리", c.GetCatCnt());
+            Console.WriteLine("사자 {0} 마리", l.GetLionCnt());
+            Console.WriteLine("호랑이 {0} 마리", t.GetTigerCnt());
+            Console.WriteLine("말 {0} 마리", h.GetHorseCnt());
         }
-        private void SpeakAllAnimals()
+
+        public void AnimalTransfer()
         {
-            for (int i = 0; i < m_AnimalList.Count; i++)
-            {
-                m_AnimalList[i].Speak();
-            }
+
         }
-        private AnimalMenu m_AnimalMenu = new AnimalMenu();
-        private List<Animal> m_AnimalList = new List<Animal>();
-    }
-    class ZooManager
-    {
         public void Menu()
         {
             int iChoice = 1;
             while (iChoice != 0)
             {
-                Console.WriteLine("1. A동물원");
-                Console.WriteLine("2. B동물원");
-                Console.WriteLine("0. 종료");
+                Console.WriteLine("===============================");
+                Console.WriteLine("Welcome to the Mysterious Zoo!~");
+                Console.WriteLine("===============================");
+                Console.WriteLine("");
+                Console.WriteLine("Menu!");
+                Console.WriteLine("1. Add Animal");
+                Console.WriteLine("2. Delete Animal");
+                Console.WriteLine("3. Speak");
+                Console.WriteLine("4. Animal List");
+                Console.WriteLine("5. Transfer");
+
                 iChoice = int.Parse(Console.ReadLine());
                 switch (iChoice)
                 {
                     case 1:
-                        m_ZooA.Menu(m_ZooB);
+                        AddAnimalMenu();
                         break;
                     case 2:
-                        m_ZooB.Menu(m_ZooA);
+                        DeleteAnimalMenu();
                         break;
-                    default:
+                    case 3:
+                        AnimalSpeak();
+                        break;
+                    case 4:
+                        AnimalList();
+                        break;
+                    case 5:
+                        AnimalTransfer();
                         break;
                 }
             }
         }
-        private Zoo m_ZooA = new Zoo();
-        private Zoo m_ZooB = new Zoo();
+        Dog a = new Dog();
+        Cat c = new Cat();
+        Lion l = new Lion();
+        Tiger t = new Tiger();
+        Horse h = new Horse();
+
     }
+
     class Program
     {
         static void Main(string[] args)
         {
-            ZooManager z = new ZooManager();
-            z.Menu();
+            ZooMgr m = new ZooMgr();
+            m.Menu();
         }
     }
 }
