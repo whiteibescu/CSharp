@@ -198,6 +198,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "MySQL";
             this.Text = "Exam MySQL";
+            this.Load += new System.EventHandler(this.MySQL_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

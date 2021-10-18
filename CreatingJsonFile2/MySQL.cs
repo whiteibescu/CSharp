@@ -189,6 +189,11 @@ namespace ExamMySQL
             }
         }
 
+        private void MySQL_Load(object sender, EventArgs e)
+        {
+
+        }
+
         public void SaveCGM_Data()
         {    
 
