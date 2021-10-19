@@ -64,7 +64,7 @@ namespace ExamMySQL
                     mysql.Open();
                     int pos = listViewPhoneBook.SelectedItems[0].Index;
                     int index = Convert.ToInt32(listViewPhoneBook.Items[pos].Text);
-                    string updateQuery = string.Format("UPDATE accounts_table SET name = '{1}', phone = '{2}' WHERE id={0};", index, textBoxName.Text, textBoxPhone.Text);
+                    string updateQuery = string.Format("UPDATE accounts_table SET basal = '{1}', bolus = '{2}' WHERE ctime={0};", index, textBoxName.Text, textBoxPhone.Text);
 
                     MySqlCommand command = new MySqlCommand(updateQuery, mysql);
                     if (command.ExecuteNonQuery() != 1)
@@ -131,9 +131,9 @@ namespace ExamMySQL
                     while (table.Read())
                     {
                         ListViewItem item = new ListViewItem();
-                        item.Text = table["id"].ToString();
-                        item.SubItems.Add(table["name"].ToString());
-                        item.SubItems.Add(table["phone"].ToString());
+                        item.Text = table["ctime"].ToString();
+                        item.SubItems.Add(table["bolus"].ToString());
+                        item.SubItems.Add(table["basal"].ToString());
 
                         listViewPhoneBook.Items.Add(item);
                     }
@@ -171,7 +171,7 @@ namespace ExamMySQL
                     mysql.Open();
                     int pos = listViewPhoneBook.SelectedItems[0].Index;
                     int index = Convert.ToInt32(listViewPhoneBook.Items[pos].Text);
-                    string updateQuery = string.Format("UPDATE accounts_table SET name = '{1}', phone = '{2}' WHERE id={0};", index, textBoxName.Text, textBoxPhone.Text);
+                    string updateQuery = string.Format("UPDATE accounts_table SET ctime = '{1}', bolus = '{2}' WHERE id={0};", index, textBoxName.Text, textBoxPhone.Text);
 
                     MySqlCommand command = new MySqlCommand(updateQuery, mysql);
                     if (command.ExecuteNonQuery() != 1)
@@ -206,7 +206,7 @@ namespace ExamMySQL
                 using (MySqlConnection mysql = new MySqlConnection(_connectionAddress))
                 {
                     mysql.Open();
-                    string insertQuery = string.Format("INSERT INTO accounts_table (id, name, phone) VALUES ('{0}', '{1}', '{2}');", time, bolus, basal);
+                    string insertQuery = string.Format("INSERT INTO accounts_table (ctime, bolus, basal) VALUES ('{0}', '{1}', '{2}');", time, bolus, basal);
 
                     MySqlCommand command = new MySqlCommand(insertQuery, mysql);
                     if (command.ExecuteNonQuery() != 1)
