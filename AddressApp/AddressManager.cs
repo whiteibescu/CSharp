@@ -5,7 +5,7 @@ using System.Text;
 namespace AddressApp
 {
     /*주소록의 화면 입출력을 담당하는 클래스*/
-    class AddressView
+    class AddressManager
     {
         private AddressManager addrMgr = new AddressManager();
         private int selMenu;
