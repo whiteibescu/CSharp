@@ -44,7 +44,5 @@ namespace HustarDay08
             Enemy m6 = new Enemy("적군6");
             mgr.DiePlayer();
         }
-
     }
-
 }
