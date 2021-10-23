@@ -40,6 +40,7 @@
     <None Include="TryCatch.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Practice.cs" />
     <None Include="ForEach.cs" />
     <None Include="Lamda.cs" />
     <Compile Include="ListMember.cs" />
