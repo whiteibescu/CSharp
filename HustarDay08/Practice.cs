@@ -6,41 +6,44 @@ using System.Threading.Tasks;
 
 namespace HustarDay08
 {
-    class Cat
+    class Member
     {
-        public void DisplayInfo()
-        {
-            Console.WriteLine("이름 : {0}", NAME);
-            Console.WriteLine("나이 : {0}", AGE);
-        }
-        public string NAME
-        {
-            get;
-            set;
-        }
-        public int AGE
-        {
-            get;
-            set;
-        }
+        public string NAME;
+        public string ADDR;
+        public string TELNO;
+        public int MEMGUBUN;
+    }
+    class Memgubun
+    {
+        public int MEMGUBUN;
+        public string MEMGUBUNNAME;
     }
     class Program
     {
         static void Main(string[] args)
         {
-            List<int> intList = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            for (int i = 0; i < intList.Count; i++)
+            List<Member> MemList = new List<Member>()
             {
-                Console.WriteLine("{0}", intList[i]);
-            }
-            intList.ForEach((i) => Console.WriteLine(i));
+                new Member() {NAME = "홍길동", ADDR = "서울",TELNO = "123-1234" ,MEMGUBUN = 1},
+                new Member() {NAME = "김길동", ADDR = "부산",TELNO = "234-1234" ,MEMGUBUN = 2},
+                new Member() {NAME = "이길동", ADDR = "대구",TELNO = "345-1234" ,MEMGUBUN = 3},
+                new Member() {NAME = "박길동", ADDR = "포항",TELNO = "456-1234" ,MEMGUBUN = 1},
+                new Member() {NAME = "최길동", ADDR = "광주",TELNO = "567-1234" ,MEMGUBUN = 2}
+            };
+            List<Memgubun> MemGubunList = new List<Memgubun>()
+            {
+                new Memgubun() {MEMGUBUN = 1, MEMGUBUNNAME="정회원"},
+                new Memgubun() {MEMGUBUN = 2, MEMGUBUNNAME="일반회원"},
+                new Memgubun() {MEMGUBUN = 3, MEMGUBUNNAME="임신회원"},
+            };
 
-            var newList = from e in intList
-                          where e % 2 == 0
-                          select new { NAME = "야옹이" + e };
-            foreach (var e in newList)
+            var result = from m in MemList
+                         select new { NAME = m.NAME, ADDR = m.ADDR };
+            foreach (var r in result)
             {
-                Console.WriteLine("NAME : {0}", e.NAME);
+                Console.WriteLine("NAME : {0}", r.NAME);
+                Console.WriteLine("ADDR : {0}", r.ADDR);
+                Console.WriteLine("TELNO : {0}", r.TELNO);
             }
         }
     }
