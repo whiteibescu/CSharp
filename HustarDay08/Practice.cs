@@ -6,42 +6,20 @@ using System.Threading.Tasks;
 
 namespace HustarDay08
 {
-    class Cat
+    class testing
     {
-        public void DisplayInfo()
-        {
-            Console.WriteLine("이름 : {0}", NAME);
-            Console.WriteLine("나이 : {0}", AGE);
-        }
-        public string NAME
-        {
-            get;
-            set;
-        }
-        public int AGE
-        {
-            get;
-            set;
-        }
-    }
-    class Program
-    {
+
         static void Main(string[] args)
         {
-            List<int> intList = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            for (int i = 0; i < intList.Count; i++)
-            {
-                Console.WriteLine("{0}", intList[i]);
-            }
-            intList.ForEach((i) => Console.WriteLine(i));
+            List<string> stringlist = new List<string>();
+            Console.WriteLine("이름을 한번 적어봅니다");
+            stringlist.Add("lets");
 
-            var newList = from e in intList
-                          where e % 2 == 0
-                          select new { NAME = "야옹이" + e };
-            foreach (var e in newList)
+            foreach(string word in stringlist)
             {
-                Console.WriteLine("NAME : {0}", e.NAME);
+                Console.WriteLine(word);
             }
         }
+
     }
 }
