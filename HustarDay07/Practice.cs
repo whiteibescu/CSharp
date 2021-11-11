@@ -3,25 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
-namespace ZooManager
-{ 
-    abstract class Animal
+namespace Test9
+{
+    delegate void DispChar(int i);
+    class Program
     {
-        public abstract Animal Clone();
-        public abstract void Speak();
-        public abstract string GetAnimalType();
-        public string GetName()
+        static void DispStar(int i)
         {
-            return m_Name;
+            Console.Write("*");
         }
-
-        public void PrintData()
+        static void DispArrow(int i)
         {
-            Console.WriteLine("이름 : {0}", m_Name);
+            Console.Write("->");
         }
-
-        private string m_Name;
-        private int m_iAge;
+        static void DispPercent(int i)
+        {
+            Console.WriteLine("{0}%작업완료", i * 10);
+        }
+        static void MyFunc(DispChar dispChar)
+        {
+            for (int i = 1; i <= 10; i++)
+            {
+                dispChar(i);
+                Thread.Sleep(100);
+            }
+        }
+        static void Main(string[] args)
+        {
+            MyFunc(DispPercent);
+        }
     }
 }
