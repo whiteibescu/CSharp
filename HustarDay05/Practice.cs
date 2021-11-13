@@ -4,22 +4,32 @@ using System.Text;
 
 namespace HustarDay05
 {
-    class String
+    class Weapon
     {
-        public void main()
+        public virtual void Attack()
         {
-            string s1 = "홍길동";
-            string s2 = "박길동";
-            string s3 = "이길동";
-            string s = s1 + s2 + s3;
-            Console.WriteLine("s:{0}", s);
-
-            StringBuilder sBuilder = new StringBuilder();
-            sBuilder.Appends(s1);
-            sBuilder.Appends(s2);
-            sBuilder.Appends(s3);
-            string result = sBuilder.ToString();
 
         }
+    }
+
+    class Gun : Weapon
+    {
+        private Gun()
+        {
+
+        }
+        public override void Attack()
+        {
+            Console.WriteLine("총 공격");
+        }
+        public static Weapon CreateObject()
+        {
+            if (m_weapon == null)
+            {
+                m_weapon = new Gun();
+            }
+            return m_weapon;
+        }
+        private static Weapon weapon = null;
     }
 }
