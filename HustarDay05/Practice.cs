@@ -5,93 +5,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HustarDay05
+namespace Test2
 {
-    class Weapon
+    class Wing
     {
-        public virtual void Attack()
+        public void Fly()
         {
+            Console.WriteLine("날기...");
         }
     }
-    class Gun : Weapon
+    class Bird
     {
-        private Gun()
-        { }
-        public override void Attack()
+        Wing w = new Wing();
+        public void Fly()
         {
-            Console.WriteLine("총 공격");
+            w.Fly();
         }
-        public static Weapon CreateObject()
-        {
-            if (m_weapon == null)
-            {
-                m_weapon = new Gun();
-            }
-            return m_weapon;
-        }
-        private static Weapon m_weapon = null;
-    }
-    class Missile : Weapon
-    {
-        private Missile()
-        { }
-        public override void Attack()
-        {
-            Console.WriteLine("미사일 공격");
-        }
-        public static Weapon CreateObject()
-        {
-            if (m_weapon == null)
-            {
-                m_weapon = new Missile();
-            }
-            return m_weapon;
-        }
-        private static Weapon m_weapon = null;
-    }
-    class Sword : Weapon
-    {
-        private Sword()
-        { }
-        public override void Attack()
-        {
-            Console.WriteLine("칼 공격");
-        }
-        public static Weapon CreateObject()
-        {
-            if (m_weapon == null)
-            {
-                m_weapon = new Sword();
-            }
-            return m_weapon;
-        }
-        private static Weapon m_weapon = null;
 
+        public virtual void Speak()
+        {
+            Console.WriteLine("짹짹...");
+        }
+        public virtual void Alggagi()
+        {
+            Console.WriteLine("알까기...");
+        }
+        private int[] m_iArray = new int[1000];
     }
-    class Robot
+    class Pegasus
     {
-        public void ChangeWeapon(Weapon weapon)
+        public void Gallop()
         {
-            m_Weapon = weapon;
+            Console.WriteLine("달리기...");
         }
-        public void Attack()
+        public void Speak()
         {
-            m_Weapon.Attack();
+            Console.WriteLine("히잉~~~");
         }
-        private Weapon m_Weapon = Gun.CreateObject();
+        public void Fly()
+        {
+            m_Wing.Fly();
+        }
+        Wing m_Wing = new Wing();
     }
     class Program
     {
         static void Main(string[] args)
         {
-            Robot r = new Robot();
-            r.Attack();
-            r.ChangeWeapon(Missile.CreateObject());
-            r.Attack();
-            r.ChangeWeapon(Sword.CreateObject());
-            r.Attack();
-            r.ChangeWeapon(Missile.CreateObject());
-            r.Attack();
+            Pegasus p = new Pegasus();
+            p.Gallop();
+            p.Fly();
+            p.Speak();
         }
     }
 }
