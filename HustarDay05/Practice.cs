@@ -1,73 +1,36 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Test2
+namespace HustarDay05
 {
-    class Animal
+    class CallWorker
     {
-        public Animal()
+        public CallWorker() : this("분신술 사용!!", 5000)
         {
-            Console.WriteLine("public Animal()생성자 호출");
+            Console.WriteLine("1번 생성자 호출!!");
+            Console.WriteLine("계산대에서 멍때리기");
         }
-        public virtual void Speak()
+
+        public CallWorker(string clean)
         {
-            Console.WriteLine("Animal Speak!!!");
+            Console.WriteLine("2번 생성자: 매개변수가 1개 ");
+            Console.WriteLine("사장왈 " + clean + "\n\n");
+
         }
-        public virtual void Speak2()
+
+        public CallWorker(string clean, int calculation)
         {
-            Console.WriteLine("Animal2 Speak!!!");
+            Console.WriteLine("3번 생성자: 매개변수가 2개");
+            Console.WriteLine("손님 왈 : 계산 좀 해주세요~" + calculation);
+            Console.WriteLine("사장 왈: " + clean + "\n\n");
         }
-        private int m_iAge;
-    }
-    class Cat : Animal
-    {
-        public Cat()
+
+        public static void Main(string[] args)
         {
-            Console.WriteLine("public Cat()생성자 호출");
-        }
-        public override void Speak2()
-        {
-            Console.WriteLine("야옹2!!!");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("야옹!!!");
-        }
-    }
-    class Dog : Animal
-    {
-        public Dog()
-        {
-            Console.WriteLine("public Dog()생성자 호출");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("멍멍!!!");
-        }
-    }
-    class Horse : Animal
-    {
-        public Horse()
-        {
-            Console.WriteLine("public Horse()생성자 호출");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("히잉!!!");
-        }
-    }
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            Animal a = new Animal();
-            a.Speak();
-            Animal a1 = new Cat();
-            a1.Speak2();
+            CallWorker call1 = new CallWorker();
+            CallWorker call2 = new CallWorker("법사야 청소 좀 해라");
+            CallWorker call3 = new CallWorker("법사야 청소좀 해라", 5000);
         }
     }
 }
