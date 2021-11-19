@@ -4,33 +4,36 @@ using System.Text;
 
 namespace HustarDay05
 {
-    class CallWorker
+    class Cat
     {
-        public CallWorker() : this("분신술 사용!!", 5000)
+        public int m_iAge;
+    }
+
+    class Solution
+    {
+        int noStatic = 0;
+        static int yesStatic = 0;
+
+        public static void yes()
         {
-            Console.WriteLine("1번 생성자 호출!!");
-            Console.WriteLine("계산대에서 멍때리기");
+            int noStatic = 0;
+            yesStatic = 0;
         }
 
-        public CallWorker(string clean)
+        public void no()
         {
-            Console.WriteLine("2번 생성자: 매개변수가 1개 ");
-            Console.WriteLine("사장왈 " + clean + "\n\n");
-
+            noStatic = 1;
+            yesStatic = 1;
         }
+    }
 
-        public CallWorker(string clean, int calculation)
-        {
-            Console.WriteLine("3번 생성자: 매개변수가 2개");
-            Console.WriteLine("손님 왈 : 계산 좀 해주세요~" + calculation);
-            Console.WriteLine("사장 왈: " + clean + "\n\n");
-        }
 
-        public static void Main(string[] args)
+    class ChangeByValueorReference
+    {
+        static void Main(string[] args)
         {
-            CallWorker call1 = new CallWorker();
-            CallWorker call2 = new CallWorker("법사야 청소 좀 해라");
-            CallWorker call3 = new CallWorker("법사야 청소좀 해라", 5000);
+            Cat c1 = new Cat();
+            c1.m_iAge = 10;
         }
     }
 }
