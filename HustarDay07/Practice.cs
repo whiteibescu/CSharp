@@ -7,32 +7,65 @@ using System.Threading;
 
 namespace Test9
 {
-    delegate void DispChar(int i);
-    class Program
+    interface IShape
     {
-        static void DispStar(int i)
+        string GetShapeName();
+        void DrawSahpe();
+        IShape Clone();
+    }
+
+    class Line : IShape
+    {
+        public void DrawShape()
         {
-            Console.Write("*");
+            Console.Write("라인그리기");
         }
-        static void DispArrow(int i)
+        public string GetShapeName()
         {
-            Console.Write("->");
+            return "라인";
         }
-        static void DispPercent(int i)
+        public IShape Clone()
         {
-            Console.WriteLine("{0}%작업완료", i * 10);
+            return new Line();
         }
-        static void MyFunc(DispChar dispChar)
+    }
+
+    class Triangle: IShape
+    {
+        public void DrawShape()
         {
-            for (int i = 1; i <= 10; i++)
+            Console.Write("삼각형그리기");
+        }
+    }
+    
+    class Rectangle : IShape
+    {
+        public void DrawShape()
+        {
+            Console.WriteLine("자유곡선 그리기 시작");
+        }
+    }
+    
+    class FreeLine : IShape
+    {
+        public void DrawShape()
+        {
+            Console.WriteLine("자유곡선 그리기 시작");
+            for (int i = 0; i < m_LineList.Count; i++)
             {
-                dispChar(i);
-                Thread.Sleep(100);
+                m_LineList[i].DrawShape();
             }
+            Console.WriteLine("자유곡선 그리기 종료");
         }
-        static void Main(string[] args)
+        public string GetShapeName()
         {
-            MyFunc(DispPercent);
+            return "자유곡선";
         }
+        public IShape Clone()
+        {
+            return new FreeLine();
+        }
+        private List<IShape> m_LineList = new List<IShape>()
+        { new Line(), }
     }
 }
