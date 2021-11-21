@@ -1,39 +1,58 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace HustarDay05
+namespace Test2
 {
     class Cat
     {
-        public int m_iAge;
-    }
-
-    class Solution
-    {
-        int noStatic = 0;
-        static int yesStatic = 0;
-
-        public static void yes()
+        static Cat()
         {
-            int noStatic = 0;
-            yesStatic = 0;
+            Console.WriteLine("static Cat()생성자 호출");
+            m_iCount = 0;
         }
-
-        public void no()
+        public Cat(float pi = 3.14f)
         {
-            noStatic = 1;
-            yesStatic = 1;
+            Console.WriteLine("public Cat(float pi)생성자 호출");
+            m_pi = pi;
         }
+        public void MyFunc()
+        {
+            AGE = 10;
+        }
+        public int AGE
+        {
+            get { return m_iAge; }
+            private set
+            {
+                if (value < 0)
+                {
+                    Console.WriteLine("나이는 0보다 작을 수 없습니다.");
+                    return;
+                }
+                m_iAge = value;
+            }
+        }
+        public static int COUNT
+        {
+            get { return m_iCount; }
+        }
+        private int m_iAge;
+        private static int m_iCount;
+        public readonly float m_pi;
     }
-
-
-    class ChangeByValueorReference
+    class Program
     {
         static void Main(string[] args)
         {
-            Cat c1 = new Cat();
-            c1.m_iAge = 10;
+            Console.WriteLine("------------------------------");
+            Console.WriteLine("{0}", Cat.COUNT);
+            Console.WriteLine("------------------------------");
+            Cat c1 = new Cat(3.141592f);
+            Console.WriteLine("{0}", c1.m_pi);
         }
     }
 }
