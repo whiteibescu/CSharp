@@ -7,52 +7,55 @@ using System.Threading.Tasks;
 
 namespace Test2
 {
-    class Cat
+    class Wing
     {
-        static Cat()
+        public void Fly()
         {
-            Console.WriteLine("static Cat()생성자 호출");
-            m_iCount = 0;
+            Console.WriteLine("날기...");
         }
-        public Cat(float pi = 3.14f)
+    }
+    class Bird
+    {
+        Wing w = new Wing();
+        public void Fly()
         {
-            Console.WriteLine("public Cat(float pi)생성자 호출");
-            m_pi = pi;
+            w.Fly();
         }
-        public void MyFunc()
+
+        public virtual void Speak()
         {
-            AGE = 10;
+            Console.WriteLine("짹짹...");
         }
-        public int AGE
+        public virtual void Alggagi()
         {
-            get { return m_iAge; }
-            private set
-            {
-                if (value < 0)
-                {
-                    Console.WriteLine("나이는 0보다 작을 수 없습니다.");
-                    return;
-                }
-                m_iAge = value;
-            }
+            Console.WriteLine("알까기...");
         }
-        public static int COUNT
+        private int[] m_iArray = new int[1000];
+    }
+    class Pegasus
+    {
+        public void Gallop()
         {
-            get { return m_iCount; }
+            Console.WriteLine("달리기...");
         }
-        private int m_iAge;
-        private static int m_iCount;
-        public readonly float m_pi;
+        public void Speak()
+        {
+            Console.WriteLine("히잉~~~");
+        }
+        public void Fly()
+        {
+            m_Wing.Fly();
+        }
+        Wing m_Wing = new Wing();
     }
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("{0}", Cat.COUNT);
-            Console.WriteLine("------------------------------");
-            Cat c1 = new Cat(3.141592f);
-            Console.WriteLine("{0}", c1.m_pi);
+            Pegasus p = new Pegasus();
+            p.Gallop();
+            p.Fly();
+            p.Speak();
         }
     }
 }
