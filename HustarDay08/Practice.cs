@@ -6,50 +6,42 @@ using System.Threading.Tasks;
 
 namespace HustarDay08
 {
+    class Cat
+    {
+        public void DisplayInfo()
+        {
+            Console.WriteLine("이름 : {0}", NAME);
+            Console.WriteLine("나이 : {0}", AGE);
+        }
+        public string NAME
+        {
+            get;
+            set;
+        }
+        public int AGE
+        {
+            get;
+            set;
+        }
+    }
     class Program
     {
-        static void MyFunc1()
-        {
-            Console.WriteLine("Error 발생");
-            //throw new Exception("MyFunc1에서 Error가 발생했습니다.");
-        }
-        static void MyFunc()
-        {
-            Console.WriteLine("MyFunc1()함수 호출 이전");
-            try
-            {
-                MyFunc1();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("MyFunc() ------------->>> Error 발생");
-                Console.WriteLine("MyFunc() ------------->>> {0}", e.Message);
-                throw new Exception("MyFunc()에서 처리하려 하였으나 처리 못 했습니다. MyFunc1에서 Error가 발생했습니다.");
-            }
-            finally
-            {
-                Console.WriteLine("MyFunc함수 finally 호출");
-            }
-            Console.WriteLine("MyFunc1()함수 호출 이후");
-        }
         static void Main(string[] args)
         {
-            Console.WriteLine("MyFunc()함수 호출 이전");
-            try
+            List<int> intList = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            for (int i = 0; i < intList.Count; i++)
             {
-                MyFunc();
+                Console.WriteLine("{0}", intList[i]);
             }
-            catch (Exception e)
+            intList.ForEach((i) => Console.WriteLine(i));
+
+            var newList = from e in intList
+                          where e % 2 == 0
+                          select new { NAME = "야옹이" + e };
+            foreach (var e in newList)
             {
-                Console.WriteLine("Error 발생");
-                Console.WriteLine(e.Message);
-                return;
+                Console.WriteLine("NAME : {0}", e.NAME);
             }
-            finally
-            {
-                Console.WriteLine("Main함수 finally 호출");
-            }
-            Console.WriteLine("MyFunc()함수 호출 이후");
         }
     }
 }
