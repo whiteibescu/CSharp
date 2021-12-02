@@ -1,39 +1,73 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace HustarDay05
+namespace Test2
 {
-    class Cat
+    class Animal
     {
-        public int m_iAge;
+        public Animal()
+        {
+            Console.WriteLine("public Animal()생성자 호출");
+        }
+        public virtual void Speak()
+        {
+            Console.WriteLine("Animal Speak!!!");
+        }
+        public virtual void Speak2()
+        {
+            Console.WriteLine("Animal2 Speak!!!");
+        }
+        private int m_iAge;
     }
-
-    class Solution
+    class Cat : Animal
     {
-        int noStatic = 0;
-        static int yesStatic = 0;
-
-        public static void yes()
+        public Cat()
         {
-            int noStatic = 0;
-            yesStatic = 0;
+            Console.WriteLine("public Cat()생성자 호출");
         }
-
-        public void no()
+        public override void Speak2()
         {
-            noStatic = 1;
-            yesStatic = 1;
+            Console.WriteLine("야옹2!!!");
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("야옹!!!");
         }
     }
-
-
-    class ChangeByValueorReference
+    class Dog : Animal
+    {
+        public Dog()
+        {
+            Console.WriteLine("public Dog()생성자 호출");
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("멍멍!!!");
+        }
+    }
+    class Horse : Animal
+    {
+        public Horse()
+        {
+            Console.WriteLine("public Horse()생성자 호출");
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("히잉!!!");
+        }
+    }
+    class Program
     {
         static void Main(string[] args)
         {
-            Cat c1 = new Cat();
-            c1.m_iAge = 10;
+            Animal a = new Animal();
+            a.Speak();
+            Animal a1 = new Cat();
+            a1.Speak2();
         }
     }
 }
