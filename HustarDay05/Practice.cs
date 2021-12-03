@@ -1,61 +1,39 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Test2
+namespace HustarDay05
 {
-    class Wing
+    class Cat
     {
-        public void Fly()
-        {
-            Console.WriteLine("날기...");
-        }
+        public int m_iAge;
     }
-    class Bird
+
+    class Solution
     {
-        Wing w = new Wing();
-        public void Fly()
+        int noStatic = 0;
+        static int yesStatic = 0;
+
+        public static void yes()
         {
-            w.Fly();
+            int noStatic = 0;
+            yesStatic = 0;
         }
 
-        public virtual void Speak()
+        public void no()
         {
-            Console.WriteLine("짹짹...");
+            noStatic = 1;
+            yesStatic = 1;
         }
-        public virtual void Alggagi()
-        {
-            Console.WriteLine("알까기...");
-        }
-        private int[] m_iArray = new int[1000];
     }
-    class Pegasus
-    {
-        public void Gallop()
-        {
-            Console.WriteLine("달리기...");
-        }
-        public void Speak()
-        {
-            Console.WriteLine("히잉~~~");
-        }
-        public void Fly()
-        {
-            m_Wing.Fly();
-        }
-        Wing m_Wing = new Wing();
-    }
-    class Program
+
+
+    class ChangeByValueorReference
     {
         static void Main(string[] args)
         {
-            Pegasus p = new Pegasus();
-            p.Gallop();
-            p.Fly();
-            p.Speak();
+            Cat c1 = new Cat();
+            c1.m_iAge = 10;
         }
     }
 }
