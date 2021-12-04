@@ -5,69 +5,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test2
+namespace BasicClass
 {
-    class Animal
+    class Cat
     {
-        public Animal()
+        public string Name;
+        public string Color;
+
+        public void Meow()
         {
-            Console.WriteLine("public Animal()생성자 호출");
-        }
-        public virtual void Speak()
-        {
-            Console.WriteLine("Animal Speak!!!");
-        }
-        public virtual void Speak2()
-        {
-            Console.WriteLine("Animal2 Speak!!!");
-        }
-        private int m_iAge;
-    }
-    class Cat : Animal
-    {
-        public Cat()
-        {
-            Console.WriteLine("public Cat()생성자 호출");
-        }
-        public override void Speak2()
-        {
-            Console.WriteLine("야옹2!!!");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("야옹!!!");
+            Console.WriteLine($"{Name} : 야옹");
         }
     }
-    class Dog : Animal
-    {
-        public Dog()
-        {
-            Console.WriteLine("public Dog()생성자 호출");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("멍멍!!!");
-        }
-    }
-    class Horse : Animal
-    {
-        public Horse()
-        {
-            Console.WriteLine("public Horse()생성자 호출");
-        }
-        public override void Speak()
-        {
-            Console.WriteLine("히잉!!!");
-        }
-    }
-    class Program
+
+    class MainApp
     {
         static void Main(string[] args)
         {
-            Animal a = new Animal();
-            a.Speak();
-            Animal a1 = new Cat();
-            a1.Speak2();
+            Cat kitty = new Cat();
+            kitty.Color = "하얀색";
+            kitty.Name = "키티";
+            kitty.Meow();
+            Console.WriteLine($"{kitty.Name} : {kitty.Color}");
+
+            Cat nero = new Cat();
+            nero.Color = "검은색";
+            nero.Name = "네로";
+            nero.Meow();
+            Console.WriteLine($"{nero.Name} : {nero.Color}");
         }
     }
 }
