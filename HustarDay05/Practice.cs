@@ -7,32 +7,37 @@ using System.Threading.Tasks;
 
 namespace BasicClass
 {
-    class Cat
+    class Global
     {
-        public string Name;
-        public string Color;
+        public static int Count = 0;
+    }
 
-        public void Meow()
+    class ClassA
+    {
+        public ClassA()
         {
-            Console.WriteLine($"{Name} : 야옹");
+            Global.Count++;
+        }
+    }
+
+    class ClassB
+    {
+        public ClassB()
+        {
+            Global.Count++;
         }
     }
 
     class MainApp
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Cat kitty = new Cat();
-            kitty.Color = "하얀색";
-            kitty.Name = "키티";
-            kitty.Meow();
-            Console.WriteLine($"{kitty.Name} : {kitty.Color}");
+            Console.WriteLine($"Global.Count : {Global.Count}");
 
-            Cat nero = new Cat();
-            nero.Color = "검은색";
-            nero.Name = "네로";
-            nero.Meow();
-            Console.WriteLine($"{nero.Name} : {nero.Color}");
+            new ClassA();
+            new ClassB();
+            new ClassB();
+            Console.WriteLine($"Global.Count : {Global.Count}");
         }
     }
 }
