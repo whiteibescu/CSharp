@@ -1,43 +1,35 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BasicClass
+namespace DeepCopy
 {
-    class Global
+    class MyClass
     {
-        public static int Count = 0;
-    }
+        public int MyField1;
+        public int MyField2;
 
-    class ClassA
-    {
-        public ClassA()
+        public MyClass DeepCopy()
         {
-            Global.Count++;
-        }
-    }
+            MyClass newCopy = new MyClass();
+            newCopy.MyField1 = this.MyField1;
+            newCopy.MyField2 = this.MyField2;
 
-    class ClassB
-    {
-        public ClassB()
-        {
-            Global.Count++;
+            return newCopy;
         }
     }
 
     class MainApp
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            Console.WriteLine($"Global.Count : {Global.Count}");
+            Console.WriteLine("Shallow Copy");
+            {
+                MyClass source = new MyClass();
+                source.MyField1 = 1;
+                source.MyField2 = 2;
 
-            new ClassA();
-            new ClassB();
-            new ClassB();
-            Console.WriteLine($"Global.Count : {Global.Count}");
+                MyClass target = new MyClass();
+                target.MyField2 = 30;
+            }
         }
     }
 }
