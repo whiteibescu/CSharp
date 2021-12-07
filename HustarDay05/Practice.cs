@@ -1,43 +1,46 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BasicClass
+namespace This
 {
-    class Global
+    class Employee
     {
-        public static int Count = 0;
-    }
+        private string Name;
+        private string Position;
 
-    class ClassA
-    {
-        public ClassA()
+        public void SetName(string Name)
         {
-            Global.Count++;
+            this.Name = Name;
+        }
+        
+        public string GetName()
+        {
+            return Name;
+        }
+
+        public void SetPosition(string Position)
+        {
+            this.Position = Position;
+        }
+
+        public string GetPosition()
+        {
+            return Position;
         }
     }
-
-    class ClassB
-    {
-        public ClassB()
-        {
-            Global.Count++;
-        }
-    }
-
     class MainApp
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            Console.WriteLine($"Global.Count : {Global.Count}");
+            Employee pooh = new Employee();
+            pooh.SetName("Pooh");
+            pooh.SetPosition("Waiter");
 
-            new ClassA();
-            new ClassB();
-            new ClassB();
-            Console.WriteLine($"Global.Count : {Global.Count}");
+            Console.WriteLine($"{pooh.GetName()} {pooh.GetPosition()}");
+
+            Employee tiger = new Employee();
+            tiger.SetName("Tigger");
+            tiger.SetPosition("Cleaner");
+            Console.WriteLine($"{tiger.GetName()} {tiger.GetPosition()}");
         }
     }
 }
