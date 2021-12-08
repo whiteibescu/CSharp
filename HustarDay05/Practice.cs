@@ -1,46 +1,52 @@
 ﻿using System;
 
-namespace This
+namespace ThisConstructor
 {
-    class Employee
+    class MyClass
     {
-        private string Name;
-        private string Position;
+        int a, b, c;
 
-        public void SetName(string Name)
+        public MyClass()
         {
-            this.Name = Name;
-        }
-        
-        public string GetName()
-        {
-            return Name;
+            this.a = 5425;
+            Console.WriteLine("MyClass()");
         }
 
-        public void SetPosition(string Position)
+        public MyClass(int b) : this()
         {
-            this.Position = Position;
+            this.b = b;
+            Console.WriteLine($"MyClass({b})");
         }
 
-        public string GetPosition()
+        public MyClass(int b, int c) : this(b)
         {
-            return Position;
+            this.c = c;
+            Console.WriteLine($"MyClass({b}, {c})");
+        }
+
+        public void PrintFields()
+        {
+            Console.WriteLine($"a:{a}, b:{b}, c:{c}");
         }
     }
+
     class MainApp
     {
         static void Main(string[] args)
         {
-            Employee pooh = new Employee();
-            pooh.SetName("Pooh");
-            pooh.SetPosition("Waiter");
+            MyClass a = new MyClass();
+            a.PrintFields();
+            Console.WriteLine();
+            //MyClass()
+            //a:5425, b:0, c:0
 
-            Console.WriteLine($"{pooh.GetName()} {pooh.GetPosition()}");
+            MyClass b = new MyClass(1);
+            b.PrintFields();
+            Console.WriteLine();
 
-            Employee tiger = new Employee();
-            tiger.SetName("Tigger");
-            tiger.SetPosition("Cleaner");
-            Console.WriteLine($"{tiger.GetName()} {tiger.GetPosition()}");
+            MyClass c = new MyClass(10, 20);
+            c.PrintFields();
         }
     }
+
 }
