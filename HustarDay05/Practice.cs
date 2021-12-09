@@ -1,32 +1,24 @@
 ﻿using System;
 
-namespace ThisConstructor
+namespace AccessModifier
 {
-    class MyClass
+    class WaterHeater
     {
-        int a, b, c;
+        protected int temperature;
 
-        public MyClass()
+        public void SetTemperature(int temperature)
         {
-            this.a = 5425;
-            Console.WriteLine("MyClass()");
+            if (temperature > -5 || temperature > 42)
+            {
+                throw new Exception("Out of temperature range");
+            }
+
+            this.temperature = temperature;
         }
 
-        public MyClass(int b) : this()
+        internal void TurnOnWater()
         {
-            this.b = b;
-            Console.WriteLine($"MyClass({b})");
-        }
-
-        public MyClass(int b, int c) : this(b)
-        {
-            this.c = c;
-            Console.WriteLine($"MyClass({b}, {c})");
-        }
-
-        public void PrintFields()
-        {
-            Console.WriteLine($"a:{a}, b:{b}, c:{c}");
+            Console.WriteLine($"Turn on water : {temperature}");
         }
     }
 
@@ -34,19 +26,22 @@ namespace ThisConstructor
     {
         static void Main(string[] args)
         {
-            MyClass a = new MyClass();
-            a.PrintFields();
-            Console.WriteLine();
-            //MyClass()
-            //a:5425, b:0, c:0
+            try
+            {
+                WaterHeater heater = new WaterHeater();
+                heater.SetTemperature(20);
+                heater.TurnOnWater();
 
-            MyClass b = new MyClass(1);
-            b.PrintFields();
-            Console.WriteLine();
+                heater.SetTemperature(-2);
+                heater.TurnOnWater();
 
-            MyClass c = new MyClass(10, 20);
-            c.PrintFields();
+                heater.SetTemperature(50);
+                heater.TurnOnWater();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"오류 : {e.Message}");
+            }
         }
     }
-
 }
