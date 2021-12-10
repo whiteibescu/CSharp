@@ -1,19 +1,42 @@
 ﻿using System;
 
-namespace DeepCopy
+namespace Inheritance
 {
-    class MyClass
+    class Base
     {
-        public int MyField1;
-        public int MyField2;
-
-        public MyClass DeepCopy()
+        protected string Name;
+        public Base(string Name)
         {
-            MyClass newCopy = new MyClass();
-            newCopy.MyField1 = this.MyField1;
-            newCopy.MyField2 = this.MyField2;
+            this.Name = Name;
+            Console.WriteLine($"{this.Name}.Base");
+        }
 
-            return newCopy;
+        ~Base()
+        {
+            Console.WriteLine($"{this.Name}.~Base");
+        }
+
+        public void BaseMethod()
+        {
+            Console.WriteLine($"{Name}.BaseMethod");
+        }
+    }
+
+    class Derived : Base
+    {
+        public Derived(string Name) : base(Name)
+        {
+            Console.WriteLine($"{this.Name}.Derived()");
+        }
+
+        ~Derived()
+        {
+            Console.WriteLine($"{this.Name}.~Derived");
+        }
+
+        public void DerivedMethod()
+        {
+            Console.WriteLine($"{Name}.DerivedMethod()");
         }
     }
 
@@ -21,15 +44,12 @@ namespace DeepCopy
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Shallow Copy");
-            {
-                MyClass source = new MyClass();
-                source.MyField1 = 1;
-                source.MyField2 = 2;
+            Base a = new Base("a");
+            a.BaseMethod();
 
-                MyClass target = new MyClass();
-                target.MyField2 = 30;
-            }
+            Derived b = new Derived("b");
+            b.BaseMethod();
+            b.DerivedMethod();
         }
     }
 }
