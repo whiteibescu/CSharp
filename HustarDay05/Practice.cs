@@ -1,42 +1,31 @@
 ﻿using System;
 
-namespace Inheritance
+namespace Overriding
 {
-    class Base
+    class ArmorSuite
     {
-        protected string Name;
-        public Base(string Name)
+        public virtual void Initialize()
         {
-            this.Name = Name;
-            Console.WriteLine($"{this.Name}.Base");
-        }
-
-        ~Base()
-        {
-            Console.WriteLine($"{this.Name}.~Base");
-        }
-
-        public void BaseMethod()
-        {
-            Console.WriteLine($"{Name}.BaseMethod");
+            Console.WriteLine("Armored");
         }
     }
 
-    class Derived : Base
+    class IronMan: ArmorSuite
     {
-        public Derived(string Name) : base(Name)
+        public override void Initialize()
         {
-            Console.WriteLine($"{this.Name}.Derived()");
+            base.Initialize();
+            Console.WriteLine("Repulsor Rays Armed");
         }
+    }
 
-        ~Derived()
+    class WarMachine : ArmorSuite
+    {
+        public override void Initialize()
         {
-            Console.WriteLine($"{this.Name}.~Derived");
-        }
-
-        public void DerivedMethod()
-        {
-            Console.WriteLine($"{Name}.DerivedMethod()");
+            base.Initialize();
+            Console.WriteLine("Double-Barrel Cannons Armed");
+            Console.WriteLine("Micro-Rocket Launcher Armed");
         }
     }
 
@@ -44,12 +33,17 @@ namespace Inheritance
     {
         static void Main(string[] args)
         {
-            Base a = new Base("a");
-            a.BaseMethod();
+            Console.WriteLine("Creating ArmorSuite...");
+            ArmorSuite armorsuite = new ArmorSuite();
+            armorsuite.Initialize();
 
-            Derived b = new Derived("b");
-            b.BaseMethod();
-            b.DerivedMethod();
+            Console.WriteLine("\nCreating IronMan...");
+            ArmorSuite ironman = new IronMan();
+            ironman.Initialize();
+
+            Console.WriteLine("\nCreating WarMachine...");
+            ArmorSuite warmachine = new WarMachine();
+            warmachine.Initialize();
         }
     }
 }
