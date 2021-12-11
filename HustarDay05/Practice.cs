@@ -1,55 +1,32 @@
 ﻿using System;
 
-namespace Inheritance
+namespace app
 {
-    class Base
+    class Mammal
     {
-        protected string Name;
-        public Base(string Name)
+        private string name;
+        private string bark;
+        public Mammal(string name)
         {
-            this.Name = Name;
-            Console.WriteLine($"{this.Name}.Base");
+            this.name = name;            
         }
-
-        ~Base()
+        public void Bark()
         {
-            Console.WriteLine($"{this.Name}.~Base");
+            Console.WriteLine("Barking!");
         }
-
-        public void BaseMethod()
+        
+        public void WhoAmI()
         {
-            Console.WriteLine($"{Name}.BaseMethod");
+            Console.WriteLine(name);
         }
     }
-
-    class Derived : Base
-    {
-        public Derived(string Name) : base(Name)
-        {
-            Console.WriteLine($"{this.Name}.Derived()");
-        }
-
-        ~Derived()
-        {
-            Console.WriteLine($"{this.Name}.~Derived");
-        }
-
-        public void DerivedMethod()
-        {
-            Console.WriteLine($"{Name}.DerivedMethod()");
-        }
-    }
-
     class MainApp
     {
         static void Main(string[] args)
         {
-            Base a = new Base("a");
-            a.BaseMethod();
-
-            Derived b = new Derived("b");
-            b.BaseMethod();
-            b.DerivedMethod();
+            Mammal dog = new Mammal("dog");
+            dog.Bark();
+            dog.WhoAmI();
         }
     }
 }
