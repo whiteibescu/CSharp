@@ -1,20 +1,30 @@
 ﻿using System;
 
-namespace MethodHiding
+namespace PartialClass
 {
-    class Base
+    partial class MyClass
     {
-        public void MyMethod()
+        public void Method1()
         {
-            Console.WriteLine("Base.MyMethod");
+            Console.WriteLine("Method1");
+        }
+
+        public void Method2()
+        {
+            Console.WriteLine("Method2");
         }
     }
 
-    class Derived : Base
+    partial class MyClass
     {
-        public new void MyMethod()
+        public void Method3()
         {
-            Console.WriteLine("Derived.MyMethod()");
+            Console.WriteLine("Method3");
+        }
+
+        public void Method4()
+        {
+            Console.WriteLine("Method4");
         }
     }
 
@@ -22,14 +32,11 @@ namespace MethodHiding
     {
         static void Main(string[] args)
         {
-            Base baseObj = new Base();
-            baseObj.MyMethod();
-
-            Derived derivedObj = new Derived();
-            derivedObj.MyMethod();
-
-            Base baseOrDerived = new Derived();
-            baseOrDerived.MyMethod();
+            MyClass obj = new MyClass();
+            obj.Method1();
+            obj.Method2();
+            obj.Method3();
+            obj.Method4();
         }
     }
 }
