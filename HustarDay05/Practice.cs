@@ -1,54 +1,44 @@
 ﻿using System;
 
-namespace PartialClass
+namespace Structure
 {
-    partial class MyClass
+    struct Point3D
     {
-        public void Method1()
-        {
-            Console.WriteLine("Method1");
-            Console.WriteLine($"{this.Name}.Base");
+        public int X;
+        public int Y;
+        public int Z;
 
-        public void Method2()
-        ~Base()
-            Console.WriteLine("Method2");
-            Console.WriteLine($"{this.Name}.~Base");
-    }
-
-    partial class MyClass
-    {
-        public void Method3()
+        public Point3D(int X, int Y, int Z)
         {
-            Console.WriteLine("Method3");
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
         }
 
-        public void Method4()
+        public override string ToString()
         {
-            Console.WriteLine("Method4");
+            return String.Format($"{X}, {Y}, {Z}");
         }
-    }
-
-        ~Derived()
-        {
-            Console.WriteLine($"{this.Name}.~Derived");
-        }
-            MyClass obj = new MyClass();
-            obj.Method1();
-            obj.Method2();
-            obj.Method3();
-            obj.Method4();
     }
 
     class MainApp
     {
         static void Main(string[] args)
         {
-            Base a = new Base("a");
-            a.BaseMethod();
+            Point3D p3d1;
+            p3d1.X = 10;
+            p3d1.Y = 20;
+            p3d1.Z = 40;
 
-            Derived b = new Derived("b");
-            b.BaseMethod();
-            b.DerivedMethod();
+            Console.WriteLine(p3d1.ToString());
+
+            Point3D p3d2 = new Point3D(100, 200, 300); //생성자를 이용한 인스턴스 생성 가능
+            Point3D p3d3 = p3d2; //구조체의 인스턴스를 다른 인스턴스에 할당하면 깊은 복사
+            p3d3.Z = 400;
+
+            Console.WriteLine(p3d2.ToString());
+            Console.WriteLine(p3d3.ToString());
+
         }
     }
 }
