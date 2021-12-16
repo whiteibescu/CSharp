@@ -1,23 +1,44 @@
 ﻿using System;
 
-namespace Structure
+namespace Property
 {
-    struct Point3D
+    class BirthdayInfo
     {
-        public int X;
-        public int Y;
-        public int Z;
+        private string name;
+        private DateTime birthday;
 
-        public Point3D(int X, int Y, int Z)
+        public string Name
         {
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
+            get
+            {
+                return name;
+            }
+
+            set
+            {
+                name = value;
+            }
         }
 
-        public override string ToString()
+        public DateTime Birthday
         {
-            return String.Format($"{X}, {Y}, {Z}");
+            get
+            {
+                return birthday;
+            }
+
+            set
+            {
+                birthday = value;
+            }
+        }
+
+        public int Age
+        {
+            get
+            {
+                return new DateTime(DateTime.Now.Subtract(birthday).Ticks).Year;
+            }
         }
     }
 
@@ -25,20 +46,9 @@ namespace Structure
     {
         static void Main(string[] args)
         {
-            Point3D p3d1;
-            p3d1.X = 10;
-            p3d1.Y = 20;
-            p3d1.Z = 40;
-
-            Console.WriteLine(p3d1.ToString());
-
-            Point3D p3d2 = new Point3D(100, 200, 300); //생성자를 이용한 인스턴스 생성 가능
-            Point3D p3d3 = p3d2; //구조체의 인스턴스를 다른 인스턴스에 할당하면 깊은 복사
-            p3d3.Z = 400;
-
-            Console.WriteLine(p3d2.ToString());
-            Console.WriteLine(p3d3.ToString());
-
+            BirthdayInfo birth = new BirthdayInfo();
+            birth.Name = "서현";
+            birth.Birthday = new DateTime(1989, 12, 16);
         }
     }
 }
