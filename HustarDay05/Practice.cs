@@ -1,43 +1,16 @@
 ﻿using System;
 
-namespace Property
+namespace AutoImplementedProperty
 {
     class BirthdayInfo
     {
-        private string name;
-        private DateTime birthday;
-
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-
-            set
-            {
-                name = value;
-            }
-        }
-
-        public DateTime Birthday
-        {
-            get
-            {
-                return birthday;
-            }
-
-            set
-            {
-                birthday = value;
-            }
-        }
-
+        public string Name { get; set; } = "unknown";
+        public DateTime Birthday { get; set; } = new DateTime(1, 1, 1);
         public int Age
         {
             get
             {
-                return new DateTime(DateTime.Now.Subtract(birthday).Ticks).Year;
+                return new DateTime(DateTime.Now.Subtract(Birthday).Ticks).Year;
             }
         }
     }
@@ -47,8 +20,10 @@ namespace Property
         static void Main(string[] args)
         {
             BirthdayInfo birth = new BirthdayInfo();
+
+
             birth.Name = "서현";
-            birth.Birthday = new DateTime(1989, 12, 16);
+            birth.Birthday = new DateTime(1991, 12, 16);
         }
     }
 }
