@@ -5,93 +5,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HustarDay05
+namespace Test2
 {
-    class Weapon
+    class Cat
     {
-        public virtual void Attack()
+        static Cat()
         {
+            Console.WriteLine("static Cat()생성자 호출");
+            m_iCount = 0;
         }
-    }
-    class Gun : Weapon
-    {
-        private Gun()
-        { }
-        public override void Attack()
+        public Cat(float pi = 3.14f)
         {
-            Console.WriteLine("총 공격");
+            Console.WriteLine("public Cat(float pi)생성자 호출");
+            m_pi = pi;
         }
-        public static Weapon CreateObject()
+        public void MyFunc()
         {
-            if (m_weapon == null)
+            AGE = 10;
+        }
+        public int AGE
+        {
+            get { return m_iAge; }
+            private set
             {
-                m_weapon = new Gun();
+                if (value < 0)
+                {
+                    Console.WriteLine("나이는 0보다 작을 수 없습니다.");
+                    return;
+                }
+                m_iAge = value;
             }
-            return m_weapon;
         }
-        private static Weapon m_weapon = null;
-    }
-    class Missile : Weapon
-    {
-        private Missile()
-        { }
-        public override void Attack()
+        public static int COUNT
         {
-            Console.WriteLine("미사일 공격");
+            get { return m_iCount; }
         }
-        public static Weapon CreateObject()
-        {
-            if (m_weapon == null)
-            {
-                m_weapon = new Missile();
-            }
-            return m_weapon;
-        }
-        private static Weapon m_weapon = null;
-    }
-    class Sword : Weapon
-    {
-        private Sword()
-        { }
-        public override void Attack()
-        {
-            Console.WriteLine("칼 공격");
-        }
-        public static Weapon CreateObject()
-        {
-            if (m_weapon == null)
-            {
-                m_weapon = new Sword();
-            }
-            return m_weapon;
-        }
-        private static Weapon m_weapon = null;
-
-    }
-    class Robot
-    {
-        public void ChangeWeapon(Weapon weapon)
-        {
-            m_Weapon = weapon;
-        }
-        public void Attack()
-        {
-            m_Weapon.Attack();
-        }
-        private Weapon m_Weapon = Gun.CreateObject();
+        private int m_iAge;
+        private static int m_iCount;
+        public readonly float m_pi;
     }
     class Program
     {
         static void Main(string[] args)
         {
-            Robot r = new Robot();
-            r.Attack();
-            r.ChangeWeapon(Missile.CreateObject());
-            r.Attack();
-            r.ChangeWeapon(Sword.CreateObject());
-            r.Attack();
-            r.ChangeWeapon(Missile.CreateObject());
-            r.Attack();
+            Console.WriteLine("------------------------------");
+            Console.WriteLine("{0}", Cat.COUNT);
+            Console.WriteLine("------------------------------");
+            Cat c1 = new Cat(3.141592f);
+            Console.WriteLine("{0}", c1.m_pi);
         }
     }
 }
