@@ -5,54 +5,81 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test2
+namespace Override
 {
-    class Cat
+    class Animal
     {
-        static Cat()
+        public Animal()
         {
-            Console.WriteLine("static Cat()생성자 호출");
-            m_iCount = 0;
+            Console.WriteLine("public Animal()생성자 호출");
         }
-        public Cat(float pi = 3.14f)
+        public virtual void Speak()
         {
-            Console.WriteLine("public Cat(float pi)생성자 호출");
-            m_pi = pi;
+            Console.WriteLine("Animal Speak!!!");
         }
-        public void MyFunc()
+    }
+    class Cat : Animal
+    {
+        public Cat()
         {
-            AGE = 10;
+            Console.WriteLine("public Cat()생성자 호출");
         }
-        public int AGE
+        public override void Speak()
         {
-            get { return m_iAge; }
-            private set
-            {
-                if (value < 0)
-                {
-                    Console.WriteLine("나이는 0보다 작을 수 없습니다.");
-                    return;
-                }
-                m_iAge = value;
-            }
+            Console.WriteLine("야옹!!!");
         }
-        public static int COUNT
+    }
+    class Dog : Animal
+    {
+        public Dog()
         {
-            get { return m_iCount; }
+            Console.WriteLine("public Dog()생성자 호출");
         }
-        private int m_iAge;
-        private static int m_iCount;
-        public readonly float m_pi;
+        public override void Speak()
+        {
+            Console.WriteLine("멍멍!!!");
+        }
+    }
+    class Horse : Animal
+    {
+        public Horse()
+        {
+            Console.WriteLine("public Horse()생성자 호출");
+        }
+        public override void Speak()
+        {
+            Console.WriteLine("히잉!!!");
+        }
     }
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("{0}", Cat.COUNT);
-            Console.WriteLine("------------------------------");
-            Cat c1 = new Cat(3.141592f);
-            Console.WriteLine("{0}", c1.m_pi);
+            ArrayList animalList = new ArrayList();
+            for (int i = 0; i < 5; i++)
+            {
+                Console.WriteLine("1.Cat");
+                Console.WriteLine("2.Dog");
+                Console.WriteLine("3.Horse");
+                int iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 1:
+                        animalList.Add(new Cat());
+                        break;
+                    case 2:
+                        animalList.Add(new Dog());
+                        break;
+                    case 3:
+                        animalList.Add(new Horse());
+                        break;
+                }
+            }
+            for (int i = 0; i < animalList.Count; i++)
+            {
+                Animal a = (Animal)animalList[i];
+                a.Speak();
+            }
         }
     }
 }
