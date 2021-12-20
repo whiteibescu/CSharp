@@ -1,57 +1,23 @@
 ﻿using System;
-using System.Collections;
 
-namespace Practice
+namespace Night
 {
-    class Animal
+    struct Point3D
     {
-        public Animal()
+        public int x;
+        public int y;
+        public int z;
+
+        public Point3D(int x, int y, int z)
         {
-            Console.WriteLine("생성자 호출");
+            this.x = x;
+            this.y = y;
+            this.z = z;
         }
 
-        public virtual void Speak()
+        public override string ToString()
         {
-            Console.WriteLine("default");
-        }
-    }
-
-    class Dog : Animal
-    {
-        public Dog()
-        {
-            Console.WriteLine("강아지 생성자 호출");
-        }
-
-        public override void Speak()
-        {
-            Console.WriteLine("멍멍");
-        }
-    }
-
-    class Cat : Animal
-    {
-        public Cat()
-        {
-            Console.WriteLine("고양이 생성자 호출");
-        }
-
-        public override void Speak()
-        {
-            Console.WriteLine("냥냥");
-        }
-    }
-
-    class Horse : Animal
-    {
-        public Horse()
-        {
-            Console.WriteLine("말 생성자 호출");
-        }
-
-        public override void Speak()
-        {
-            Console.WriteLine("이히힝");
+            return String.Format($"{x}, {y}, {z}");
         }
     }
 
@@ -59,36 +25,18 @@ namespace Practice
     {
         static void Main(string[] args)
         {
-            ArrayList animalList = new ArrayList();
-            for (int i = 0; i < 5; i++)
-            {
-                Console.WriteLine("Press 1 for Cat");
-                Console.WriteLine("Press 2 for Dog");
-                Console.WriteLine("Press 3 for Horse");
+            Point3D a;
+            a.x = 10;
+            a.y = 20;
+            a.y = 30;
 
+            Point3D b = new Point3D(10, 20, 30);
+            Point3D c = b;
+            c.z = 40;
 
-
-
-                int iChoice = int.Parse(Console.ReadLine());
-                switch (iChoice)
-                {
-                    case 1:
-                        animalList.Add(new Cat());
-                        break;
-                    case 2:
-                        animalList.Add(new Dog());
-                        break;
-                    case 3:
-                        animalList.Add(new Horse());
-                        break;
-                }
-            }
-
-            for (int i = 0; i < animalList.Count; i++)
-            {
-                Animal a = (Animal)animalList[i];
-                a.Speak();
-            }
+            Console.WriteLine($"{a.ToString()}");
+            Console.WriteLine($"{b.ToString()}");
+            Console.WriteLine($"{c.ToString()}");
         }
     }
 }
