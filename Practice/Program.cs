@@ -28,7 +28,7 @@ namespace Night
             Point3D a;
             a.x = 10;
             a.y = 20;
-            a.y = 30;
+            a.z = 30;
 
             Point3D b = new Point3D(10, 20, 30);
             Point3D c = b;
