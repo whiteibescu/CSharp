@@ -1,23 +1,94 @@
 ﻿using System;
+using System.Collections;
 
 namespace Practice
 {
-    class Program
+    class Animal
     {
-        static int money = 1260;
-        static int coin_cnt = 0;
-        static int[] coin_type = new int[] { 1000, 500, 100, 50, 10};
-        static int cjsdnjs = 1000;
+        public Animal()
+        {
+            Console.WriteLine("생성자 호출");
+        }
 
+        public virtual void Speak()
+        {
+            Console.WriteLine("default");
+        }
+    }
+
+    class Dog : Animal
+    {
+        public Dog()
+        {
+            Console.WriteLine("강아지 생성자 호출");
+        }
+
+        public override void Speak()
+        {
+            Console.WriteLine("멍멍");
+        }
+    }
+
+    class Cat : Animal
+    {
+        public Cat()
+        {
+            Console.WriteLine("고양이 생성자 호출");
+        }
+
+        public override void Speak()
+        {
+            Console.WriteLine("냥냥");
+        }
+    }
+
+    class Horse : Animal
+    {
+        public Horse()
+        {
+            Console.WriteLine("말 생성자 호출");
+        }
+
+        public override void Speak()
+        {
+            Console.WriteLine("이히힝");
+        }
+    }
+
+    class MainApp
+    {
         static void Main(string[] args)
         {
-            foreach (int coin in coin_type)
+            ArrayList animalList = new ArrayList();
+            for (int i = 0; i < 5; i++)
             {
-                coin_cnt += money / coin; //1
-                money %= coin; //1
+                Console.WriteLine("Press 1 for Cat");
+                Console.WriteLine("Press 2 for Dog");
+                Console.WriteLine("Press 3 for Horse");
+
+
+
+
+                int iChoice = int.Parse(Console.ReadLine());
+                switch (iChoice)
+                {
+                    case 1:
+                        animalList.Add(new Cat());
+                        break;
+                    case 2:
+                        animalList.Add(new Dog());
+                        break;
+                    case 3:
+                        animalList.Add(new Horse());
+                        break;
+                }
             }
 
-            Console.WriteLine("동전갯수: {0}", coin_cnt);
+            for (int i = 0; i < animalList.Count; i++)
+            {
+                Animal a = (Animal)animalList[i];
+                a.Speak();
+            }
         }
     }
 }
