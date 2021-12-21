@@ -1,42 +1,65 @@
 ﻿using System;
+using System.IO;
 
-namespace Night
+namespace Interface
 {
-    struct Point3D
+    interface Ilogger
     {
-        public int x;
-        public int y;
-        public int z;
+        void WriteLog(string message);
+    }
 
-        public Point3D(int x, int y, int z)
+    class ConsoleLogger : Ilogger
+    {
+        public void WriteLog(string message)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            Console.WriteLine("{0} {1}", DateTime.Now.ToLocalTime(), message);
+        }
+    }
+
+    class FileLogger : Ilogger
+    {
+        private StreamWriter writer;
+
+        public FileLogger(string path)
+        {
+            writer = File.CreateText(path);
+            writer.AutoFlush = true;
+        }
+        public void WriteLog(string message)
+        {
+            writer.WriteLine("{0} {1}", DateTime.Now.ToShortDateString(), message);
+        }
+    }
+
+    class ClimateMonitor
+    {
+        private Ilogger logger;
+        public ClimateMonitor(Ilogger logger)
+        {
+            this.logger = logger;
         }
 
-        public override string ToString()
+        public void start()
         {
-            return String.Format($"{x}, {y}, {z}");
+            while (true)
+            {
+                Console.Write("온도를 입력해주세요.: ");
+                string temperature = Console.ReadLine();
+                if (temperature == "")
+                    break;
+
+                logger.WriteLog("현재 온도 : " + temperature);
+            }
         }
     }
 
     class MainApp
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Point3D a;
-            a.x = 10;
-            a.y = 20;
-            a.z = 30;
+            ClimateMonitor monitor = new ClimateMonitor(new FileLogger("MyLog.txt"));
 
-            Point3D b = new Point3D(10, 20, 30);
-            Point3D c = b;
-            c.z = 40;
-
-            Console.WriteLine($"{a.ToString()}");
-            Console.WriteLine($"{b.ToString()}");
-            Console.WriteLine($"{c.ToString()}");
+            monitor.start();
         }
     }
 }
