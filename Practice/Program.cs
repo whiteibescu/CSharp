@@ -1,65 +1,54 @@
 ﻿using System;
-using System.IO;
 
-namespace Interface
+namespace PropertiesInInterface
 {
-    interface Ilogger
+    interface INamedValue
     {
-        void WriteLog(string message);
-    }
-
-    class ConsoleLogger : Ilogger
-    {
-        public void WriteLog(string message)
+        string Name
         {
-            Console.WriteLine("{0} {1}", DateTime.Now.ToLocalTime(), message);
+            get;
+            set;
+        }
+
+        string Value
+        {
+            get;
+            set;
         }
     }
 
-    class FileLogger : Ilogger
+    class NamedValue : INamedValue
     {
-        private StreamWriter writer;
-
-        public FileLogger(string path)
+        public string Name
         {
-            writer = File.CreateText(path);
-            writer.AutoFlush = true;
-        }
-        public void WriteLog(string message)
-        {
-            writer.WriteLine("{0} {1}", DateTime.Now.ToShortDateString(), message);
-        }
-    }
-
-    class ClimateMonitor
-    {
-        private Ilogger logger;
-        public ClimateMonitor(Ilogger logger)
-        {
-            this.logger = logger;
+            get;
+            set;
         }
 
-        public void start()
+        public string Value
         {
-            while (true)
-            {
-                Console.Write("온도를 입력해주세요.: ");
-                string temperature = Console.ReadLine();
-                if (temperature == "")
-                    break;
-
-                logger.WriteLog("현재 온도 : " + temperature);
-            }
+            get;
+            set;
         }
     }
 
     class MainApp
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            ClimateMonitor monitor = new ClimateMonitor(new FileLogger("MyLog.txt"));
+            NamedValue name = new NamedValue()
+            { Name = "이름", Value = "박상현" };
 
-            monitor.start();
+            NamedValue height = new NamedValue()
+            { Name = "키", Value = "177cm" };
+
+            NamedValue weight = new NamedValue()
+            { Name = "무게", Value = "90kg" };
+
+            Console.WriteLine($"{name.Name} : {name.Value} ");
+            Console.WriteLine($"{height.Name} : {height.Value} ");
+            Console.WriteLine($"{weight.Name} : {weight.Value} ");
+
         }
     }
 }
