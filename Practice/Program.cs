@@ -1,34 +1,14 @@
 ﻿using System;
 
-namespace PropertiesInInterface
+namespace gooding
 {
-    interface INamedValue
+    class BirthdayInfo
     {
-        string Name
+        public string Name { get; set; }
+        public DateTime Birthday { get; set; }
+        public int Age
         {
-            get;
-            set;
-        }
-
-        string Value
-        {
-            get;
-            set;
-        }
-    }
-
-    class NamedValue : INamedValue
-    {
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        public string Value
-        {
-            get;
-            set;
+            get { return new DateTime(DateTime.Now.Subtract(Birthday).Ticks).Year; }            
         }
     }
 
@@ -36,19 +16,15 @@ namespace PropertiesInInterface
     {
         static void Main(string[] args)
         {
-            NamedValue name = new NamedValue()
-            { Name = "이름", Value = "박상현" };
+            BirthdayInfo a = new BirthdayInfo();
+            Console.WriteLine($"{a.Name}");
+            Console.WriteLine($"{a.Birthday}");
+            Console.WriteLine($"{a.Age}");
 
-            NamedValue height = new NamedValue()
-            { Name = "키", Value = "177cm" };
-
-            NamedValue weight = new NamedValue()
-            { Name = "무게", Value = "90kg" };
-
-            Console.WriteLine($"{name.Name} : {name.Value} ");
-            Console.WriteLine($"{height.Name} : {height.Value} ");
-            Console.WriteLine($"{weight.Name} : {weight.Value} ");
-
+            BirthdayInfo b = new BirthdayInfo()
+            {
+                Name = "서현"
+            };
         }
     }
 }
