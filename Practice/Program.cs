@@ -1,30 +1,55 @@
 ﻿using System;
 
-namespace gooding
+namespace naming
 {
-    class BirthdayInfo
+    class Animal
     {
-        public string Name { get; set; }
-        public DateTime Birthday { get; set; }
-        public int Age
+        public Animal()
         {
-            get { return new DateTime(DateTime.Now.Subtract(Birthday).Ticks).Year; }            
+            Console.WriteLine("생성자 호출한다");
+        }
+
+        public virtual void Speak()
+        {
+            Console.WriteLine("default");
+        }
+    }
+    class Dog : Animal
+    {
+        public Dog()
+        {
+            Console.WriteLine("강아지 생성자 호출");
+        }
+
+        public override void Speak()
+        {
+            Console.WriteLine("멍멍");
         }
     }
 
-    class MainApp
+    class Cat : Animal
     {
-        static void Main(string[] args)
+        public Cat()
         {
-            BirthdayInfo a = new BirthdayInfo();
-            Console.WriteLine($"{a.Name}");
-            Console.WriteLine($"{a.Birthday}");
-            Console.WriteLine($"{a.Age}");
+            Console.WriteLine("고양이 생성자 호출");
+        }
 
-            BirthdayInfo b = new BirthdayInfo()
-            {
-                Name = "서현"
-            };
+        public override void Speak()
+        {
+            Console.WriteLine("냥냥");
+        }
+    }
+
+    class Horse : Animal
+    {
+        public Horse()
+        {
+            Console.WriteLine("말 생성자 호출");
+        }
+
+        public override void Speak()
+        {
+            Console.WriteLine("이히힝");
         }
     }
 }
