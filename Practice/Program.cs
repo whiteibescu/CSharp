@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace naming
 {
@@ -50,6 +51,40 @@ namespace naming
         public override void Speak()
         {
             Console.WriteLine("이히힝");
+        }
+    }
+
+    class MainApp
+    {
+        static void Main(string[] args)
+        {
+            ArrayList AnimalList = new ArrayList();
+            for(int i = 0; i < 5; i++)
+            {
+                Console.WriteLine("Press 1 for dog");
+                Console.WriteLine("Press 2 for cat");
+                Console.WriteLine("Press 3 for horse");
+                int select = int.Parse(Console.ReadLine());
+
+                switch (select)
+                {
+                    case 1:
+                        AnimalList.Add(new Dog());
+                        break;
+                    case 2:
+                        AnimalList.Add(new Cat());
+                        break;
+                    case 3:
+                        AnimalList.Add(new Horse());
+                        break;
+                }
+            }
+
+            foreach(Animal animals in AnimalList)
+            {
+                animals.Speak();
+            }
+
         }
     }
 }
