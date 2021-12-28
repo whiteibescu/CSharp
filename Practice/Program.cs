@@ -1,56 +1,23 @@
 ﻿using System;
-using System.Collections;
 
-namespace naming
+namespace letsgetit
 {
-    class Animal
+    struct  Point3D
     {
-        public Animal()
+        public int x;
+        public int y;
+        public int z;
+
+        public Point3D(int x, int y, int z)
         {
-            Console.WriteLine("생성자 호출한다");
+            this.x = x;
+            this.y = y;
+            this.z = z;
         }
 
-        public virtual void Speak()
+        public override string ToString()
         {
-            Console.WriteLine("default");
-        }
-    }
-    class Dog : Animal
-    {
-        public Dog()
-        {
-            Console.WriteLine("강아지 생성자 호출");
-        }
-
-        public override void Speak()
-        {
-            Console.WriteLine("멍멍");
-        }
-    }
-
-    class Cat : Animal
-    {
-        public Cat()
-        {
-            Console.WriteLine("고양이 생성자 호출");
-        }
-
-        public override void Speak()
-        {
-            Console.WriteLine("냥냥");
-        }
-    }
-
-    class Horse : Animal
-    {
-        public Horse()
-        {
-            Console.WriteLine("말 생성자 호출");
-        }
-
-        public override void Speak()
-        {
-            Console.WriteLine("이히힝");
+            return String.Format($"{x}, {y}, {z}");
         }
     }
 
@@ -58,33 +25,19 @@ namespace naming
     {
         static void Main(string[] args)
         {
-            ArrayList AnimalList = new ArrayList();
-            for(int i = 0; i < 5; i++)
-            {
-                Console.WriteLine("Press 1 for dog");
-                Console.WriteLine("Press 2 for cat");
-                Console.WriteLine("Press 3 for horse");
-                int select = int.Parse(Console.ReadLine());
+            Point3D a;
+            a.x = 10;
+            a.y = 20;
+            a.z = 30;
 
-                switch (select)
-                {
-                    case 1:
-                        AnimalList.Add(new Dog());
-                        break;
-                    case 2:
-                        AnimalList.Add(new Cat());
-                        break;
-                    case 3:
-                        AnimalList.Add(new Horse());
-                        break;
-                }
-            }
+            Point3D b = new Point3D(10, 20, 40);
+            Point3D c = b;
 
-            foreach(Animal animals in AnimalList)
-            {
-                animals.Speak();
-            }
+            c.z = 60;
 
+            Console.WriteLine(a.ToString());
+            Console.WriteLine(b.ToString());
+            Console.WriteLine(c.ToString());
         }
     }
 }
