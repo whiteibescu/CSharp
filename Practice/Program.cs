@@ -1,43 +1,33 @@
 ﻿using System;
 
-namespace letsgetit
+namespace ArraySample
 {
-    struct  Point3D
-    {
-        public int x;
-        public int y;
-        public int z;
-
-        public Point3D(int x, int y, int z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public override string ToString()
-        {
-            return String.Format($"{x}, {y}, {z}");
-        }
-    }
-
     class MainApp
     {
         static void Main(string[] args)
         {
-            Point3D a;
-            a.x = 10;
-            a.y = 20;
-            a.z = 30;
+            int[] scores = new int[5];
+            scores[0] = 80;
+            scores[1] = 74;
+            scores[2] = 81;
+            scores[3] = 90;
+            scores[4] = 34;
 
-            Point3D b = new Point3D(10, 20, 40);
-            Point3D c = b;
+            foreach (int score in scores)
+            {
+                Console.WriteLine(score);
+            }
 
-            c.z = 60;
+            int sum = 0;
 
-            Console.WriteLine(a.ToString());
-            Console.WriteLine(b.ToString());
-            Console.WriteLine(c.ToString());
+            foreach(int score in scores)
+            {
+                sum += score;
+            }
+
+            int average = sum / scores.Length;
+
+            Console.WriteLine($"Average Score : {average}");
         }
     }
 }
