@@ -1,33 +1,32 @@
 ﻿using System;
 
-namespace ArraySample
+namespace InitializingArray
 {
-    class MainApp
+    class MainArray
     {
         static void Main(string[] args)
         {
-            int[] scores = new int[5];
-            scores[0] = 80;
-            scores[1] = 74;
-            scores[2] = 81;
-            scores[3] = 90;
-            scores[4] = 34;
+            string[] array1 = new string[3] { "안녕", "Hello", "Halo" };
+            Console.WriteLine("array1...");
 
-            foreach (int score in scores)
+            foreach (string greeting in array1)
             {
-                Console.WriteLine(score);
+                Console.WriteLine($" {greeting}");
             }
 
-            int sum = 0;
-
-            foreach(int score in scores)
+            string[] array2 = new string[] { "안녕", "Hello", "Halo" };
+            Console.WriteLine("\narray2...");
+            foreach (string greeting in array2)
             {
-                sum += score;
+                Console.WriteLine($"{greeting}");
             }
 
-            int average = sum / scores.Length;
-
-            Console.WriteLine($"Average Score : {average}");
+            string[] array3 = { "안녕", "Hello", "Halo" };
+            Console.WriteLine("\narray3...");
+            foreach (string greeting in array3)
+            {
+                Console.WriteLine($"{greeting}");
+            }
         }
     }
 }
