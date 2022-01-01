@@ -1,32 +1,20 @@
 ﻿using System;
+using System.Collections;
 
-namespace InitializingArray
+namespace UsingList
 {
-    class MainArray
+    class MainApp
     {
         static void Main(string[] args)
         {
-            string[] array1 = new string[3] { "안녕", "Hello", "Halo" };
-            Console.WriteLine("array1...");
-
-            foreach (string greeting in array1)
+            ArrayList list = new ArrayList();
+            for (int i = 0; i < 5; i++)
             {
-                Console.WriteLine($" {greeting}");
-            }
-
-            string[] array2 = new string[] { "안녕", "Hello", "Halo" };
-            Console.WriteLine("\narray2...");
-            foreach (string greeting in array2)
-            {
-                Console.WriteLine($"{greeting}");
-            }
-
-            string[] array3 = { "안녕", "Hello", "Halo" };
-            Console.WriteLine("\narray3...");
-            foreach (string greeting in array3)
-            {
-                Console.WriteLine($"{greeting}");
+                list.Add(i);
             }
         }
     }
+    ///Arraylist가 다양한 형식의 객체를 담을 수 있는 이유
+    ///public virtual in Add(Object value)
+    ///public virtual void Insert(int index, Object value)
 }
