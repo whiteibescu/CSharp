@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections;
 
-namespace UsingList
+namespace lets
 {
     class MainApp
     {
         static void Main(string[] args)
         {
-            ArrayList list = new ArrayList();
-            for (int i = 0; i < 5; i++)
+            Stack stack = new Stack();
+            stack.Push(1);
+            stack.Push(2);
+            stack.Push(3);
+            stack.Push(4);
+            stack.Push(5);
+
+            while (stack.Count > 0)
             {
-                list.Add(i);
+                Console.WriteLine(stack.Pop());
             }
         }
     }
-    ///Arraylist가 다양한 형식의 객체를 담을 수 있는 이유
-    ///public virtual in Add(Object value)
-    ///public virtual void Insert(int index, Object value)
 }
