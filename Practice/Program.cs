@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections;
-using static System.Console;
 
-namespace UsingList
+namespace Indexer
 {
-    class MainApp
+    class MyList
     {
-        static void Main(string[] args)
+        private int[] array;
+
+        public MyList()
         {
-            ArrayList list = new ArrayList();
-            for (int i = 0; i < 5; i++)
-            {
-                list.Add(i);
-            }
+            array = new int[3];
+        }
+
+        public int this[int index]
+        {
+
         }
     }
 }
