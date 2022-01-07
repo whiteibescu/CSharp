@@ -1,82 +1,93 @@
 ﻿using System;
-
-namespace UsingCallback
+using System.Collections.Generic;
+namespace Observer.Structural
 {
-    delegate int Compare(int a, int b);
-    class MainApp
+    /// <summary>
+    /// Observer Design Pattern
+    /// </summary>
+    public class Program
     {
-        static int AscendCompare(int a, int b)
+        public static void Main(string[] args)
         {
-            if (a > b)
-            {
-                return 1;
-            }
-            else if (a == b)
-            {
-                return 0;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-
-        static int DescendCompare(int a, int b)
-        {
-            if (a < b)
-            {
-                return 1;
-            }
-            else if (a == b)
-            {
-                return 0;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-
-        static void BubbleSort(int[] Dataset, Compare Comparer)
-        {
-            int i = 0;
-            int j = 0;
-            int temp = 0;
-
-            for (i = 0; i < Dataset.Length; i++)
-            {
-
-            }
-            for (j = 0; j < Dataset.Length - (i + 1); ++j)
-            {
-                if (Comparer(Dataset[j], Dataset[j + 1]) > 0);
-                temp = Dataset[j + 1];
-                Dataset[j + 1] = Dataset[j];
-                Dataset[j] = temp;
-            }
-        }
-
-        static void Main(string[] args)
-        {
-            int[] array = { 3, 7, 4, 2, 10 };
-
-            Console.WriteLine("Sorting ascending...");
-            BubbleSort(array, new Compare(AscendCompare));
-
-            for (int i = 0; i < array.Length; i++)
-            {
-                Console.Write($"{array[i]}");
-            }
-
-            int[] array2 = { 7, 2, 8, 10, 11 };
-            Console.WriteLine("\nSorting descending...");
-            BubbleSort(array2, new Compare(DescendCompare));
-
-            for (int i = 0; i < array2.Length; i++)
-            {
-                Console.WriteLine($"{array2[i]}");
-            }
-            Console.WriteLine();
+            // Configure Observer pattern
+            ConcreteSubject s = new ConcreteSubject();
+            s.Attach(new ConcreteObserver(s, "X"));
+            s.Attach(new ConcreteObserver(s, "Y"));
+            s.Attach(new ConcreteObserver(s, "Z"));
+            // Change subject and notify observers
+            s.SubjectState = "ABC";
+            s.Notify();
+            // Wait for user
+            Console.ReadKey();
         }
     }
-}
+    /// <summary>
+    /// The 'Subject' abstract class
+    /// </summary>
+    public abstract class Subject
+    {
+        private List<Observer> observers = new List<Observer>();
+        public void Attach(Observer observer)
+        {
+            observers.Add(observer);
+        }
+        public void Detach(Observer observer)
+        {
+            observers.Remove(observer);
+        }
+        public void Notify()
+        {
+            foreach (Observer o in observers)
+            {
+                o.Update();
+            }
+        }
+    }
+    /// <summary>
+    /// The 'ConcreteSubject' class
+    /// </summary>
+    public class ConcreteSubject : Subject
+    {
+        private string subjectState;
+        // Gets or sets subject state
+        public string SubjectState
+        {
+            get { return subjectState; }
+            set { subjectState = value; }
+        }
+    }
+    /// <summary>
+    /// The 'Observer' abstract class
+    /// </summary>
+    public abstract class Observer
+    {
+        public abstract void Update();
+    }
+    /// <summary>
+    /// The 'ConcreteObserver' class
+    /// </summary>
+    public class ConcreteObserver : Observer
+    {
+        private string name;
+        private string observerState;
+        private ConcreteSubject subject;
+        // Constructor
+        public ConcreteObserver(
+            ConcreteSubject subject, string name)
+        {
+            this.subject = subject;
+            this.name = name;
+        }
+        public override void Update()
+        {
+            observerState = subject.SubjectState;
+            Console.WriteLine("Observer {0}'s new state is {1}",
+                name, observerState);
+        }
+        // Gets or sets subject
+        public ConcreteSubject Subject
+        {
+            get { return subject; }
+            set { subject = value; }
+        }
+    }
