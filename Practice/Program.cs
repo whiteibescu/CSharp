@@ -1,93 +1,116 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace Observer.Structural
+using System.Linq;
+using System.Text;
+
+namespace GOF
 {
-    /// <summary>
-    /// Observer Design Pattern
-    /// </summary>
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            // Configure Observer pattern
-            ConcreteSubject s = new ConcreteSubject();
-            s.Attach(new ConcreteObserver(s, "X"));
-            s.Attach(new ConcreteObserver(s, "Y"));
-            s.Attach(new ConcreteObserver(s, "Z"));
-            // Change subject and notify observers
-            s.SubjectState = "ABC";
-            s.Notify();
-            // Wait for user
-            Console.ReadKey();
+            Building[] Buildings = new Building[2];
+
+            Buildings[0] = new Barracks();
+            Buildings[1] = new StarPort();
+
+            List<Unit> ltAllUnit = new List<Unit>();
+            ltAllUnit.Add(Buildings[0].makeUnit("적 마린"));
+            ltAllUnit.Add(Buildings[1].makeUnit("아군 드랍쉽"));
+
+            ltAllUnit[0].Move("언덕");
+            Unit unitMarine = ltAllUnit[0];
+            ltAllUnit[1].Attacked(ref unitMarine);
+
+            Console.ReadLine();
+        }
+
+    }
+
+    public abstract class Unit
+    {
+
+        public string m_strName;
+        public int m_intAttackPower;
+        public int m_intHealth;
+
+        public abstract void Move(string _strPoint);
+        public abstract void Attacked(ref Unit _unitTarget);
+
+    }
+
+    public class Marine : Unit
+    {
+
+        public Marine(string _strName)
+        {
+            this.m_strName = _strName;
+            this.m_intAttackPower = 15;
+            this.m_intHealth = 100;
+            Console.WriteLine(_strName + " : 생성 완료");
+        }
+
+        public override void Move(string _strPoint)
+        {
+            Console.WriteLine(m_strName + " : " + _strPoint + " 이동 완료");
+        }
+
+
+        public override void Attacked(ref Unit _unitTarget)
+        {
+
+            this.m_intHealth -= _unitTarget.m_intAttackPower;
+            Console.WriteLine(m_strName + " 공격당함 : 공격자->" + _unitTarget.m_strName + " : 남은체력 " + this.m_intHealth.ToString());
+        }
+
+
+    }
+
+    public class Dropship : Unit
+    {
+
+        public Dropship(string _strName)
+        {
+            this.m_strName = _strName;
+            this.m_intAttackPower = 0;
+            this.m_intHealth = 100;
+            Console.WriteLine(_strName + " : 생성 완료");
+        }
+
+
+        public override void Move(string _strPoint)
+        {
+            Console.WriteLine(m_strName + " : " + _strPoint + " 이동 완료");
+        }
+
+        public override void Attacked(ref Unit _unitTarget)
+        {
+            this.m_intHealth -= _unitTarget.m_intAttackPower;
+            Console.WriteLine(m_strName + " 공격당함 : 공격자->" + _unitTarget.m_strName + " : 남은체력 " + this.m_intHealth.ToString());
         }
     }
-    /// <summary>
-    /// The 'Subject' abstract class
-    /// </summary>
-    public abstract class Subject
+
+    public abstract class Building
     {
-        private List<Observer> observers = new List<Observer>();
-        public void Attach(Observer observer)
+        public abstract Unit makeUnit(string _strName);
+    }
+
+    public class Barracks : Building
+    {
+
+        public override Unit makeUnit(string _strName)
         {
-            observers.Add(observer);
-        }
-        public void Detach(Observer observer)
-        {
-            observers.Remove(observer);
-        }
-        public void Notify()
-        {
-            foreach (Observer o in observers)
-            {
-                o.Update();
-            }
+            return new Marine(_strName);
         }
     }
-    /// <summary>
-    /// The 'ConcreteSubject' class
-    /// </summary>
-    public class ConcreteSubject : Subject
+
+    public class StarPort : Building
     {
-        private string subjectState;
-        // Gets or sets subject state
-        public string SubjectState
+
+        public override Unit makeUnit(string _strName)
         {
-            get { return subjectState; }
-            set { subjectState = value; }
+            return new Dropship(_strName);
         }
     }
-    /// <summary>
-    /// The 'Observer' abstract class
-    /// </summary>
-    public abstract class Observer
-    {
-        public abstract void Update();
-    }
-    /// <summary>
-    /// The 'ConcreteObserver' class
-    /// </summary>
-    public class ConcreteObserver : Observer
-    {
-        private string name;
-        private string observerState;
-        private ConcreteSubject subject;
-        // Constructor
-        public ConcreteObserver(
-            ConcreteSubject subject, string name)
-        {
-            this.subject = subject;
-            this.name = name;
-        }
-        public override void Update()
-        {
-            observerState = subject.SubjectState;
-            Console.WriteLine("Observer {0}'s new state is {1}",
-                name, observerState);
-        }
-        // Gets or sets subject
-        public ConcreteSubject Subject
-        {
-            get { return subject; }
-            set { subject = value; }
-        }
-    }
+
+}
