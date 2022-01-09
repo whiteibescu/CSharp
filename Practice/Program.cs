@@ -2,115 +2,78 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace GOF
+namespace CSharp_ObserverPattern
 {
+    abstract class Observer
+    {
+        public abstract void Update();
+    }
+
+    class ConcreteObserver : Observer
+    {
+        private string _name;
+        private string _observerState;
+        private ConcreteSubject _subject;
+        
+        public ConcreteObserver(ConcreteSubject subject, string name)
+        {
+            this._subject = subject;
+            this._name = name;
+        }
+
+        public override void Update()
+        {
+            _observerState = _subject.SubjectState;
+            Console.WriteLine("Observer {0}'s new state is {1}", _name, _observerState);
+        }
+
+        public ConcreteSubject Subject { get; set; }
+    }
+
+    abstract class Subject
+    {
+        private List<Observer> _observers = new List<Observer>();
+
+        public void Attach(Observer observer)
+        {
+            _observers.Add(observer);
+        }
+
+        public void Detach(Observer observer)
+        {
+            _observers.Remove(observer);
+        }
+
+        public void Notify()
+        {
+            foreach (Observer o in _observers)
+            {
+                o.Update();
+            }
+        }
+
+    }
+    class ConcreteSubject : Subject
+    {
+        public string SubjectState { get; set; }
+    }
+    
     class Program
     {
         static void Main(string[] args)
         {
-            Building[] Buildings = new Building[2];
+            ConcreteSubject s = new ConcreteSubject();
 
-            Buildings[0] = new Barracks();
-            Buildings[1] = new StarPort();
+            s.Attach(new ConcreteObserver(s, "X"));
+            s.Attach(new ConcreteObserver(s, "Y"));
+            s.Attach(new ConcreteObserver(s, "Z"));
 
-            List<Unit> ltAllUnit = new List<Unit>();
-            ltAllUnit.Add(Buildings[0].makeUnit("적 마린"));
-            ltAllUnit.Add(Buildings[1].makeUnit("아군 드랍쉽"));
+            s.SubjectState = "ABC";
+            s.Notify();
 
-            ltAllUnit[0].Move("언덕");
-            Unit unitMarine = ltAllUnit[0];
-            ltAllUnit[1].Attacked(ref unitMarine);
-
-            Console.ReadLine();
-        }
-
-    }
-
-    public abstract class Unit
-    {
-
-        public string m_strName;
-        public int m_intAttackPower;
-        public int m_intHealth;
-
-        public abstract void Move(string _strPoint);
-        public abstract void Attacked(ref Unit _unitTarget);
-
-    }
-
-    public class Marine : Unit
-    {
-
-        public Marine(string _strName)
-        {
-            this.m_strName = _strName;
-            this.m_intAttackPower = 15;
-            this.m_intHealth = 100;
-            Console.WriteLine(_strName + " : 생성 완료");
-        }
-
-        public override void Move(string _strPoint)
-        {
-            Console.WriteLine(m_strName + " : " + _strPoint + " 이동 완료");
-        }
-
-
-        public override void Attacked(ref Unit _unitTarget)
-        {
-
-            this.m_intHealth -= _unitTarget.m_intAttackPower;
-            Console.WriteLine(m_strName + " 공격당함 : 공격자->" + _unitTarget.m_strName + " : 남은체력 " + this.m_intHealth.ToString());
-        }
-
-
-    }
-
-    public class Dropship : Unit
-    {
-
-        public Dropship(string _strName)
-        {
-            this.m_strName = _strName;
-            this.m_intAttackPower = 0;
-            this.m_intHealth = 100;
-            Console.WriteLine(_strName + " : 생성 완료");
-        }
-
-
-        public override void Move(string _strPoint)
-        {
-            Console.WriteLine(m_strName + " : " + _strPoint + " 이동 완료");
-        }
-
-        public override void Attacked(ref Unit _unitTarget)
-        {
-            this.m_intHealth -= _unitTarget.m_intAttackPower;
-            Console.WriteLine(m_strName + " 공격당함 : 공격자->" + _unitTarget.m_strName + " : 남은체력 " + this.m_intHealth.ToString());
+            Console.ReadKey();
         }
     }
-
-    public abstract class Building
-    {
-        public abstract Unit makeUnit(string _strName);
-    }
-
-    public class Barracks : Building
-    {
-
-        public override Unit makeUnit(string _strName)
-        {
-            return new Marine(_strName);
-        }
-    }
-
-    public class StarPort : Building
-    {
-
-        public override Unit makeUnit(string _strName)
-        {
-            return new Dropship(_strName);
-        }
-    }
-
 }
