@@ -4,44 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//배열 intArray를 출력하는 5가지의 방법
 namespace HustarDay08
 {
-    class Cat
-    {
-        public void DisplayInfo()
-        {
-            Console.WriteLine("이름 : {0}", NAME);
-            Console.WriteLine("나이 : {0}", AGE);
-        }
-        public string NAME
-        {
-            get;
-            set;
-        }
-        public int AGE
-        {
-            get;
-            set;
-        }
-    }
-    class Program
+    class Lamda
     {
         static void Main(string[] args)
         {
-            List<int> intList = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            for (int i = 0; i < intList.Count; i++)
+            int[] intArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            for (int i = 0; i < intArray.Length; i++)
             {
-                Console.WriteLine("{0}", intList[i]);
+                Console.WriteLine("intArray[{0}] = {1}", i, intArray[i]);
             }
-            intList.ForEach((i) => Console.WriteLine(i));
 
-            var newList = from e in intList
-                          where e % 2 == 0
-                          select new { NAME = "야옹이" + e };
-            foreach (var e in newList)
+            foreach (var i in intArray)
             {
-                Console.WriteLine("NAME : {0}", e.NAME);
+                Console.WriteLine("{0}", i);
             }
+            //Array.ForEach(intArray, MyFunc);
+            /*Array.ForEach(intArray, delegate (int i)
+            {
+                Console.WriteLine("i = {0}", i);
+            });*/
+            //Array.ForEach(intArray, (i) => Console.WriteLine("i = {0}", i));
+            //int Total = intArray.Aggregate(delegate (int i, int j){ return i + j; });
+            int Total = intArray.Aggregate((i, j) => i + j);
+            Console.WriteLine("Total : {0}", Total);
+
+        }
+
+        static int MyFunc(int i, int j)
+        {
+            return i + j;
         }
     }
 }
