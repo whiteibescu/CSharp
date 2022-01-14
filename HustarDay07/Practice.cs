@@ -1,38 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 
-namespace Test9
+namespace HustarDay07
 {
-    delegate void DispChar(int i);
-    class Program
+    class Out
     {
-        static void DispStar(int i)
+        static int Sum(out float avg)
         {
-            Console.Write("*");
-        }
-        static void DispArrow(int i)
-        {
-            Console.Write("->");
-        }
-        static void DispPercent(int i)
-        {
-            Console.WriteLine("{0}%작업완료", i * 10);
-        }
-        static void MyFunc(DispChar dispChar)
-        {
-            for (int i = 1; i <= 10; i++)
+            int iSum = 0;
+            for (int i = 0; i < 10; i++)
             {
-                dispChar(i);
-                Thread.Sleep(100);
+                iSum += i;
             }
+            avg = iSum / 10.0f;
+            return iSum;
         }
         static void Main(string[] args)
         {
-            MyFunc(DispPercent);
+            float avg = 0;
+            int iSum = Sum(out avg);
+            Console.WriteLine("Sum: {0}, AVG : {1}", iSum.avg);
         }
     }
 }
