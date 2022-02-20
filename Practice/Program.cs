@@ -1,79 +1,146 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CSharp_ObserverPattern
-{
-    abstract class Observer
-    {
-        public abstract void Update();
-    }
-
-    class ConcreteObserver : Observer
-    {
-        private string _name;
-        private string _observerState;
-        private ConcreteSubject _subject;
-        
-        public ConcreteObserver(ConcreteSubject subject, string name)
-        {
-            this._subject = subject;
-            this._name = name;
-        }
-
-        public override void Update()
-        {
-            _observerState = _subject.SubjectState;
-            Console.WriteLine("Observer {0}'s new state is {1}", _name, _observerState);
-        }
-
-        public ConcreteSubject Subject { get; set; }
-    }
-
-    abstract class Subject
-    {
-        private List<Observer> _observers = new List<Observer>();
-
-        public void Attach(Observer observer)
-        {
-            _observers.Add(observer);
-        }
-
-        public void Detach(Observer observer)
-        {
-            _observers.Remove(observer);
-        }
-
-        public void Notify()
-        {
-            foreach (Observer o in _observers)
-            {
-                o.Update();
-            }
-        }
-
-    }
-    class ConcreteSubject : Subject
-    {
-        public string SubjectState { get; set; }
-    }
-    
+namespace Decorator.Realtime
+{ 
     class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            ConcreteSubject s = new ConcreteSubject();
+            // Create book
 
-            s.Attach(new ConcreteObserver(s, "X"));
-            s.Attach(new ConcreteObserver(s, "Y"));
-            s.Attach(new ConcreteObserver(s, "Z"));
+            Book book = new Book("Worley", "Inside ASP.NET", 10);
+            book.Display();
 
-            s.SubjectState = "ABC";
-            s.Notify();
+            // Create video
+
+            Video video = new Video("Spielberg", "Jaws", 23, 92);
+            video.Display();
+
+            // Make video borrowable, then borrow and display
+
+            Console.WriteLine("\nMaking video borrowable:");
+
+            Borrowable borrowvideo = new Borrowable(video);
+            borrowvideo.BorrowItem("Customer #1");
+            borrowvideo.BorrowItem("Customer #2");
+
+            borrowvideo.Display();
+
+            Borrowable borrowbook = new Borrowable(book);
+            borrowbook.BorrowItem("Customer #1");
+            borrowbook.BorrowItem("Customer #2");
+
+            borrowbook.Display();
+            // Wait for user
 
             Console.ReadKey();
+        }
+    }
+
+    public abstract class LibraryItem
+    {
+        private int numCopies;
+
+        public int NumCopies
+        {
+            get { return numCopies; }
+            set { numCopies = value; }
+        }
+
+        public abstract void Display();
+    }
+
+    public class Book : LibraryItem
+    {
+        private string author;
+        private string title;
+
+        public Book(string author, string title, int numCopies)
+        {
+            this.author = author;
+            this.title = title;
+            this.NumCopies = numCopies;
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine("\nBook ------ ");
+            Console.WriteLine(" Author: {0}", author);
+            Console.WriteLine(" Title: {0}", title);
+            Console.WriteLine(" # Copies: {0}", NumCopies);
+        }
+    }
+
+    public class Video : LibraryItem
+    {
+        private string director;
+        private string title;
+        private int playTime;
+
+        public Video(string director, string title, int playTime, int numCopies)
+        {
+            this.director = director;
+            this.title = title;
+            this.playTime = playTime;
+            this.NumCopies = numCopies;
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine("\nVideo ----- ");
+            Console.WriteLine(" Director: {0}", director);
+            Console.WriteLine(" Title: {0}", title);
+            Console.WriteLine(" # Copies: {0}", NumCopies);
+            Console.WriteLine(" Playtime: {0}\n", playTime);
+        }
+    }
+
+
+    public abstract class Decorator : LibraryItem
+    {
+        protected LibraryItem libraryItem;
+
+        public Decorator(LibraryItem libraryItem)
+        {
+            this.libraryItem = libraryItem;
+        }
+
+        public override void Display()
+        {
+            libraryItem.Display();
+        }
+    }
+
+
+    public class Borrowable : Decorator
+    {
+        protected readonly List<string> borrowers = new List<string>();
+
+        public Borrowable(LibraryItem libraryItem) : base(libraryItem)
+        { 
+        }
+
+        public void BorrowItem(string name)
+        {
+            borrowers.Add(name);
+            libraryItem.NumCopies--;
+        }
+
+        public void ReturnItem(string name)
+        {
+            borrowers.Remove(name);
+            libraryItem.NumCopies++;
+        }
+
+        public override void Display()
+        {
+            base.Display();
+            
+            foreach (string borrwer in borrowers)
+            {
+                Console.WriteLine(" borrower: " + borrwer);
+            }
         }
     }
 }
