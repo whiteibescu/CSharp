@@ -1,146 +1,108 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Decorator.Realtime
-{ 
-    class Program
+namespace Observer.Realworld
+{
+    public class Program
     {
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
-            // Create book
+            IBM ibm = new IBM("IBM", 120.00);
+            ibm.Attach(new Investor("Sorros"));
+            ibm.Attach(new Investor("Berkshire"));
 
-            Book book = new Book("Worley", "Inside ASP.NET", 10);
-            book.Display();
-
-            // Create video
-
-            Video video = new Video("Spielberg", "Jaws", 23, 92);
-            video.Display();
-
-            // Make video borrowable, then borrow and display
-
-            Console.WriteLine("\nMaking video borrowable:");
-
-            Borrowable borrowvideo = new Borrowable(video);
-            borrowvideo.BorrowItem("Customer #1");
-            borrowvideo.BorrowItem("Customer #2");
-
-            borrowvideo.Display();
-
-            Borrowable borrowbook = new Borrowable(book);
-            borrowbook.BorrowItem("Customer #1");
-            borrowbook.BorrowItem("Customer #2");
-
-            borrowbook.Display();
-            // Wait for user
+            ibm.Price = 120.10;
+            ibm.Price = 121.00;
+            ibm.Price = 120.50;
+            ibm.Price = 120.75;
 
             Console.ReadKey();
         }
     }
 
-    public abstract class LibraryItem
+    public interface IInvestor
     {
-        private int numCopies;
-
-        public int NumCopies
-        {
-            get { return numCopies; }
-            set { numCopies = value; }
-        }
-
-        public abstract void Display();
+        void Update(Stock stock);
     }
 
-    public class Book : LibraryItem
+    public abstract class Stock
     {
-        private string author;
-        private string title;
+        private string symbol;
+        private double price;
+        private List<IInvestor> investors = new List<IInvestor>();
 
-        public Book(string author, string title, int numCopies)
+        public Stock(string symbol, double price)
         {
-            this.author = author;
-            this.title = title;
-            this.NumCopies = numCopies;
+            this.symbol = symbol;
+            this.price = price;
         }
 
-        public override void Display()
+        public void Attach(IInvestor investor)
         {
-            Console.WriteLine("\nBook ------ ");
-            Console.WriteLine(" Author: {0}", author);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
-        }
-    }
-
-    public class Video : LibraryItem
-    {
-        private string director;
-        private string title;
-        private int playTime;
-
-        public Video(string director, string title, int playTime, int numCopies)
-        {
-            this.director = director;
-            this.title = title;
-            this.playTime = playTime;
-            this.NumCopies = numCopies;
+            investors.Add(investor);
         }
 
-        public override void Display()
+        public void Detach(IInvestor investor)
         {
-            Console.WriteLine("\nVideo ----- ");
-            Console.WriteLine(" Director: {0}", director);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
-            Console.WriteLine(" Playtime: {0}\n", playTime);
+            investors.Remove(investor);
         }
-    }
-
-
-    public abstract class Decorator : LibraryItem
-    {
-        protected LibraryItem libraryItem;
-
-        public Decorator(LibraryItem libraryItem)
+        public void Notify()
         {
-            this.libraryItem = libraryItem;
-        }
-
-        public override void Display()
-        {
-            libraryItem.Display();
-        }
-    }
-
-
-    public class Borrowable : Decorator
-    {
-        protected readonly List<string> borrowers = new List<string>();
-
-        public Borrowable(LibraryItem libraryItem) : base(libraryItem)
-        { 
-        }
-
-        public void BorrowItem(string name)
-        {
-            borrowers.Add(name);
-            libraryItem.NumCopies--;
-        }
-
-        public void ReturnItem(string name)
-        {
-            borrowers.Remove(name);
-            libraryItem.NumCopies++;
-        }
-
-        public override void Display()
-        {
-            base.Display();
-            
-            foreach (string borrwer in borrowers)
+            foreach (IInvestor investor in investors)
             {
-                Console.WriteLine(" borrower: " + borrwer);
+                investor.Update(this);
             }
+
+            Console.WriteLine("");
+        }
+
+        public double Price
+        {
+            get { return price; }
+            set
+            {
+                if(price!= value)
+                {
+                    price = value;
+                    Notify();
+                }
+            }
+        }
+
+        public string Symbol
+        {
+            get { return symbol; }
+        }
+    }
+
+    public class IBM: Stock
+    {
+        public IBM(string symbol, double price) 
+            : base(symbol, price)
+        {
+
+        }
+    }
+
+    public class Investor : IInvestor
+    {
+        private string name;
+        private Stock stock;
+
+        public Investor(string name)
+        {
+            this.name = name;
+        }
+
+        public void Update(Stock stock)
+        {
+            Console.WriteLine("Notified {0} of {1}'s " + "change to {2:C}", name, stock.Symbol, stock.Price);
+        }
+
+        public Stock Stock
+        {
+            get { return stock; }
+            set { stock = value; }
         }
     }
 }
