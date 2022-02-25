@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Visitor.Structural
+namespace Visitor.RealWorld
 {
     /// <summary>
     /// Visitor Design Pattern
@@ -11,21 +11,17 @@ namespace Visitor.Structural
     {
         public static void Main(string[] args)
         {
-            // Setup structure
+            // Setup employee collection
 
-            ObjectStructure o = new ObjectStructure();
-            o.Attach(new ConcreteElementA());
-            o.Attach(new ConcreteElementB());
+            Employees employee = new Employees();
+            employee.Attach(new Clerk());
+            employee.Attach(new Director());
+            employee.Attach(new President());
 
-            // Create visitor objects
+            // Employees are 'visited'
 
-            ConcreteVisitor1 v1 = new ConcreteVisitor1();
-            ConcreteVisitor2 v2 = new ConcreteVisitor2();
-
-            // Structure accepting visitors
-
-            o.Accept(v1);
-            o.Accept(v2);
+            employee.Accept(new IncomeVisitor());
+            employee.Accept(new VacationVisitor());
 
             // Wait for user
 
@@ -34,35 +30,31 @@ namespace Visitor.Structural
     }
 
     /// <summary>
-    /// The 'Visitor' abstract class
+    /// The 'Visitor' interface
     /// </summary>
 
-    public abstract class Visitor
+    public interface IVisitor
     {
-        public abstract void VisitConcreteElementA(
-            ConcreteElementA concreteElementA);
-        public abstract void VisitConcreteElementB(
-            ConcreteElementB concreteElementB);
+        void Visit(Element element);
     }
 
     /// <summary>
     /// A 'ConcreteVisitor' class
     /// </summary>
 
-    public class ConcreteVisitor1 : Visitor
+    public class IncomeVisitor : IVisitor
     {
-        public override void VisitConcreteElementA(
-            ConcreteElementA concreteElementA)
+        public void Visit(Element element)
         {
-            Console.WriteLine("{0} visited by {1}",
-                concreteElementA.GetType().Name, this.GetType().Name);
-        }
+            Employee employee = element as Employee;
 
-        public override void VisitConcreteElementB(
-            ConcreteElementB concreteElementB)
-        {
-            Console.WriteLine("{0} visited by {1}",
-                concreteElementB.GetType().Name, this.GetType().Name);
+            // Provide 10% pay raise
+
+            employee.Income *= 1.10;
+
+            Console.WriteLine("{0} {1}'s new income: {2:C}",
+                employee.GetType().Name, employee.Name,
+                employee.Income);
         }
     }
 
@@ -70,20 +62,19 @@ namespace Visitor.Structural
     /// A 'ConcreteVisitor' class
     /// </summary>
 
-    public class ConcreteVisitor2 : Visitor
+    public class VacationVisitor : IVisitor
     {
-        public override void VisitConcreteElementA(
-            ConcreteElementA concreteElementA)
+        public void Visit(Element element)
         {
-            Console.WriteLine("{0} visited by {1}",
-                concreteElementA.GetType().Name, this.GetType().Name);
-        }
+            Employee employee = element as Employee;
 
-        public override void VisitConcreteElementB(
-            ConcreteElementB concreteElementB)
-        {
-            Console.WriteLine("{0} visited by {1}",
-                concreteElementB.GetType().Name, this.GetType().Name);
+            // Provide 3 extra vacation days
+
+            employee.VacationDays += 3;
+
+            Console.WriteLine("{0} {1}'s new vacation days: {2}",
+                employee.GetType().Name, employee.Name,
+                employee.VacationDays);
         }
     }
 
@@ -93,38 +84,50 @@ namespace Visitor.Structural
 
     public abstract class Element
     {
-        public abstract void Accept(Visitor visitor);
+        public abstract void Accept(IVisitor visitor);
     }
 
     /// <summary>
-    /// A 'ConcreteElement' class
+    /// The 'ConcreteElement' class
     /// </summary>
 
-    public class ConcreteElementA : Element
+    public class Employee : Element
     {
-        public override void Accept(Visitor visitor)
+        private string name;
+        private double income;
+        private int vacationDays;
+
+        // Constructor
+
+        public Employee(string name, double income,
+            int vacationDays)
         {
-            visitor.VisitConcreteElementA(this);
+            this.name = name;
+            this.income = income;
+            this.vacationDays = vacationDays;
         }
 
-        public void OperationA()
+        public string Name
         {
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteElement' class
-    /// </summary>
-
-    public class ConcreteElementB : Element
-    {
-        public override void Accept(Visitor visitor)
-        {
-            visitor.VisitConcreteElementB(this);
+            get { return name; }
+            set { name = value; }
         }
 
-        public void OperationB()
+        public double Income
         {
+            get { return income; }
+            set { income = value; }
+        }
+
+        public int VacationDays
+        {
+            get { return vacationDays; }
+            set { vacationDays = value; }
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 
@@ -132,26 +135,57 @@ namespace Visitor.Structural
     /// The 'ObjectStructure' class
     /// </summary>
 
-    public class ObjectStructure
+    public class Employees
     {
-        List<Element> elements = new List<Element>();
+        private List<Employee> employees = new List<Employee>();
 
-        public void Attach(Element element)
+        public void Attach(Employee employee)
         {
-            elements.Add(element);
+            employees.Add(employee);
         }
 
-        public void Detach(Element element)
+        public void Detach(Employee employee)
         {
-            elements.Remove(element);
+            employees.Remove(employee);
         }
 
-        public void Accept(Visitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            foreach (Element element in elements)
+            foreach (Employee employee in employees)
             {
-                element.Accept(visitor);
+                employee.Accept(visitor);
             }
+            Console.WriteLine();
+        }
+    }
+
+    // Three employee types
+
+    public class Clerk : Employee
+    {
+        // Constructor
+
+        public Clerk()
+            : base("Kevin", 25000.0, 14)
+        {
+        }
+    }
+
+    public class Director : Employee
+    {
+        // Constructor
+        public Director()
+            : base("Elly", 35000.0, 16)
+        {
+        }
+    }
+
+    public class President : Employee
+    {
+        // Constructor
+        public President()
+            : base("Eric", 45000.0, 21)
+        {
         }
     }
 }
