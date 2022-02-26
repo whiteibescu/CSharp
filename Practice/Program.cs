@@ -1,27 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Visitor.RealWorld
+namespace Template.Structural
 {
     /// <summary>
-    /// Visitor Design Pattern
+    /// Template Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Setup employee collection
+            AbstractClass aA = new ConcreteClassA();
+            aA.TemplateMethod();
 
-            Employees employee = new Employees();
-            employee.Attach(new Clerk());
-            employee.Attach(new Director());
-            employee.Attach(new President());
-
-            // Employees are 'visited'
-
-            employee.Accept(new IncomeVisitor());
-            employee.Accept(new VacationVisitor());
+            AbstractClass aB = new ConcreteClassB();
+            aB.TemplateMethod();
 
             // Wait for user
 
@@ -30,162 +23,55 @@ namespace Visitor.RealWorld
     }
 
     /// <summary>
-    /// The 'Visitor' interface
+    /// The 'AbstractClass' abstract class
     /// </summary>
 
-    public interface IVisitor
+    public abstract class AbstractClass
     {
-        void Visit(Element element);
-    }
+        public abstract void PrimitiveOperation1();
+        public abstract void PrimitiveOperation2();
 
-    /// <summary>
-    /// A 'ConcreteVisitor' class
-    /// </summary>
+        // The "Template method"
 
-    public class IncomeVisitor : IVisitor
-    {
-        public void Visit(Element element)
+        public void TemplateMethod()
         {
-            Employee employee = element as Employee;
-
-            // Provide 10% pay raise
-
-            employee.Income *= 1.10;
-
-            Console.WriteLine("{0} {1}'s new income: {2:C}",
-                employee.GetType().Name, employee.Name,
-                employee.Income);
+            PrimitiveOperation1();
+            PrimitiveOperation2();
+            Console.WriteLine("");
         }
     }
 
     /// <summary>
-    /// A 'ConcreteVisitor' class
+    /// A 'ConcreteClass' class
     /// </summary>
 
-    public class VacationVisitor : IVisitor
+    public class ConcreteClassA : AbstractClass
     {
-        public void Visit(Element element)
+        public override void PrimitiveOperation1()
         {
-            Employee employee = element as Employee;
+            Console.WriteLine("ConcreteClassA.PrimitiveOperation1()");
+        }
 
-            // Provide 3 extra vacation days
-
-            employee.VacationDays += 3;
-
-            Console.WriteLine("{0} {1}'s new vacation days: {2}",
-                employee.GetType().Name, employee.Name,
-                employee.VacationDays);
+        public override void PrimitiveOperation2()
+        {
+            Console.WriteLine("ConcreteClassA.PrimitiveOperation2()");
         }
     }
 
     /// <summary>
-    /// The 'Element' abstract class
+    /// A 'ConcreteClass' class
     /// </summary>
 
-    public abstract class Element
+    public class ConcreteClassB : AbstractClass
     {
-        public abstract void Accept(IVisitor visitor);
-    }
-
-    /// <summary>
-    /// The 'ConcreteElement' class
-    /// </summary>
-
-    public class Employee : Element
-    {
-        private string name;
-        private double income;
-        private int vacationDays;
-
-        // Constructor
-
-        public Employee(string name, double income,
-            int vacationDays)
+        public override void PrimitiveOperation1()
         {
-            this.name = name;
-            this.income = income;
-            this.vacationDays = vacationDays;
+            Console.WriteLine("ConcreteClassB.PrimitiveOperation1()");
         }
 
-        public string Name
+        public override void PrimitiveOperation2()
         {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public double Income
-        {
-            get { return income; }
-            set { income = value; }
-        }
-
-        public int VacationDays
-        {
-            get { return vacationDays; }
-            set { vacationDays = value; }
-        }
-
-        public override void Accept(IVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-    }
-
-    /// <summary>
-    /// The 'ObjectStructure' class
-    /// </summary>
-
-    public class Employees
-    {
-        private List<Employee> employees = new List<Employee>();
-
-        public void Attach(Employee employee)
-        {
-            employees.Add(employee);
-        }
-
-        public void Detach(Employee employee)
-        {
-            employees.Remove(employee);
-        }
-
-        public void Accept(IVisitor visitor)
-        {
-            foreach (Employee employee in employees)
-            {
-                employee.Accept(visitor);
-            }
-            Console.WriteLine();
-        }
-    }
-
-    // Three employee types
-
-    public class Clerk : Employee
-    {
-        // Constructor
-
-        public Clerk()
-            : base("Kevin", 25000.0, 14)
-        {
-        }
-    }
-
-    public class Director : Employee
-    {
-        // Constructor
-        public Director()
-            : base("Elly", 35000.0, 16)
-        {
-        }
-    }
-
-    public class President : Employee
-    {
-        // Constructor
-        public President()
-            : base("Eric", 45000.0, 21)
-        {
+            Console.WriteLine("ConcreteClassB.PrimitiveOperation2()");
         }
     }
 }
