@@ -1,184 +1,164 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Bridge.RealWorld
+namespace DoFactory.GangOfFour.Abstract.RealWorld
 {
     /// <summary>
-    /// Bridge Design Pattern
+    /// MainApp startup class for Real-World
+    /// Abstract Factory Design Pattern.
     /// </summary>
 
-    public class Program
+    class MainApp
     {
-        public static void Main(string[] args)
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+
+        public static void Main()
         {
-            // Create RefinedAbstraction
+            // Create and run the African animal world
 
-            var customers = new Customers();
+            ContinentFactory africa = new AfricaFactory();
+            AnimalWorld world = new AnimalWorld(africa);
+            world.RunFoodChain();
 
-            // Set ConcreteImplementor
+            // Create and run the American animal world
 
-            customers.Data = new CustomersData("Chicago");
+            ContinentFactory america = new AmericaFactory();
+            world = new AnimalWorld(america);
+            world.RunFoodChain();
 
-            // Exercise the bridge
-
-            customers.Show();
-            customers.Next();
-            customers.Show();
-            customers.Next();
-            customers.Show();
-            customers.Add("Henry Velasquez");
-
-            customers.ShowAll();
-
-            // Wait for user
+            // Wait for user input
 
             Console.ReadKey();
         }
     }
+
+
     /// <summary>
-    /// The 'Abstraction' class
+    /// The 'AbstractFactory' abstract class
     /// </summary>
 
-    public class CustomersBase
+    abstract class ContinentFactory
     {
-        private DataObject dataObject;
+        public abstract Herbivore CreateHerbivore();
+        public abstract Carnivore CreateCarnivore();
+    }
 
-        public DataObject Data
+    /// <summary>
+    /// The 'ConcreteFactory1' class
+    /// </summary>
+
+    class AfricaFactory : ContinentFactory
+    {
+        public override Herbivore CreateHerbivore()
         {
-            set { dataObject = value; }
-            get { return dataObject; }
+            return new Wildebeest();
         }
-
-        public virtual void Next()
+        public override Carnivore CreateCarnivore()
         {
-            dataObject.NextRecord();
-        }
-
-        public virtual void Prior()
-        {
-            dataObject.PriorRecord();
-        }
-
-        public virtual void Add(string customer)
-        {
-            dataObject.AddRecord(customer);
-        }
-
-        public virtual void Delete(string customer)
-        {
-            dataObject.DeleteRecord(customer);
-        }
-
-        public virtual void Show()
-        {
-            dataObject.ShowRecord();
-        }
-
-        public virtual void ShowAll()
-        {
-            dataObject.ShowAllRecords();
+            return new Lion();
         }
     }
 
     /// <summary>
-    /// The 'RefinedAbstraction' class
+    /// The 'ConcreteFactory2' class
     /// </summary>
 
-    public class Customers : CustomersBase
+    class AmericaFactory : ContinentFactory
     {
-        public override void ShowAll()
+        public override Herbivore CreateHerbivore()
         {
-            // Add separator lines
-
-            Console.WriteLine();
-            Console.WriteLine("------------------------");
-            base.ShowAll();
-            Console.WriteLine("------------------------");
+            return new Bison();
+        }
+        public override Carnivore CreateCarnivore()
+        {
+            return new Wolf();
         }
     }
 
     /// <summary>
-    /// The 'Implementor' abstract class
+    /// The 'AbstractProductA' abstract class
     /// </summary>
 
-    public abstract class DataObject
+    abstract class Herbivore
     {
-        public abstract void NextRecord();
-        public abstract void PriorRecord();
-        public abstract void AddRecord(string name);
-        public abstract void DeleteRecord(string name);
-        public abstract string GetCurrentRecord();
-        public abstract void ShowRecord();
-        public abstract void ShowAllRecords();
     }
 
     /// <summary>
-    /// The 'ConcreteImplementor' class
+    /// The 'AbstractProductB' abstract class
     /// </summary>
 
-    public class CustomersData : DataObject
+    abstract class Carnivore
     {
-        private readonly List<string> customers = new List<string>();
-        private int current = 0;
-        private string city;
+        public abstract void Eat(Herbivore h);
+    }
 
-        public CustomersData(string city)
+    /// <summary>
+    /// The 'ProductA1' class
+    /// </summary>
+
+    class Wildebeest : Herbivore
+    {
+    }
+
+    /// <summary>
+    /// The 'ProductB1' class
+    /// </summary>
+
+    class Lion : Carnivore
+    {
+        public override void Eat(Herbivore h)
         {
-            this.city = city;
+            // Eat Wildebeest
 
-            // Loaded from a database 
+            Console.WriteLine(this.GetType().Name +
+              " eats " + h.GetType().Name);
+        }
+    }
 
-            customers.Add("Jim Jones");
-            customers.Add("Samual Jackson");
-            customers.Add("Allen Good");
-            customers.Add("Ann Stills");
-            customers.Add("Lisa Giolani");
+    /// <summary>
+    /// The 'ProductA2' class
+    /// </summary>
+
+    class Bison : Herbivore
+    {
+    }
+
+    /// <summary>
+    /// The 'ProductB2' class
+    /// </summary>
+
+    class Wolf : Carnivore
+    {
+        public override void Eat(Herbivore h)
+        {
+            // Eat Bison
+
+            Console.WriteLine(this.GetType().Name +
+              " eats " + h.GetType().Name);
+        }
+    }
+
+    /// <summary>
+    /// The 'Client' class 
+    /// </summary>
+
+    class AnimalWorld
+    {
+        private Herbivore _herbivore;
+        private Carnivore _carnivore;
+
+        // Constructor
+
+        public AnimalWorld(ContinentFactory factory)
+        {
+            _carnivore = factory.CreateCarnivore();
+            _herbivore = factory.CreateHerbivore();
         }
 
-        public override void NextRecord()
+        public void RunFoodChain()
         {
-            if (current <= customers.Count - 1)
-            {
-                current++;
-            }
-        }
-
-        public override void PriorRecord()
-        {
-            if (current > 0)
-            {
-                current--;
-            }
-        }
-
-        public override void AddRecord(string customer)
-        {
-            customers.Add(customer);
-        }
-
-        public override void DeleteRecord(string customer)
-        {
-            customers.Remove(customer);
-        }
-
-        public override string GetCurrentRecord()
-        {
-            return customers[current];
-        }
-
-        public override void ShowRecord()
-        {
-            Console.WriteLine(customers[current]);
-        }
-
-        public override void ShowAllRecords()
-        {
-            Console.WriteLine("Customer City: " + city);
-
-            foreach (string customer in customers)
-            {
-                Console.WriteLine(" " + customer);
-            }
+            _carnivore.Eat(_herbivore);
         }
     }
 }
