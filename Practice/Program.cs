@@ -1,35 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Iterator.Structural
+namespace Composite.Structural
 {
     /// <summary>
-    /// Iterator Design Pattern
+    /// Composite Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            ConcreteAggregate a = new ConcreteAggregate();
-            a[0] = "Item A";
-            a[1] = "Item B";
-            a[2] = "Item C";
-            a[3] = "Item D";
+            // Create a tree structure
 
-            // Create Iterator and provide aggregate
+            Composite root = new Composite("root");
+            root.Add(new Leaf("Leaf A"));
+            root.Add(new Leaf("Leaf B"));
 
-            Iterator i = a.CreateIterator();
+            Composite comp = new Composite("Composite X");
+            comp.Add(new Leaf("Leaf XA"));
+            comp.Add(new Leaf("Leaf XB"));
 
-            Console.WriteLine("Iterating over collection:");
+            root.Add(comp);
+            root.Add(new Leaf("Leaf C"));
 
-            object item = i.First();
+            // Add and remove a leaf
 
-            while (item != null)
-            {
-                Console.WriteLine(item);
-                item = i.Next();
-            }
+            Leaf leaf = new Leaf("Leaf D");
+            root.Add(leaf);
+            root.Remove(leaf);
+
+            // Recursively display tree
+
+            root.Display(1);
 
             // Wait for user
 
@@ -38,103 +41,89 @@ namespace Iterator.Structural
     }
 
     /// <summary>
-    /// The 'Aggregate' abstract class
+    /// The 'Component' abstract class
     /// </summary>
 
-    public abstract class Aggregate
+    public abstract class Component
     {
-        public abstract Iterator CreateIterator();
-    }
-
-    /// <summary>
-    /// The 'ConcreteAggregate' class
-    /// </summary>
-
-    public class ConcreteAggregate : Aggregate
-    {
-        List<object> items = new List<object>();
-
-        public override Iterator CreateIterator()
-        {
-            return new ConcreteIterator(this);
-        }
-
-        // Get item count
-
-        public int Count
-        {
-            get { return items.Count; }
-        }
-
-        // Indexer
-
-        public object this[int index]
-        {
-            get { return items[index]; }
-            set { items.Insert(index, value); }
-        }
-    }
-
-    /// <summary>
-    /// The 'Iterator' abstract class
-    /// </summary>
-
-    public abstract class Iterator
-    {
-        public abstract object First();
-        public abstract object Next();
-        public abstract bool IsDone();
-        public abstract object CurrentItem();
-    }
-
-    /// <summary>
-    /// The 'ConcreteIterator' class
-    /// </summary>
-
-    public class ConcreteIterator : Iterator
-    {
-        ConcreteAggregate aggregate;
-        int current = 0;
+        protected string name;
 
         // Constructor
 
-        public ConcreteIterator(ConcreteAggregate aggregate)
+        public Component(string name)
         {
-            this.aggregate = aggregate;
+            this.name = name;
         }
 
-        // Gets first iteration item
+        public abstract void Add(Component c);
+        public abstract void Remove(Component c);
+        public abstract void Display(int depth);
+    }
 
-        public override object First()
+    /// <summary>
+    /// The 'Composite' class
+    /// </summary>
+
+    public class Composite : Component
+    {
+        List<Component> children = new List<Component>();
+
+        // Constructor
+
+        public Composite(string name)
+            : base(name)
         {
-            return aggregate[0];
         }
 
-        // Gets next iteration item
-
-        public override object Next()
+        public override void Add(Component component)
         {
-            object ret = null;
-            if (current < aggregate.Count - 1)
+            children.Add(component);
+        }
+
+        public override void Remove(Component component)
+        {
+            children.Remove(component);
+        }
+
+        public override void Display(int depth)
+        {
+            Console.WriteLine(new String('-', depth) + name);
+
+            // Recursively display child nodes
+
+            foreach (Component component in children)
             {
-                ret = aggregate[++current];
+                component.Display(depth + 2);
             }
+        }
+    }
 
-            return ret;
+    /// <summary>
+    /// The 'Leaf' class
+    /// </summary>
+
+    public class Leaf : Component
+    {
+        // Constructor
+
+        public Leaf(string name)
+            : base(name)
+        {
         }
 
-        // Gets current iteration item
-
-        public override object CurrentItem()
+        public override void Add(Component c)
         {
-            return aggregate[current];
+            Console.WriteLine("Cannot add to a leaf");
         }
 
-        // Gets whether iterations are complete
-
-        public override bool IsDone()
+        public override void Remove(Component c)
         {
-            return current >= aggregate.Count;
+            Console.WriteLine("Cannot remove from a leaf");
+        }
+
+        public override void Display(int depth)
+        {
+            Console.WriteLine(new String('-', depth) + name);
         }
     }
 }
