@@ -1,21 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Template.RealWorld
+namespace Iterator.Structural
 {
     /// <summary>
-    /// Template Design Pattern
+    /// Iterator Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+            ConcreteAggregate a = new ConcreteAggregate();
+            a[0] = "Item A";
+            a[1] = "Item B";
+            a[2] = "Item C";
+            a[3] = "Item D";
 
-            DataAccessor products = new Products();
-            products.Run(3);
+            // Create Iterator and provide aggregate
+
+            Iterator i = a.CreateIterator();
+
+            Console.WriteLine("Iterating over collection:");
+
+            object item = i.First();
+
+            while (item != null)
+            {
+                Console.WriteLine(item);
+                item = i.Next();
+            }
 
             // Wait for user
 
@@ -24,237 +38,103 @@ namespace Template.RealWorld
     }
 
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'Aggregate' abstract class
     /// </summary>
 
-    public abstract class DataAccessor
+    public abstract class Aggregate
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+        public abstract Iterator CreateIterator();
+    }
 
-        // The 'Template Method' 
+    /// <summary>
+    /// The 'ConcreteAggregate' class
+    /// </summary>
 
-        public void Run(int top)
+    public class ConcreteAggregate : Aggregate
+    {
+        List<object> items = new List<object>();
+
+        public override Iterator CreateIterator()
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
+            return new ConcreteIterator(this);
+        }
+
+        // Get item count
+
+        public int Count
+        {
+            get { return items.Count; }
+        }
+
+        // Indexer
+
+        public object this[int index]
+        {
+            get { return items[index]; }
+            set { items.Insert(index, value); }
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'Iterator' abstract class
     /// </summary>
 
-    public class Categories : DataAccessor
+    public abstract class Iterator
     {
-        private List<string> categories;
+        public abstract object First();
+        public abstract object Next();
+        public abstract bool IsDone();
+        public abstract object CurrentItem();
+    }
 
-        public override void Connect()
+    /// <summary>
+    /// The 'ConcreteIterator' class
+    /// </summary>
+
+    public class ConcreteIterator : Iterator
+    {
+        ConcreteAggregate aggregate;
+        int current = 0;
+
+        // Constructor
+
+        public ConcreteIterator(ConcreteAggregate aggregate)
         {
-            categories = new List<string>();
+            this.aggregate = aggregate;
         }
 
-        public override void Select()
+        // Gets first iteration item
+
+        public override object First()
         {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
+            return aggregate[0];
         }
 
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
+        // Gets next iteration item
 
-            for (int i = 0; i < top; i++)
+        public override object Next()
+        {
+            object ret = null;
+            if (current < aggregate.Count - 1)
             {
-                Console.WriteLine(categories[i]);
+                ret = aggregate[++current];
             }
 
-            Console.WriteLine();
+            return ret;
         }
 
-        public override void Disconnect()
+        // Gets current iteration item
+
+        public override object CurrentItem()
         {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
+            return aggregate[current];
         }
 
-        public override void Select()
+        // Gets whether iterations are complete
+
+        public override bool IsDone()
         {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
-    }
-}
-
-namespace Template.RealWorlds
-{
-    /// <summary>
-    /// Template Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
-
-            DataAccessor products = new Products();
-            products.Run(3);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'AbstractClass' abstract class
-    /// </summary>
-
-    public abstract class DataAccessor
-    {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
-
-        // The 'Template Method' 
-
-        public void Run(int top)
-        {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Categories : DataAccessor
-    {
-        private List<string> categories;
-
-        public override void Connect()
-        {
-            categories = new List<string>();
-        }
-
-        public override void Select()
-        {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
+            return current >= aggregate.Count;
         }
     }
 }
