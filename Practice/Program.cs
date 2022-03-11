@@ -1,38 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Composite.Structural
+namespace DoFactory.GangOfFour.Builder.Structural
 {
     /// <summary>
-    /// Composite Design Pattern
+    /// MainApp startup class for Structural
+    /// Builder Design Pattern.
     /// </summary>
 
-    public class Program
+    public class MainApp
     {
-        public static void Main(string[] args)
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+
+        public static void Main()
         {
-            // Create a tree structure
+            // Create director and builders
 
-            Composite root = new Composite("root");
-            root.Add(new Leaf("Leaf A"));
-            root.Add(new Leaf("Leaf B"));
+            Director director = new Director();
 
-            Composite comp = new Composite("Composite X");
-            comp.Add(new Leaf("Leaf XA"));
-            comp.Add(new Leaf("Leaf XB"));
+            Builder b1 = new ConcreteBuilder1();
+            Builder b2 = new ConcreteBuilder2();
 
-            root.Add(comp);
-            root.Add(new Leaf("Leaf C"));
+            // Construct two products
 
-            // Add and remove a leaf
+            director.Construct(b1);
+            Product p1 = b1.GetResult();
+            p1.Show();
 
-            Leaf leaf = new Leaf("Leaf D");
-            root.Add(leaf);
-            root.Remove(leaf);
-
-            // Recursively display tree
-
-            root.Display(1);
+            director.Construct(b2);
+            Product p2 = b2.GetResult();
+            p2.Show();
 
             // Wait for user
 
@@ -41,89 +40,97 @@ namespace Composite.Structural
     }
 
     /// <summary>
-    /// The 'Component' abstract class
+    /// The 'Director' class
     /// </summary>
 
-    public abstract class Component
+    class Director
     {
-        protected string name;
+        // Builder uses a complex series of steps
 
-        // Constructor
-
-        public Component(string name)
+        public void Construct(Builder builder)
         {
-            this.name = name;
-        }
-
-        public abstract void Add(Component c);
-        public abstract void Remove(Component c);
-        public abstract void Display(int depth);
-    }
-
-    /// <summary>
-    /// The 'Composite' class
-    /// </summary>
-
-    public class Composite : Component
-    {
-        List<Component> children = new List<Component>();
-
-        // Constructor
-
-        public Composite(string name)
-            : base(name)
-        {
-        }
-
-        public override void Add(Component component)
-        {
-            children.Add(component);
-        }
-
-        public override void Remove(Component component)
-        {
-            children.Remove(component);
-        }
-
-        public override void Display(int depth)
-        {
-            Console.WriteLine(new String('-', depth) + name);
-
-            // Recursively display child nodes
-
-            foreach (Component component in children)
-            {
-                component.Display(depth + 2);
-            }
+            builder.BuildPartA();
+            builder.BuildPartB();
         }
     }
 
     /// <summary>
-    /// The 'Leaf' class
+    /// The 'Builder' abstract class
     /// </summary>
 
-    public class Leaf : Component
+    abstract class Builder
     {
-        // Constructor
+        public abstract void BuildPartA();
+        public abstract void BuildPartB();
+        public abstract Product GetResult();
+    }
 
-        public Leaf(string name)
-            : base(name)
+    /// <summary>
+    /// The 'ConcreteBuilder1' class
+    /// </summary>
+
+    class ConcreteBuilder1 : Builder
+    {
+        private Product _product = new Product();
+
+        public override void BuildPartA()
         {
+            _product.Add("PartA");
         }
 
-        public override void Add(Component c)
+        public override void BuildPartB()
         {
-            Console.WriteLine("Cannot add to a leaf");
+            _product.Add("PartB");
         }
 
-        public override void Remove(Component c)
+        public override Product GetResult()
         {
-            Console.WriteLine("Cannot remove from a leaf");
+            return _product;
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteBuilder2' class
+    /// </summary>
+
+    class ConcreteBuilder2 : Builder
+    {
+        private Product _product = new Product();
+
+        public override void BuildPartA()
+        {
+            _product.Add("PartX");
         }
 
-        public override void Display(int depth)
+        public override void BuildPartB()
         {
-            Console.WriteLine(new String('-', depth) + name);
+            _product.Add("PartY");
+        }
+
+        public override Product GetResult()
+        {
+            return _product;
+        }
+    }
+
+    /// <summary>
+    /// The 'Product' class
+    /// </summary>
+
+    class Product
+    {
+        private List<string> _parts = new List<string>();
+
+        public void Add(string part)
+        {
+            _parts.Add(part);
+        }
+
+        public void Show()
+        {
+            Console.WriteLine("\nProduct Parts -------");
+            foreach (string part in _parts)
+                Console.WriteLine(part);
         }
     }
 }
