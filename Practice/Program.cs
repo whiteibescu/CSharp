@@ -1,37 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DoFactory.GangOfFour.Builder.Structural
+namespace Prototype.RealWorld
 {
     /// <summary>
-    /// MainApp startup class for Structural
-    /// Builder Design Pattern.
+    /// Prototype Design Pattern
     /// </summary>
 
-    public class MainApp
+    public class Program
     {
-        /// <summary>
-        /// Entry point into console application.
-        /// </summary>
-
-        public static void Main()
+        public static void Main(string[] args)
         {
-            // Create director and builders
+            ColorManager colormanager = new ColorManager();
 
-            Director director = new Director();
+            // Initialize with standard colors
 
-            Builder b1 = new ConcreteBuilder1();
-            Builder b2 = new ConcreteBuilder2();
+            colormanager["red"] = new Color(255, 0, 0);
+            colormanager["green"] = new Color(0, 255, 0);
+            colormanager["blue"] = new Color(0, 0, 255);
 
-            // Construct two products
+            // User adds personalized colors
 
-            director.Construct(b1);
-            Product p1 = b1.GetResult();
-            p1.Show();
+            colormanager["angry"] = new Color(255, 54, 0);
+            colormanager["peace"] = new Color(128, 211, 128);
+            colormanager["flame"] = new Color(211, 34, 20);
 
-            director.Construct(b2);
-            Product p2 = b2.GetResult();
-            p2.Show();
+            // User clones selected colors
+
+            Color color1 = colormanager["red"].Clone() as Color;
+            Color color2 = colormanager["peace"].Clone() as Color;
+            Color color3 = colormanager["flame"].Clone() as Color;
 
             // Wait for user
 
@@ -40,97 +38,60 @@ namespace DoFactory.GangOfFour.Builder.Structural
     }
 
     /// <summary>
-    /// The 'Director' class
+    /// The 'Prototype' abstract class
     /// </summary>
 
-    class Director
+    public abstract class ColorPrototype
     {
-        // Builder uses a complex series of steps
+        public abstract ColorPrototype Clone();
+    }
 
-        public void Construct(Builder builder)
+    /// <summary>
+    /// The 'ConcretePrototype' class
+    /// </summary>
+
+    public class Color : ColorPrototype
+    {
+        int red;
+        int green;
+        int blue;
+
+        // Constructor
+
+        public Color(int red, int green, int blue)
         {
-            builder.BuildPartA();
-            builder.BuildPartB();
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+        }
+
+        // Create a shallow copy
+
+        public override ColorPrototype Clone()
+        {
+            Console.WriteLine(
+                "Cloning color RGB: {0,3},{1,3},{2,3}",
+                red, green, blue);
+
+            return this.MemberwiseClone() as ColorPrototype;
         }
     }
 
     /// <summary>
-    /// The 'Builder' abstract class
+    /// Prototype manager
     /// </summary>
 
-    abstract class Builder
+    public class ColorManager
     {
-        public abstract void BuildPartA();
-        public abstract void BuildPartB();
-        public abstract Product GetResult();
-    }
+        private Dictionary<string, ColorPrototype> colors =
+            new Dictionary<string, ColorPrototype>();
 
-    /// <summary>
-    /// The 'ConcreteBuilder1' class
-    /// </summary>
+        // Indexer
 
-    class ConcreteBuilder1 : Builder
-    {
-        private Product _product = new Product();
-
-        public override void BuildPartA()
+        public ColorPrototype this[string key]
         {
-            _product.Add("PartA");
-        }
-
-        public override void BuildPartB()
-        {
-            _product.Add("PartB");
-        }
-
-        public override Product GetResult()
-        {
-            return _product;
-        }
-    }
-
-    /// <summary>
-    /// The 'ConcreteBuilder2' class
-    /// </summary>
-
-    class ConcreteBuilder2 : Builder
-    {
-        private Product _product = new Product();
-
-        public override void BuildPartA()
-        {
-            _product.Add("PartX");
-        }
-
-        public override void BuildPartB()
-        {
-            _product.Add("PartY");
-        }
-
-        public override Product GetResult()
-        {
-            return _product;
-        }
-    }
-
-    /// <summary>
-    /// The 'Product' class
-    /// </summary>
-
-    class Product
-    {
-        private List<string> _parts = new List<string>();
-
-        public void Add(string part)
-        {
-            _parts.Add(part);
-        }
-
-        public void Show()
-        {
-            Console.WriteLine("\nProduct Parts -------");
-            foreach (string part in _parts)
-                Console.WriteLine(part);
+            get { return colors[key]; }
+            set { colors.Add(key, value); }
         }
     }
 }
