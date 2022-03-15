@@ -1,164 +1,65 @@
 ﻿using System;
 
-namespace DoFactory.GangOfFour.Abstract.RealWorld
+namespace Adapter.Structural
 {
     /// <summary>
-    /// MainApp startup class for Real-World
-    /// Abstract Factory Design Pattern.
+    /// Adapter Design Pattern
     /// </summary>
 
-    class MainApp
+    public class Program
     {
-        /// <summary>
-        /// Entry point into console application.
-        /// </summary>
-
-        public static void Main()
+        public static void Main(string[] args)
         {
-            // Create and run the African animal world
+            // Create adapter and place a request
 
-            ContinentFactory africa = new AfricaFactory();
-            AnimalWorld world = new AnimalWorld(africa);
-            world.RunFoodChain();
+            Target target = new Adapter();
+            target.Request();
 
-            // Create and run the American animal world
-
-            ContinentFactory america = new AmericaFactory();
-            world = new AnimalWorld(america);
-            world.RunFoodChain();
-
-            // Wait for user input
+            // Wait for user
 
             Console.ReadKey();
         }
-    }
 
-
-    /// <summary>
-    /// The 'AbstractFactory' abstract class
-    /// </summary>
-
-    abstract class ContinentFactory
-    {
-        public abstract Herbivore CreateHerbivore();
-        public abstract Carnivore CreateCarnivore();
     }
 
     /// <summary>
-    /// The 'ConcreteFactory1' class
+    /// The 'Target' class
     /// </summary>
 
-    class AfricaFactory : ContinentFactory
+    public class Target
     {
-        public override Herbivore CreateHerbivore()
+        public virtual void Request()
         {
-            return new Wildebeest();
-        }
-        public override Carnivore CreateCarnivore()
-        {
-            return new Lion();
+            Console.WriteLine("Called Target Request()");
         }
     }
 
     /// <summary>
-    /// The 'ConcreteFactory2' class
+    /// The 'Adapter' class
     /// </summary>
 
-    class AmericaFactory : ContinentFactory
+    public class Adapter : Target
     {
-        public override Herbivore CreateHerbivore()
+        private Adaptee adaptee = new Adaptee();
+
+        public override void Request()
         {
-            return new Bison();
-        }
-        public override Carnivore CreateCarnivore()
-        {
-            return new Wolf();
-        }
-    }
+            // Possibly do some other work
+            // and then call SpecificRequest
 
-    /// <summary>
-    /// The 'AbstractProductA' abstract class
-    /// </summary>
-
-    abstract class Herbivore
-    {
-    }
-
-    /// <summary>
-    /// The 'AbstractProductB' abstract class
-    /// </summary>
-
-    abstract class Carnivore
-    {
-        public abstract void Eat(Herbivore h);
-    }
-
-    /// <summary>
-    /// The 'ProductA1' class
-    /// </summary>
-
-    class Wildebeest : Herbivore
-    {
-    }
-
-    /// <summary>
-    /// The 'ProductB1' class
-    /// </summary>
-
-    class Lion : Carnivore
-    {
-        public override void Eat(Herbivore h)
-        {
-            // Eat Wildebeest
-
-            Console.WriteLine(this.GetType().Name +
-              " eats " + h.GetType().Name);
+            adaptee.SpecificRequest();
         }
     }
 
     /// <summary>
-    /// The 'ProductA2' class
+    /// The 'Adaptee' class
     /// </summary>
 
-    class Bison : Herbivore
+    public class Adaptee
     {
-    }
-
-    /// <summary>
-    /// The 'ProductB2' class
-    /// </summary>
-
-    class Wolf : Carnivore
-    {
-        public override void Eat(Herbivore h)
+        public void SpecificRequest()
         {
-            // Eat Bison
-
-            Console.WriteLine(this.GetType().Name +
-              " eats " + h.GetType().Name);
-        }
-    }
-
-    /// <summary>
-    /// The 'Client' class 
-    /// </summary>
-
-    class AnimalWorld
-    {
-        private Herbivore _herbivore;
-        private Carnivore _carnivore;
-
-        // Constructor
-
-        public AnimalWorld(ContinentFactory factory)
-        {
-            _carnivore = factory.CreateCarnivore();
-            _herbivore = factory.CreateHerbivore();
-        }
-
-        public void RunFoodChain()
-        {
-            _carnivore.Eat(_herbivore);
+            Console.WriteLine("Called SpecificRequest()");
         }
     }
 }
