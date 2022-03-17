@@ -1,129 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Command.Structural2
+namespace Visitor.RealWorld
 {
     /// <summary>
-    /// Command Design Pattern
+    /// Visitor Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create receiver, command, and invoker
+            // Setup employee collection
 
-            Receiver receiver = new Receiver();
-            Command command = new ConcreteCommand(receiver);
-            Invoker invoker = new Invoker();
+            Employees employee = new Employees();
+            employee.Attach(new Clerk());
+            employee.Attach(new Director());
+            employee.Attach(new President());
 
-            // Set and execute command
+            // Employees are 'visited'
 
-            invoker.SetCommand(command);
-            invoker.ExecuteCommand();
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'Command' abstract class
-    /// </summary>
-
-    public abstract class Command
-    {
-        protected Receiver receiver;
-
-        // Constructor
-
-        public Command(Receiver receiver)
-        {
-            this.receiver = receiver;
-        }
-
-        public abstract void Execute();
-    }
-
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
-
-    public class ConcreteCommand : Command
-    {
-        // Constructor
-
-        public ConcreteCommand(Receiver receiver) :
-            base(receiver)
-        {
-        }
-
-        public override void Execute()
-        {
-            receiver.Action();
-        }
-    }
-
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Receiver
-    {
-        public void Action()
-        {
-            Console.WriteLine("Called Receiver.Action()");
-        }
-    }
-
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
-
-    public class Invoker
-    {
-        Command command;
-
-        public void SetCommand(Command command)
-        {
-            this.command = command;
-        }
-
-        public void ExecuteCommand()
-        {
-            command.Execute();
-        }
-    }
-}
-
-namespace Command.RealWorld
-{
-    /// <summary>
-    /// Command Design Pattern
-    /// </summary>
-
-    public class Program23
-    {
-        public static void Main(string[] args)
-        {
-            // Create user and let her compute
-
-            User user = new User();
-
-            // User presses calculator buttons
-
-            user.Compute('+', 100);
-            user.Compute('-', 50);
-            user.Compute('*', 10);
-            user.Compute('/', 2);
-
-            // Undo 4 commands
-
-            user.Undo(4);
-
-            // Redo 3 commands
-
-            user.Redo(3);
+            employee.Accept(new IncomeVisitor());
+            employee.Accept(new VacationVisitor());
 
             // Wait for user
 
@@ -132,156 +30,162 @@ namespace Command.RealWorld
     }
 
     /// <summary>
-    /// The 'Command' abstract class
+    /// The 'Visitor' interface
     /// </summary>
 
-    public abstract class Command
+    public interface IVisitor
     {
-        public abstract void Execute();
-        public abstract void UnExecute();
+        void Visit(Element element);
     }
 
     /// <summary>
-    /// The 'ConcreteCommand' class
+    /// A 'ConcreteVisitor' class
     /// </summary>
 
-    public class CalculatorCommand : Command
+    public class IncomeVisitor : IVisitor
     {
-        char @operator;
-        int operand;
-        Calculator calculator;
+        public void Visit(Element element)
+        {
+            Employee employee = element as Employee;
+
+            // Provide 10% pay raise
+
+            employee.Income *= 1.10;
+
+            Console.WriteLine("{0} {1}'s new income: {2:C}",
+                employee.GetType().Name, employee.Name,
+                employee.Income);
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteVisitor' class
+    /// </summary>
+
+    public class VacationVisitor : IVisitor
+    {
+        public void Visit(Element element)
+        {
+            Employee employee = element as Employee;
+
+            // Provide 3 extra vacation days
+
+            employee.VacationDays += 3;
+
+            Console.WriteLine("{0} {1}'s new vacation days: {2}",
+                employee.GetType().Name, employee.Name,
+                employee.VacationDays);
+        }
+    }
+
+    /// <summary>
+    /// The 'Element' abstract class
+    /// </summary>
+
+    public abstract class Element
+    {
+        public abstract void Accept(IVisitor visitor);
+    }
+
+    /// <summary>
+    /// The 'ConcreteElement' class
+    /// </summary>
+
+    public class Employee : Element
+    {
+        private string name;
+        private double income;
+        private int vacationDays;
 
         // Constructor
 
-        public CalculatorCommand(Calculator calculator,
-            char @operator, int operand)
+        public Employee(string name, double income,
+            int vacationDays)
         {
-            this.calculator = calculator;
-            this.@operator = @operator;
-            this.operand = operand;
+            this.name = name;
+            this.income = income;
+            this.vacationDays = vacationDays;
         }
 
-        // Gets operator
-
-        public char Operator
+        public string Name
         {
-            set { @operator = value; }
+            get { return name; }
+            set { name = value; }
         }
 
-        // Get operand
-
-        public int Operand
+        public double Income
         {
-            set { operand = value; }
+            get { return income; }
+            set { income = value; }
         }
 
-        // Execute new command
-
-        public override void Execute()
+        public int VacationDays
         {
-            calculator.Operation(@operator, operand);
+            get { return vacationDays; }
+            set { vacationDays = value; }
         }
 
-        // Unexecute last command
-
-        public override void UnExecute()
+        public override void Accept(IVisitor visitor)
         {
-            calculator.Operation(Undo(@operator), operand);
-        }
-
-        // Returns opposite operator for given operator
-
-        private char Undo(char @operator)
-        {
-            switch (@operator)
-            {
-                case '+': return '-';
-                case '-': return '+';
-                case '*': return '/';
-                case '/': return '*';
-                default:
-                    throw new
-             ArgumentException("@operator");
-            }
+            visitor.Visit(this);
         }
     }
 
     /// <summary>
-    /// The 'Receiver' class
+    /// The 'ObjectStructure' class
     /// </summary>
 
-    public class Calculator
+    public class Employees
     {
-        int curr = 0;
+        private List<Employee> employees = new List<Employee>();
 
-        public void Operation(char @operator, int operand)
+        public void Attach(Employee employee)
         {
-            switch (@operator)
+            employees.Add(employee);
+        }
+
+        public void Detach(Employee employee)
+        {
+            employees.Remove(employee);
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            foreach (Employee employee in employees)
             {
-                case '+': curr += operand; break;
-                case '-': curr -= operand; break;
-                case '*': curr *= operand; break;
-                case '/': curr /= operand; break;
+                employee.Accept(visitor);
             }
-            Console.WriteLine(
-                "Current value = {0,3} (following {1} {2})",
-                curr, @operator, operand);
+            Console.WriteLine();
         }
     }
 
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
+    // Three employee types
 
-    public class User
+    public class Clerk : Employee
     {
-        // Initializers
+        // Constructor
 
-        Calculator calculator = new Calculator();
-        List<Command> commands = new List<Command>();
-        int current = 0;
-
-        public void Redo(int levels)
+        public Clerk()
+            : base("Kevin", 25000.0, 14)
         {
-            Console.WriteLine("\n---- Redo {0} levels ", levels);
-            // Perform redo operations
-            for (int i = 0; i < levels; i++)
-            {
-                if (current < commands.Count - 1)
-                {
-                    Command command = commands[current++];
-                    command.Execute();
-                }
-            }
         }
+    }
 
-        public void Undo(int levels)
+    public class Director : Employee
+    {
+        // Constructor
+        public Director()
+            : base("Elly", 35000.0, 16)
         {
-            Console.WriteLine("\n---- Undo {0} levels ", levels);
-
-            // Perform undo operations
-
-            for (int i = 0; i < levels; i++)
-            {
-                if (current > 0)
-                {
-                    Command command = commands[--current] as Command;
-                    command.UnExecute();
-                }
-            }
         }
+    }
 
-        public void Compute(char @operator, int operand)
+    public class President : Employee
+    {
+        // Constructor
+        public President()
+            : base("Eric", 45000.0, 21)
         {
-            // Create command operation and execute it
-
-            Command command = new CalculatorCommand(calculator, @operator, operand);
-            command.Execute();
-
-            // Add command to undo list
-
-            commands.Add(command);
-            current++;
         }
     }
 }
