@@ -1,183 +1,144 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Bridge.RealWorld
+namespace Adapter.RealWorld
 {
     /// <summary>
-    /// Bridge Design Pattern
+    /// Adapter Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create RefinedAbstraction
+            // Non-adapted chemical compound
 
-            var customers = new Customers();
+            Compound unknown = new Compound();
+            unknown.Display();
 
-            // Set ConcreteImplementor
+            // Adapted chemical compounds
 
-            customers.Data = new CustomersData("Chicago");
+            Compound water = new RichCompound("Water");
+            water.Display();
 
-            // Exercise the bridge
+            Compound benzene = new RichCompound("Benzene");
+            benzene.Display();
 
-            customers.Show();
-            customers.Next();
-            customers.Show();
-            customers.Next();
-            customers.Show();
-            customers.Add("Henry Velasquez");
-
-            customers.ShowAll();
+            Compound ethanol = new RichCompound("Ethanol");
+            ethanol.Display();
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
+
     /// <summary>
-    /// The 'Abstraction' class
+    /// The 'Target' class
     /// </summary>
 
-    public class CustomersBase
+    public class Compound
     {
-        private DataObject dataObject;
+        protected float boilingPoint;
+        protected float meltingPoint;
+        protected double molecularWeight;
+        protected string molecularFormula;
 
-        public DataObject Data
+        public virtual void Display()
         {
-            set { dataObject = value; }
-            get { return dataObject; }
-        }
-
-        public virtual void Next()
-        {
-            dataObject.NextRecord();
-        }
-
-        public virtual void Prior()
-        {
-            dataObject.PriorRecord();
-        }
-
-        public virtual void Add(string customer)
-        {
-            dataObject.AddRecord(customer);
-        }
-
-        public virtual void Delete(string customer)
-        {
-            dataObject.DeleteRecord(customer);
-        }
-
-        public virtual void Show()
-        {
-            dataObject.ShowRecord();
-        }
-
-        public virtual void ShowAll()
-        {
-            dataObject.ShowAllRecords();
+            Console.WriteLine("\nCompound: Unknown ------ ");
         }
     }
 
     /// <summary>
-    /// The 'RefinedAbstraction' class
+    /// The 'Adapter' class
     /// </summary>
 
-    public class Customers : CustomersBase
+    public class RichCompound : Compound
     {
-        public override void ShowAll()
-        {
-            // Add separator lines
+        private string chemical;
+        private ChemicalDatabank bank;
 
-            Console.WriteLine();
-            Console.WriteLine("------------------------");
-            base.ShowAll();
-            Console.WriteLine("------------------------");
+        // Constructor
+
+        public RichCompound(string chemical)
+        {
+            this.chemical = chemical;
+        }
+
+        public override void Display()
+        {
+            // The Adaptee
+
+            bank = new ChemicalDatabank();
+
+            boilingPoint = bank.GetCriticalPoint(chemical, "B");
+            meltingPoint = bank.GetCriticalPoint(chemical, "M");
+            molecularWeight = bank.GetMolecularWeight(chemical);
+            molecularFormula = bank.GetMolecularStructure(chemical);
+
+            Console.WriteLine("\nCompound: {0} ------ ", chemical);
+            Console.WriteLine(" Formula: {0}", molecularFormula);
+            Console.WriteLine(" Weight : {0}", molecularWeight);
+            Console.WriteLine(" Melting Pt: {0}", meltingPoint);
+            Console.WriteLine(" Boiling Pt: {0}", boilingPoint);
         }
     }
 
     /// <summary>
-    /// The 'Implementor' abstract class
+    /// The 'Adaptee' class
     /// </summary>
 
-    public abstract class DataObject
+    public class ChemicalDatabank
     {
-        public abstract void NextRecord();
-        public abstract void PriorRecord();
-        public abstract void AddRecord(string name);
-        public abstract void DeleteRecord(string name);
-        public abstract string GetCurrentRecord();
-        public abstract void ShowRecord();
-        public abstract void ShowAllRecords();
-    }
+        // The databank 'legacy API'
 
-    /// <summary>
-    /// The 'ConcreteImplementor' class
-    /// </summary>
-
-    public class CustomersData : DataObject
-    {
-        private readonly List<string> customers = new List<string>();
-        private int current = 0;
-        private string city;
-
-        public CustomersData(string city)
+        public float GetCriticalPoint(string compound, string point)
         {
-            this.city = city;
-
-            // Loaded from a database 
-
-            customers.Add("Jim Jones");
-            customers.Add("Samual Jackson");
-            customers.Add("Allen Good");
-            customers.Add("Ann Stills");
-            customers.Add("Lisa Giolani");
-        }
-
-        public override void NextRecord()
-        {
-            if (current <= customers.Count - 1)
+            // Melting Point
+            if (point == "M")
             {
-                current++;
+                switch (compound.ToLower())
+                {
+                    case "water": return 0.0f;
+                    case "benzene": return 5.5f;
+                    case "ethanol": return -114.1f;
+                    default: return 0f;
+                }
+            }
+
+            // Boiling Point
+
+            else
+            {
+                switch (compound.ToLower())
+                {
+                    case "water": return 100.0f;
+                    case "benzene": return 80.1f;
+                    case "ethanol": return 78.3f;
+                    default: return 0f;
+                }
             }
         }
 
-        public override void PriorRecord()
+        public string GetMolecularStructure(string compound)
         {
-            if (current > 0)
+            switch (compound.ToLower())
             {
-                current--;
+                case "water": return "H20";
+                case "benzene": return "C6H6";
+                case "ethanol": return "C2H5OH";
+                default: return "";
             }
         }
 
-        public override void AddRecord(string customer)
+        public double GetMolecularWeight(string compound)
         {
-            customers.Add(customer);
-        }
-
-        public override void DeleteRecord(string customer)
-        {
-            customers.Remove(customer);
-        }
-
-        public override string GetCurrentRecord()
-        {
-            return customers[current];
-        }
-
-        public override void ShowRecord()
-        {
-            Console.WriteLine(customers[current]);
-        }
-
-        public override void ShowAllRecords()
-        {
-            Console.WriteLine("Customer City: " + city);
-
-            foreach (string customer in customers)
+            switch (compound.ToLower())
             {
-                Console.WriteLine(" " + customer);
+                case "water": return 18.015;
+                case "benzene": return 78.1134;
+                case "ethanol": return 46.0688;
+                default: return 0d;
             }
         }
     }
