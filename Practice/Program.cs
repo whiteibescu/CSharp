@@ -1,191 +1,184 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Visitor.RealWorld
+namespace Bridge.RealWorld
 {
     /// <summary>
-    /// Visitor Design Pattern
+    /// Bridge Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Setup employee collection
+            // Create RefinedAbstraction
 
-            Employees employee = new Employees();
-            employee.Attach(new Clerk());
-            employee.Attach(new Director());
-            employee.Attach(new President());
+            var customers = new Customers();
 
-            // Employees are 'visited'
+            // Set ConcreteImplementor
 
-            employee.Accept(new IncomeVisitor());
-            employee.Accept(new VacationVisitor());
+            customers.Data = new CustomersData("Chicago");
+
+            // Exercise the bridge
+
+            customers.Show();
+            customers.Next();
+            customers.Show();
+            customers.Next();
+            customers.Show();
+            customers.Add("Henry Velasquez");
+
+            customers.ShowAll();
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
-
     /// <summary>
-    /// The 'Visitor' interface
+    /// The 'Abstraction' class
     /// </summary>
 
-    public interface IVisitor
+    public class CustomersBase
     {
-        void Visit(Element element);
-    }
+        private DataObject dataObject;
 
-    /// <summary>
-    /// A 'ConcreteVisitor' class
-    /// </summary>
-
-    public class IncomeVisitor : IVisitor
-    {
-        public void Visit(Element element)
+        public DataObject Data
         {
-            Employee employee = element as Employee;
-
-            // Provide 10% pay raise
-
-            employee.Income *= 1.10;
-
-            Console.WriteLine("{0} {1}'s new income: {2:C}",
-                employee.GetType().Name, employee.Name,
-                employee.Income);
+            set { dataObject = value; }
+            get { return dataObject; }
         }
-    }
 
-    /// <summary>
-    /// A 'ConcreteVisitor' class
-    /// </summary>
-
-    public class VacationVisitor : IVisitor
-    {
-        public void Visit(Element element)
+        public virtual void Next()
         {
-            Employee employee = element as Employee;
+            dataObject.NextRecord();
+        }
 
-            // Provide 3 extra vacation days
+        public virtual void Prior()
+        {
+            dataObject.PriorRecord();
+        }
 
-            employee.VacationDays += 3;
+        public virtual void Add(string customer)
+        {
+            dataObject.AddRecord(customer);
+        }
 
-            Console.WriteLine("{0} {1}'s new vacation days: {2}",
-                employee.GetType().Name, employee.Name,
-                employee.VacationDays);
+        public virtual void Delete(string customer)
+        {
+            dataObject.DeleteRecord(customer);
+        }
+
+        public virtual void Show()
+        {
+            dataObject.ShowRecord();
+        }
+
+        public virtual void ShowAll()
+        {
+            dataObject.ShowAllRecords();
         }
     }
 
     /// <summary>
-    /// The 'Element' abstract class
+    /// The 'RefinedAbstraction' class
     /// </summary>
 
-    public abstract class Element
+    public class Customers : CustomersBase
     {
-        public abstract void Accept(IVisitor visitor);
-    }
-
-    /// <summary>
-    /// The 'ConcreteElement' class
-    /// </summary>
-
-    public class Employee : Element
-    {
-        private string name;
-        private double income;
-        private int vacationDays;
-
-        // Constructor
-
-        public Employee(string name, double income,
-            int vacationDays)
+        public override void ShowAll()
         {
-            this.name = name;
-            this.income = income;
-            this.vacationDays = vacationDays;
-        }
+            // Add separator lines
 
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public double Income
-        {
-            get { return income; }
-            set { income = value; }
-        }
-
-        public int VacationDays
-        {
-            get { return vacationDays; }
-            set { vacationDays = value; }
-        }
-
-        public override void Accept(IVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-    }
-
-    /// <summary>
-    /// The 'ObjectStructure' class
-    /// </summary>
-
-    public class Employees
-    {
-        private List<Employee> employees = new List<Employee>();
-
-        public void Attach(Employee employee)
-        {
-            employees.Add(employee);
-        }
-
-        public void Detach(Employee employee)
-        {
-            employees.Remove(employee);
-        }
-
-        public void Accept(IVisitor visitor)
-        {
-            foreach (Employee employee in employees)
-            {
-                employee.Accept(visitor);
-            }
             Console.WriteLine();
+            Console.WriteLine("------------------------");
+            base.ShowAll();
+            Console.WriteLine("------------------------");
         }
     }
 
-    // Three employee types
+    /// <summary>
+    /// The 'Implementor' abstract class
+    /// </summary>
 
-    public class Clerk : Employee
+    public abstract class DataObject
     {
-        // Constructor
-
-        public Clerk()
-            : base("Kevin", 25000.0, 14)
-        {
-        }
+        public abstract void NextRecord();
+        public abstract void PriorRecord();
+        public abstract void AddRecord(string name);
+        public abstract void DeleteRecord(string name);
+        public abstract string GetCurrentRecord();
+        public abstract void ShowRecord();
+        public abstract void ShowAllRecords();
     }
 
-    public class Director : Employee
-    {
-        // Constructor
-        public Director()
-            : base("Elly", 35000.0, 16)
-        {
-        }
-    }
+    /// <summary>
+    /// The 'ConcreteImplementor' class
+    /// </summary>
 
-    public class President : Employee
+    public class CustomersData : DataObject
     {
-        // Constructor
-        public President()
-            : base("Eric", 45000.0, 21)
+        private readonly List<string> customers = new List<string>();
+        private int current = 0;
+        private string city;
+
+        public CustomersData(string city)
         {
+            this.city = city;
+
+            // Loaded from a database 
+
+            customers.Add("Jim Jones");
+            customers.Add("Samual Jackson");
+            customers.Add("Allen Good");
+            customers.Add("Ann Stills");
+            customers.Add("Lisa Giolani");
+        }
+
+        public override void NextRecord()
+        {
+            if (current <= customers.Count - 1)
+            {
+                current++;
+            }
+        }
+
+        public override void PriorRecord()
+        {
+            if (current > 0)
+            {
+                current--;
+            }
+        }
+
+        public override void AddRecord(string customer)
+        {
+            customers.Add(customer);
+        }
+
+        public override void DeleteRecord(string customer)
+        {
+            customers.Remove(customer);
+        }
+
+        public override string GetCurrentRecord()
+        {
+            return customers[current];
+        }
+
+        public override void ShowRecord()
+        {
+            Console.WriteLine(customers[current]);
+        }
+
+        public override void ShowAllRecords()
+        {
+            Console.WriteLine("Customer City: " + city);
+
+            foreach (string customer in customers)
+            {
+                Console.WriteLine(" " + customer);
+            }
         }
     }
 }
