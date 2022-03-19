@@ -1,30 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Adapter.RealWorld
+namespace Template.RealWorld
 {
     /// <summary>
-    /// Adapter Design Pattern
+    /// Template Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Non-adapted chemical compound
+            DataAccessor categories = new Categories();
+            categories.Run(5);
 
-            Compound unknown = new Compound();
-            unknown.Display();
-
-            // Adapted chemical compounds
-
-            Compound water = new RichCompound("Water");
-            water.Display();
-
-            Compound benzene = new RichCompound("Benzene");
-            benzene.Display();
-
-            Compound ethanol = new RichCompound("Ethanol");
-            ethanol.Display();
+            DataAccessor products = new Products();
+            products.Run(3);
 
             // Wait for user
 
@@ -33,113 +24,237 @@ namespace Adapter.RealWorld
     }
 
     /// <summary>
-    /// The 'Target' class
+    /// The 'AbstractClass' abstract class
     /// </summary>
 
-    public class Compound
+    public abstract class DataAccessor
     {
-        protected float boilingPoint;
-        protected float meltingPoint;
-        protected double molecularWeight;
-        protected string molecularFormula;
+        public abstract void Connect();
+        public abstract void Select();
+        public abstract void Process(int top);
+        public abstract void Disconnect();
 
-        public virtual void Display()
+        // The 'Template Method' 
+
+        public void Run(int top)
         {
-            Console.WriteLine("\nCompound: Unknown ------ ");
+            Connect();
+            Select();
+            Process(top);
+            Disconnect();
         }
     }
 
     /// <summary>
-    /// The 'Adapter' class
+    /// A 'ConcreteClass' class
     /// </summary>
 
-    public class RichCompound : Compound
+    public class Categories : DataAccessor
     {
-        private string chemical;
-        private ChemicalDatabank bank;
+        private List<string> categories;
 
-        // Constructor
-
-        public RichCompound(string chemical)
+        public override void Connect()
         {
-            this.chemical = chemical;
+            categories = new List<string>();
         }
 
-        public override void Display()
+        public override void Select()
         {
-            // The Adaptee
+            categories.Add("Red");
+            categories.Add("Green");
+            categories.Add("Blue");
+            categories.Add("Yellow");
+            categories.Add("Purple");
+            categories.Add("White");
+            categories.Add("Black");
+        }
 
-            bank = new ChemicalDatabank();
+        public override void Process(int top)
+        {
+            Console.WriteLine("Categories ---- ");
 
-            boilingPoint = bank.GetCriticalPoint(chemical, "B");
-            meltingPoint = bank.GetCriticalPoint(chemical, "M");
-            molecularWeight = bank.GetMolecularWeight(chemical);
-            molecularFormula = bank.GetMolecularStructure(chemical);
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(categories[i]);
+            }
 
-            Console.WriteLine("\nCompound: {0} ------ ", chemical);
-            Console.WriteLine(" Formula: {0}", molecularFormula);
-            Console.WriteLine(" Weight : {0}", molecularWeight);
-            Console.WriteLine(" Melting Pt: {0}", meltingPoint);
-            Console.WriteLine(" Boiling Pt: {0}", boilingPoint);
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            categories.Clear();
         }
     }
 
     /// <summary>
-    /// The 'Adaptee' class
+    /// A 'ConcreteClass' class
     /// </summary>
 
-    public class ChemicalDatabank
+    public class Products : DataAccessor
     {
-        // The databank 'legacy API'
+        private List<string> products;
 
-        public float GetCriticalPoint(string compound, string point)
+        public override void Connect()
         {
-            // Melting Point
-            if (point == "M")
-            {
-                switch (compound.ToLower())
-                {
-                    case "water": return 0.0f;
-                    case "benzene": return 5.5f;
-                    case "ethanol": return -114.1f;
-                    default: return 0f;
-                }
-            }
-
-            // Boiling Point
-
-            else
-            {
-                switch (compound.ToLower())
-                {
-                    case "water": return 100.0f;
-                    case "benzene": return 80.1f;
-                    case "ethanol": return 78.3f;
-                    default: return 0f;
-                }
-            }
+            products = new List<string>();
         }
 
-        public string GetMolecularStructure(string compound)
+        public override void Select()
         {
-            switch (compound.ToLower())
-            {
-                case "water": return "H20";
-                case "benzene": return "C6H6";
-                case "ethanol": return "C2H5OH";
-                default: return "";
-            }
+            products.Add("Car");
+            products.Add("Bike");
+            products.Add("Boat");
+            products.Add("Truck");
+            products.Add("Moped");
+            products.Add("Rollerskate");
+            products.Add("Stroller");
         }
 
-        public double GetMolecularWeight(string compound)
+        public override void Process(int top)
         {
-            switch (compound.ToLower())
+            Console.WriteLine("Products ---- ");
+
+            for (int i = 0; i < top; i++)
             {
-                case "water": return 18.015;
-                case "benzene": return 78.1134;
-                case "ethanol": return 46.0688;
-                default: return 0d;
+                Console.WriteLine(products[i]);
             }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            products.Clear();
+        }
+    }
+}
+
+namespace Template.RealWorlds
+{
+    /// <summary>
+    /// Template Design Pattern
+    /// </summary>
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            DataAccessor categories = new Categories();
+            categories.Run(5);
+
+            DataAccessor products = new Products();
+            products.Run(3);
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
+    /// The 'AbstractClass' abstract class
+    /// </summary>
+
+    public abstract class DataAccessor
+    {
+        public abstract void Connect();
+        public abstract void Select();
+        public abstract void Process(int top);
+        public abstract void Disconnect();
+
+        // The 'Template Method' 
+
+        public void Run(int top)
+        {
+            Connect();
+            Select();
+            Process(top);
+            Disconnect();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Categories : DataAccessor
+    {
+        private List<string> categories;
+
+        public override void Connect()
+        {
+            categories = new List<string>();
+        }
+
+        public override void Select()
+        {
+            categories.Add("Red");
+            categories.Add("Green");
+            categories.Add("Blue");
+            categories.Add("Yellow");
+            categories.Add("Purple");
+            categories.Add("White");
+            categories.Add("Black");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Categories ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(categories[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            categories.Clear();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Products : DataAccessor
+    {
+        private List<string> products;
+
+        public override void Connect()
+        {
+            products = new List<string>();
+        }
+
+        public override void Select()
+        {
+            products.Add("Car");
+            products.Add("Bike");
+            products.Add("Boat");
+            products.Add("Truck");
+            products.Add("Moped");
+            products.Add("Rollerskate");
+            products.Add("Stroller");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Products ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(products[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            products.Clear();
         }
     }
 }
