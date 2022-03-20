@@ -1,21 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Template.RealWorld
+namespace DoFactory.GangOfFour.Builder.Structural
 {
     /// <summary>
-    /// Template Design Pattern
+    /// MainApp startup class for Structural
+    /// Builder Design Pattern.
     /// </summary>
 
-    public class Program
+    public class MainApp
     {
-        public static void Main(string[] args)
-        {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
 
-            DataAccessor products = new Products();
-            products.Run(3);
+        public static void Main()
+        {
+            // Create director and builders
+
+            Director director = new Director();
+
+            Builder b1 = new ConcreteBuilder1();
+            Builder b2 = new ConcreteBuilder2();
+
+            // Construct two products
+
+            director.Construct(b1);
+            Product p1 = b1.GetResult();
+            p1.Show();
+
+            director.Construct(b2);
+            Product p2 = b2.GetResult();
+            p2.Show();
 
             // Wait for user
 
@@ -24,237 +40,97 @@ namespace Template.RealWorld
     }
 
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'Director' class
     /// </summary>
 
-    public abstract class DataAccessor
+    class Director
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+        // Builder uses a complex series of steps
 
-        // The 'Template Method' 
-
-        public void Run(int top)
+        public void Construct(Builder builder)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
+            builder.BuildPartA();
+            builder.BuildPartB();
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'Builder' abstract class
     /// </summary>
 
-    public class Categories : DataAccessor
+    abstract class Builder
     {
-        private List<string> categories;
+        public abstract void BuildPartA();
+        public abstract void BuildPartB();
+        public abstract Product GetResult();
+    }
 
-        public override void Connect()
+    /// <summary>
+    /// The 'ConcreteBuilder1' class
+    /// </summary>
+
+    class ConcreteBuilder1 : Builder
+    {
+        private Product _product = new Product();
+
+        public override void BuildPartA()
         {
-            categories = new List<string>();
+            _product.Add("PartA");
         }
 
-        public override void Select()
+        public override void BuildPartB()
         {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
+            _product.Add("PartB");
         }
 
-        public override void Process(int top)
+        public override Product GetResult()
         {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
+            return _product;
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'ConcreteBuilder2' class
     /// </summary>
 
-    public class Products : DataAccessor
+    class ConcreteBuilder2 : Builder
     {
-        private List<string> products;
+        private Product _product = new Product();
 
-        public override void Connect()
+        public override void BuildPartA()
         {
-            products = new List<string>();
+            _product.Add("PartX");
         }
 
-        public override void Select()
+        public override void BuildPartB()
         {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
+            _product.Add("PartY");
         }
 
-        public override void Process(int top)
+        public override Product GetResult()
         {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
-    }
-}
-
-namespace Template.RealWorlds
-{
-    /// <summary>
-    /// Template Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
-
-            DataAccessor products = new Products();
-            products.Run(3);
-
-            // Wait for user
-
-            Console.ReadKey();
+            return _product;
         }
     }
 
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'Product' class
     /// </summary>
 
-    public abstract class DataAccessor
+    class Product
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+        private List<string> _parts = new List<string>();
 
-        // The 'Template Method' 
-
-        public void Run(int top)
+        public void Add(string part)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Categories : DataAccessor
-    {
-        private List<string> categories;
-
-        public override void Connect()
-        {
-            categories = new List<string>();
+            _parts.Add(part);
         }
 
-        public override void Select()
+        public void Show()
         {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
+            Console.WriteLine("\nProduct Parts -------");
+            foreach (string part in _parts)
+                Console.WriteLine(part);
         }
     }
 }
