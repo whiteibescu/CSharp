@@ -1,37 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace DoFactory.GangOfFour.Builder.Structural
+namespace Command.Structural2
 {
     /// <summary>
-    /// MainApp startup class for Structural
-    /// Builder Design Pattern.
+    /// Command Design Pattern
     /// </summary>
 
-    public class MainApp
+    public class Program
     {
-        /// <summary>
-        /// Entry point into console application.
-        /// </summary>
-
-        public static void Main()
+        public static void Main(string[] args)
         {
-            // Create director and builders
+            // Create receiver, command, and invoker
 
-            Director director = new Director();
+            Receiver receiver = new Receiver();
+            Command command = new ConcreteCommand(receiver);
+            Invoker invoker = new Invoker();
 
-            Builder b1 = new ConcreteBuilder1();
-            Builder b2 = new ConcreteBuilder2();
+            // Set and execute command
 
-            // Construct two products
-
-            director.Construct(b1);
-            Product p1 = b1.GetResult();
-            p1.Show();
-
-            director.Construct(b2);
-            Product p2 = b2.GetResult();
-            p2.Show();
+            invoker.SetCommand(command);
+            invoker.ExecuteCommand();
 
             // Wait for user
 
@@ -40,97 +28,260 @@ namespace DoFactory.GangOfFour.Builder.Structural
     }
 
     /// <summary>
-    /// The 'Director' class
+    /// The 'Command' abstract class
     /// </summary>
 
-    class Director
+    public abstract class Command
     {
-        // Builder uses a complex series of steps
+        protected Receiver receiver;
 
-        public void Construct(Builder builder)
+        // Constructor
+
+        public Command(Receiver receiver)
         {
-            builder.BuildPartA();
-            builder.BuildPartB();
+            this.receiver = receiver;
+        }
+
+        public abstract void Execute();
+    }
+
+    /// <summary>
+    /// The 'ConcreteCommand' class
+    /// </summary>
+
+    public class ConcreteCommand : Command
+    {
+        // Constructor
+
+        public ConcreteCommand(Receiver receiver) :
+            base(receiver)
+        {
+        }
+
+        public override void Execute()
+        {
+            receiver.Action();
         }
     }
 
     /// <summary>
-    /// The 'Builder' abstract class
+    /// The 'Receiver' class
     /// </summary>
 
-    abstract class Builder
+    public class Receiver
     {
-        public abstract void BuildPartA();
-        public abstract void BuildPartB();
-        public abstract Product GetResult();
-    }
-
-    /// <summary>
-    /// The 'ConcreteBuilder1' class
-    /// </summary>
-
-    class ConcreteBuilder1 : Builder
-    {
-        private Product _product = new Product();
-
-        public override void BuildPartA()
+        public void Action()
         {
-            _product.Add("PartA");
-        }
-
-        public override void BuildPartB()
-        {
-            _product.Add("PartB");
-        }
-
-        public override Product GetResult()
-        {
-            return _product;
+            Console.WriteLine("Called Receiver.Action()");
         }
     }
 
     /// <summary>
-    /// The 'ConcreteBuilder2' class
+    /// The 'Invoker' class
     /// </summary>
 
-    class ConcreteBuilder2 : Builder
+    public class Invoker
     {
-        private Product _product = new Product();
+        Command command;
 
-        public override void BuildPartA()
+        public void SetCommand(Command command)
         {
-            _product.Add("PartX");
+            this.command = command;
         }
 
-        public override void BuildPartB()
+        public void ExecuteCommand()
         {
-            _product.Add("PartY");
+            command.Execute();
         }
+    }
+}
 
-        public override Product GetResult()
+namespace Command.RealWorld
+{
+    /// <summary>
+    /// Command Design Pattern
+    /// </summary>
+
+    public class Program23
+    {
+        public static void Main(string[] args)
         {
-            return _product;
+            // Create user and let her compute
+
+            User user = new User();
+
+            // User presses calculator buttons
+
+            user.Compute('+', 100);
+            user.Compute('-', 50);
+            user.Compute('*', 10);
+            user.Compute('/', 2);
+
+            // Undo 4 commands
+
+            user.Undo(4);
+
+            // Redo 3 commands
+
+            user.Redo(3);
+
+            // Wait for user
+
+            Console.ReadKey();
         }
     }
 
     /// <summary>
-    /// The 'Product' class
+    /// The 'Command' abstract class
     /// </summary>
 
-    class Product
+    public abstract class Command
     {
-        private List<string> _parts = new List<string>();
+        public abstract void Execute();
+        public abstract void UnExecute();
+    }
 
-        public void Add(string part)
+    /// <summary>
+    /// The 'ConcreteCommand' class
+    /// </summary>
+
+    public class CalculatorCommand : Command
+    {
+        char @operator;
+        int operand;
+        Calculator calculator;
+
+        // Constructor
+
+        public CalculatorCommand(Calculator calculator,
+            char @operator, int operand)
         {
-            _parts.Add(part);
+            this.calculator = calculator;
+            this.@operator = @operator;
+            this.operand = operand;
         }
 
-        public void Show()
+        // Gets operator
+
+        public char Operator
         {
-            Console.WriteLine("\nProduct Parts -------");
-            foreach (string part in _parts)
-                Console.WriteLine(part);
+            set { @operator = value; }
+        }
+
+        // Get operand
+
+        public int Operand
+        {
+            set { operand = value; }
+        }
+
+        // Execute new command
+
+        public override void Execute()
+        {
+            calculator.Operation(@operator, operand);
+        }
+
+        // Unexecute last command
+
+        public override void UnExecute()
+        {
+            calculator.Operation(Undo(@operator), operand);
+        }
+
+        // Returns opposite operator for given operator
+
+        private char Undo(char @operator)
+        {
+            switch (@operator)
+            {
+                case '+': return '-';
+                case '-': return '+';
+                case '*': return '/';
+                case '/': return '*';
+                default:
+                    throw new
+             ArgumentException("@operator");
+            }
+        }
+    }
+
+    /// <summary>
+    /// The 'Receiver' class
+    /// </summary>
+
+    public class Calculator
+    {
+        int curr = 0;
+
+        public void Operation(char @operator, int operand)
+        {
+            switch (@operator)
+            {
+                case '+': curr += operand; break;
+                case '-': curr -= operand; break;
+                case '*': curr *= operand; break;
+                case '/': curr /= operand; break;
+            }
+            Console.WriteLine(
+                "Current value = {0,3} (following {1} {2})",
+                curr, @operator, operand);
+        }
+    }
+
+    /// <summary>
+    /// The 'Invoker' class
+    /// </summary>
+
+    public class User
+    {
+        // Initializers
+
+        Calculator calculator = new Calculator();
+        List<Command> commands = new List<Command>();
+        int current = 0;
+
+        public void Redo(int levels)
+        {
+            Console.WriteLine("\n---- Redo {0} levels ", levels);
+            // Perform redo operations
+            for (int i = 0; i < levels; i++)
+            {
+                if (current < commands.Count - 1)
+                {
+                    Command command = commands[current++];
+                    command.Execute();
+                }
+            }
+        }
+
+        public void Undo(int levels)
+        {
+            Console.WriteLine("\n---- Undo {0} levels ", levels);
+
+            // Perform undo operations
+
+            for (int i = 0; i < levels; i++)
+            {
+                if (current > 0)
+                {
+                    Command command = commands[--current] as Command;
+                    command.UnExecute();
+                }
+            }
+        }
+
+        public void Compute(char @operator, int operand)
+        {
+            // Create command operation and execute it
+
+            Command command = new CalculatorCommand(calculator, @operator, operand);
+            command.Execute();
+
+            // Add command to undo list
+
+            commands.Add(command);
+            current++;
         }
     }
 }
