@@ -1,129 +1,27 @@
 ﻿using System;
 
-namespace Command.Structural2
+namespace Strategy.Structural
 {
     /// <summary>
-    /// Command Design Pattern
+    /// Strategy Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create receiver, command, and invoker
+            Context context;
 
-            Receiver receiver = new Receiver();
-            Command command = new ConcreteCommand(receiver);
-            Invoker invoker = new Invoker();
+            // Three contexts following different strategies
 
-            // Set and execute command
+            context = new Context(new ConcreteStrategyA());
+            context.ContextInterface();
 
-            invoker.SetCommand(command);
-            invoker.ExecuteCommand();
+            context = new Context(new ConcreteStrategyB());
+            context.ContextInterface();
 
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'Command' abstract class
-    /// </summary>
-
-    public abstract class Command
-    {
-        protected Receiver receiver;
-
-        // Constructor
-
-        public Command(Receiver receiver)
-        {
-            this.receiver = receiver;
-        }
-
-        public abstract void Execute();
-    }
-
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
-
-    public class ConcreteCommand : Command
-    {
-        // Constructor
-
-        public ConcreteCommand(Receiver receiver) :
-            base(receiver)
-        {
-        }
-
-        public override void Execute()
-        {
-            receiver.Action();
-        }
-    }
-
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Receiver
-    {
-        public void Action()
-        {
-            Console.WriteLine("Called Receiver.Action()");
-        }
-    }
-
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
-
-    public class Invoker
-    {
-        Command command;
-
-        public void SetCommand(Command command)
-        {
-            this.command = command;
-        }
-
-        public void ExecuteCommand()
-        {
-            command.Execute();
-        }
-    }
-}
-
-namespace Command.RealWorld
-{
-    /// <summary>
-    /// Command Design Pattern
-    /// </summary>
-
-    public class Program23
-    {
-        public static void Main(string[] args)
-        {
-            // Create user and let her compute
-
-            User user = new User();
-
-            // User presses calculator buttons
-
-            user.Compute('+', 100);
-            user.Compute('-', 50);
-            user.Compute('*', 10);
-            user.Compute('/', 2);
-
-            // Undo 4 commands
-
-            user.Undo(4);
-
-            // Redo 3 commands
-
-            user.Redo(3);
+            context = new Context(new ConcreteStrategyC());
+            context.ContextInterface();
 
             // Wait for user
 
@@ -132,156 +30,71 @@ namespace Command.RealWorld
     }
 
     /// <summary>
-    /// The 'Command' abstract class
+    /// The 'Strategy' abstract class
     /// </summary>
 
-    public abstract class Command
+    public abstract class Strategy
     {
-        public abstract void Execute();
-        public abstract void UnExecute();
+        public abstract void AlgorithmInterface();
     }
 
     /// <summary>
-    /// The 'ConcreteCommand' class
+    /// A 'ConcreteStrategy' class
     /// </summary>
 
-    public class CalculatorCommand : Command
+    public class ConcreteStrategyA : Strategy
     {
-        char @operator;
-        int operand;
-        Calculator calculator;
-
-        // Constructor
-
-        public CalculatorCommand(Calculator calculator,
-            char @operator, int operand)
+        public override void AlgorithmInterface()
         {
-            this.calculator = calculator;
-            this.@operator = @operator;
-            this.operand = operand;
-        }
-
-        // Gets operator
-
-        public char Operator
-        {
-            set { @operator = value; }
-        }
-
-        // Get operand
-
-        public int Operand
-        {
-            set { operand = value; }
-        }
-
-        // Execute new command
-
-        public override void Execute()
-        {
-            calculator.Operation(@operator, operand);
-        }
-
-        // Unexecute last command
-
-        public override void UnExecute()
-        {
-            calculator.Operation(Undo(@operator), operand);
-        }
-
-        // Returns opposite operator for given operator
-
-        private char Undo(char @operator)
-        {
-            switch (@operator)
-            {
-                case '+': return '-';
-                case '-': return '+';
-                case '*': return '/';
-                case '/': return '*';
-                default:
-                    throw new
-             ArgumentException("@operator");
-            }
-        }
-    }
-
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Calculator
-    {
-        int curr = 0;
-
-        public void Operation(char @operator, int operand)
-        {
-            switch (@operator)
-            {
-                case '+': curr += operand; break;
-                case '-': curr -= operand; break;
-                case '*': curr *= operand; break;
-                case '/': curr /= operand; break;
-            }
             Console.WriteLine(
-                "Current value = {0,3} (following {1} {2})",
-                curr, @operator, operand);
+                "Called ConcreteStrategyA.AlgorithmInterface()");
         }
     }
 
     /// <summary>
-    /// The 'Invoker' class
+    /// A 'ConcreteStrategy' class
     /// </summary>
 
-    public class User
+    public class ConcreteStrategyB : Strategy
     {
-        // Initializers
-
-        Calculator calculator = new Calculator();
-        List<Command> commands = new List<Command>();
-        int current = 0;
-
-        public void Redo(int levels)
+        public override void AlgorithmInterface()
         {
-            Console.WriteLine("\n---- Redo {0} levels ", levels);
-            // Perform redo operations
-            for (int i = 0; i < levels; i++)
-            {
-                if (current < commands.Count - 1)
-                {
-                    Command command = commands[current++];
-                    command.Execute();
-                }
-            }
+            Console.WriteLine(
+                "Called ConcreteStrategyB.AlgorithmInterface()");
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteStrategy' class
+    /// </summary>
+
+    public class ConcreteStrategyC : Strategy
+    {
+        public override void AlgorithmInterface()
+        {
+            Console.WriteLine(
+                "Called ConcreteStrategyC.AlgorithmInterface()");
+        }
+    }
+
+    /// <summary>
+    /// The 'Context' class
+    /// </summary>
+
+    public class Context
+    {
+        Strategy strategy;
+
+        // Constructor
+
+        public Context(Strategy strategy)
+        {
+            this.strategy = strategy;
         }
 
-        public void Undo(int levels)
+        public void ContextInterface()
         {
-            Console.WriteLine("\n---- Undo {0} levels ", levels);
-
-            // Perform undo operations
-
-            for (int i = 0; i < levels; i++)
-            {
-                if (current > 0)
-                {
-                    Command command = commands[--current] as Command;
-                    command.UnExecute();
-                }
-            }
-        }
-
-        public void Compute(char @operator, int operand)
-        {
-            // Create command operation and execute it
-
-            Command command = new CalculatorCommand(calculator, @operator, operand);
-            command.Execute();
-
-            // Add command to undo list
-
-            commands.Add(command);
-            current++;
+            strategy.AlgorithmInterface();
         }
     }
 }
