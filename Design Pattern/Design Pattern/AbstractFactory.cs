@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace DoFactory.GangOfFour.Abstract.Structural
+namespace DoFactory.GangOfFour.Abstract.RealWorld
 {
     /// <summary>
-    /// MainApp startup class for Structural
+    /// MainApp startup class for Real-World
     /// Abstract Factory Design Pattern.
     /// </summary>
 
@@ -15,17 +15,17 @@ namespace DoFactory.GangOfFour.Abstract.Structural
 
         public static void Main()
         {
-            // Abstract factory #1
+            // Create and run the African animal world
 
-            AbstractFactory factory1 = new ConcreteFactory1();
-            Client client1 = new Client(factory1);
-            client1.Run();
+            ContinentFactory africa = new AfricaFactory();
+            AnimalWorld world = new AnimalWorld(africa);
+            world.RunFoodChain();
 
-            // Abstract factory #2
+            // Create and run the American animal world
 
-            AbstractFactory factory2 = new ConcreteFactory2();
-            Client client2 = new Client(factory2);
-            client2.Run();
+            ContinentFactory america = new AmericaFactory();
+            world = new AnimalWorld(america);
+            world.RunFoodChain();
 
             // Wait for user input
 
@@ -33,30 +33,30 @@ namespace DoFactory.GangOfFour.Abstract.Structural
         }
     }
 
+
     /// <summary>
     /// The 'AbstractFactory' abstract class
     /// </summary>
 
-    abstract class AbstractFactory
+    abstract class ContinentFactory
     {
-        public abstract AbstractProductA CreateProductA();
-        public abstract AbstractProductB CreateProductB();
+        public abstract Herbivore CreateHerbivore();
+        public abstract Carnivore CreateCarnivore();
     }
-
 
     /// <summary>
     /// The 'ConcreteFactory1' class
     /// </summary>
 
-    class ConcreteFactory1 : AbstractFactory
+    class AfricaFactory : ContinentFactory
     {
-        public override AbstractProductA CreateProductA()
+        public override Herbivore CreateHerbivore()
         {
-            return new ProductA1();
+            return new Wildebeest();
         }
-        public override AbstractProductB CreateProductB()
+        public override Carnivore CreateCarnivore()
         {
-            return new ProductB1();
+            return new Lion();
         }
     }
 
@@ -64,15 +64,15 @@ namespace DoFactory.GangOfFour.Abstract.Structural
     /// The 'ConcreteFactory2' class
     /// </summary>
 
-    class ConcreteFactory2 : AbstractFactory
+    class AmericaFactory : ContinentFactory
     {
-        public override AbstractProductA CreateProductA()
+        public override Herbivore CreateHerbivore()
         {
-            return new ProductA2();
+            return new Bison();
         }
-        public override AbstractProductB CreateProductB()
+        public override Carnivore CreateCarnivore()
         {
-            return new ProductB2();
+            return new Wolf();
         }
     }
 
@@ -80,7 +80,7 @@ namespace DoFactory.GangOfFour.Abstract.Structural
     /// The 'AbstractProductA' abstract class
     /// </summary>
 
-    abstract class AbstractProductA
+    abstract class Herbivore
     {
     }
 
@@ -88,17 +88,16 @@ namespace DoFactory.GangOfFour.Abstract.Structural
     /// The 'AbstractProductB' abstract class
     /// </summary>
 
-    abstract class AbstractProductB
+    abstract class Carnivore
     {
-        public abstract void Interact(AbstractProductA a);
+        public abstract void Eat(Herbivore h);
     }
-
 
     /// <summary>
     /// The 'ProductA1' class
     /// </summary>
 
-    class ProductA1 : AbstractProductA
+    class Wildebeest : Herbivore
     {
     }
 
@@ -106,12 +105,14 @@ namespace DoFactory.GangOfFour.Abstract.Structural
     /// The 'ProductB1' class
     /// </summary>
 
-    class ProductB1 : AbstractProductB
+    class Lion : Carnivore
     {
-        public override void Interact(AbstractProductA a)
+        public override void Eat(Herbivore h)
         {
+            // Eat Wildebeest
+
             Console.WriteLine(this.GetType().Name +
-              " interacts with " + a.GetType().Name);
+              " eats " + h.GetType().Name);
         }
     }
 
@@ -119,7 +120,7 @@ namespace DoFactory.GangOfFour.Abstract.Structural
     /// The 'ProductA2' class
     /// </summary>
 
-    class ProductA2 : AbstractProductA
+    class Bison : Herbivore
     {
     }
 
@@ -127,35 +128,37 @@ namespace DoFactory.GangOfFour.Abstract.Structural
     /// The 'ProductB2' class
     /// </summary>
 
-    class ProductB2 : AbstractProductB
+    class Wolf : Carnivore
     {
-        public override void Interact(AbstractProductA a)
+        public override void Eat(Herbivore h)
         {
+            // Eat Bison
+
             Console.WriteLine(this.GetType().Name +
-              " interacts with " + a.GetType().Name);
+              " eats " + h.GetType().Name);
         }
     }
 
     /// <summary>
-    /// The 'Client' class. Interaction environment for the products.
+    /// The 'Client' class 
     /// </summary>
 
-    class Client
+    class AnimalWorld
     {
-        private AbstractProductA _abstractProductA;
-        private AbstractProductB _abstractProductB;
+        private Herbivore _herbivore;
+        private Carnivore _carnivore;
 
         // Constructor
 
-        public Client(AbstractFactory factory)
+        public AnimalWorld(ContinentFactory factory)
         {
-            _abstractProductB = factory.CreateProductB();
-            _abstractProductA = factory.CreateProductA();
+            _carnivore = factory.CreateCarnivore();
+            _herbivore = factory.CreateHerbivore();
         }
 
-        public void Run()
+        public void RunFoodChain()
         {
-            _abstractProductB.Interact(_abstractProductA);
+            _carnivore.Eat(_herbivore);
         }
     }
 }
