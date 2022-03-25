@@ -1,108 +1,157 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Observer.Realworld
+namespace Visitor.Structural
 {
+    /// <summary>
+    /// Visitor Design Pattern
+    /// </summary>
+
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            IBM ibm = new IBM("IBM", 120.00);
-            ibm.Attach(new Investor("Sorros"));
-            ibm.Attach(new Investor("Berkshire"));
+            // Setup structure
 
-            ibm.Price = 120.10;
-            ibm.Price = 121.00;
-            ibm.Price = 120.50;
-            ibm.Price = 120.75;
+            ObjectStructure o = new ObjectStructure();
+            o.Attach(new ConcreteElementA());
+            o.Attach(new ConcreteElementB());
+
+            // Create visitor objects
+
+            ConcreteVisitor1 v1 = new ConcreteVisitor1();
+            ConcreteVisitor2 v2 = new ConcreteVisitor2();
+
+            // Structure accepting visitors
+
+            o.Accept(v1);
+            o.Accept(v2);
+
+            // Wait for user
 
             Console.ReadKey();
         }
     }
 
-    public interface IInvestor
+    /// <summary>
+    /// The 'Visitor' abstract class
+    /// </summary>
+
+    public abstract class Visitor
     {
-        void Update(Stock stock);
+        public abstract void VisitConcreteElementA(
+            ConcreteElementA concreteElementA);
+        public abstract void VisitConcreteElementB(
+            ConcreteElementB concreteElementB);
     }
 
-    public abstract class Stock
+    /// <summary>
+    /// A 'ConcreteVisitor' class
+    /// </summary>
+
+    public class ConcreteVisitor1 : Visitor
     {
-        private string symbol;
-        private double price;
-        private List<IInvestor> investors = new List<IInvestor>();
-
-        public Stock(string symbol, double price)
+        public override void VisitConcreteElementA(
+            ConcreteElementA concreteElementA)
         {
-            this.symbol = symbol;
-            this.price = price;
+            Console.WriteLine("{0} visited by {1}",
+                concreteElementA.GetType().Name, this.GetType().Name);
         }
 
-        public void Attach(IInvestor investor)
+        public override void VisitConcreteElementB(
+            ConcreteElementB concreteElementB)
         {
-            investors.Add(investor);
+            Console.WriteLine("{0} visited by {1}",
+                concreteElementB.GetType().Name, this.GetType().Name);
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteVisitor' class
+    /// </summary>
+
+    public class ConcreteVisitor2 : Visitor
+    {
+        public override void VisitConcreteElementA(
+            ConcreteElementA concreteElementA)
+        {
+            Console.WriteLine("{0} visited by {1}",
+                concreteElementA.GetType().Name, this.GetType().Name);
         }
 
-        public void Detach(IInvestor investor)
+        public override void VisitConcreteElementB(
+            ConcreteElementB concreteElementB)
         {
-            investors.Remove(investor);
+            Console.WriteLine("{0} visited by {1}",
+                concreteElementB.GetType().Name, this.GetType().Name);
         }
-        public void Notify()
+    }
+
+    /// <summary>
+    /// The 'Element' abstract class
+    /// </summary>
+
+    public abstract class Element
+    {
+        public abstract void Accept(Visitor visitor);
+    }
+
+    /// <summary>
+    /// A 'ConcreteElement' class
+    /// </summary>
+
+    public class ConcreteElementA : Element
+    {
+        public override void Accept(Visitor visitor)
         {
-            foreach (IInvestor investor in investors)
+            visitor.VisitConcreteElementA(this);
+        }
+
+        public void OperationA()
+        {
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteElement' class
+    /// </summary>
+
+    public class ConcreteElementB : Element
+    {
+        public override void Accept(Visitor visitor)
+        {
+            visitor.VisitConcreteElementB(this);
+        }
+
+        public void OperationB()
+        {
+        }
+    }
+
+    /// <summary>
+    /// The 'ObjectStructure' class
+    /// </summary>
+
+    public class ObjectStructure
+    {
+        List<Element> elements = new List<Element>();
+
+        public void Attach(Element element)
+        {
+            elements.Add(element);
+        }
+
+        public void Detach(Element element)
+        {
+            elements.Remove(element);
+        }
+
+        public void Accept(Visitor visitor)
+        {
+            foreach (Element element in elements)
             {
-                investor.Update(this);
+                element.Accept(visitor);
             }
-
-            Console.WriteLine("");
-        }
-
-        public double Price
-        {
-            get { return price; }
-            set
-            {
-                if(price!= value)
-                {
-                    price = value;
-                    Notify();
-                }
-            }
-        }
-
-        public string Symbol
-        {
-            get { return symbol; }
-        }
-    }
-
-    public class IBM: Stock
-    {
-        public IBM(string symbol, double price) 
-            : base(symbol, price)
-        {
-
-        }
-    }
-
-    public class Investor : IInvestor
-    {
-        private string name;
-        private Stock stock;
-
-        public Investor(string name)
-        {
-            this.name = name;
-        }
-
-        public void Update(Stock stock)
-        {
-            Console.WriteLine("Notified {0} of {1}'s " + "change to {2:C}", name, stock.Symbol, stock.Price);
-        }
-
-        public Stock Stock
-        {
-            get { return stock; }
-            set { stock = value; }
         }
     }
 }
