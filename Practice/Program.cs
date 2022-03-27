@@ -1,216 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
-namespace DoFactory.GangOfFour.Builder.RealWorld
+namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
 {
-    /// <summary>
-    /// MainApp startup class for Real-World 
-    /// Builder Design Pattern.
-    /// </summary>
-
-    public class MainApp
+    public interface IObserver
     {
-        /// <summary>
-        /// Entry point into console application.
-        /// </summary>
+        // Receive update from subject
+        void Update(ISubject subject);
+    }
 
-        public static void Main()
+    public interface ISubject
+    {
+        // Attach an observer to the subject.
+        void Attach(IObserver observer);
+
+        // Detach an observer from the subject.
+        void Detach(IObserver observer);
+
+        // Notify all observers about an event.
+        void Notify();
+    }
+
+    // The Subject owns some important state and notifies observers when the
+    // state changes.
+    public class Subject : ISubject
+    {
+        // For the sake of simplicity, the Subject's state, essential to all
+        // subscribers, is stored in this variable.
+        public int State { get; set; } = -0;
+
+        // List of subscribers. In real life, the list of subscribers can be
+        // stored more comprehensively (categorized by event type, etc.).
+        private List<IObserver> _observers = new List<IObserver>();
+
+        // The subscription management methods.
+        public void Attach(IObserver observer)
         {
-            VehicleBuilder builder;
+            Console.WriteLine("Subject: Attached an observer.");
+            this._observers.Add(observer);
+        }
 
-            // Create shop with vehicle builders
+        public void Detach(IObserver observer)
+        {
+            this._observers.Remove(observer);
+            Console.WriteLine("Subject: Detached an observer.");
+        }
 
-            Shop shop = new Shop();
+        // Trigger an update in each subscriber.
+        public void Notify()
+        {
+            Console.WriteLine("Subject: Notifying observers...");
 
-            // Construct and display vehicles
+            foreach (var observer in _observers)
+            {
+                observer.Update(this);
+            }
+        }
 
-            builder = new ScooterBuilder();
-            shop.Construct(builder);
-            builder.Vehicle.Show();
+        // Usually, the subscription logic is only a fraction of what a Subject
+        // can really do. Subjects commonly hold some important business logic,
+        // that triggers a notification method whenever something important is
+        // about to happen (or after it).
+        public void SomeBusinessLogic()
+        {
+            Console.WriteLine("\nSubject: I'm doing something important.");
+            this.State = new Random().Next(0, 10);
 
-            builder = new CarBuilder();
-            shop.Construct(builder);
-            builder.Vehicle.Show();
+            Thread.Sleep(15);
 
-            builder = new MotorCycleBuilder();
-            shop.Construct(builder);
-            builder.Vehicle.Show();
-
-            // Wait for user
-
-            Console.ReadKey();
+            Console.WriteLine("Subject: My state has just changed to: " + this.State);
+            this.Notify();
         }
     }
 
-    /// <summary>
-    /// The 'Director' class
-    /// </summary>
-
-    class Shop
+    // Concrete Observers react to the updates issued by the Subject they had
+    // been attached to.
+    class ConcreteObserverA : IObserver
     {
-        // Builder uses a complex series of steps
-
-        public void Construct(VehicleBuilder vehicleBuilder)
+        public void Update(ISubject subject)
         {
-            vehicleBuilder.BuildFrame();
-            vehicleBuilder.BuildEngine();
-            vehicleBuilder.BuildWheels();
-            vehicleBuilder.BuildDoors();
+            if ((subject as Subject).State < 3)
+            {
+                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
+            }
         }
     }
 
-    /// <summary>
-    /// The 'Builder' abstract class
-    /// </summary>
-
-    abstract class VehicleBuilder
+    class ConcreteObserverB : IObserver
     {
-        protected Vehicle vehicle;
-
-        // Gets vehicle instance
-
-        public Vehicle Vehicle
+        public void Update(ISubject subject)
         {
-            get { return vehicle; }
-        }
-
-        // Abstract build methods
-
-        public abstract void BuildFrame();
-        public abstract void BuildEngine();
-        public abstract void BuildWheels();
-        public abstract void BuildDoors();
-    }
-
-    /// <summary>
-    /// The 'ConcreteBuilder1' class
-    /// </summary>
-
-    class MotorCycleBuilder : VehicleBuilder
-    {
-        public MotorCycleBuilder()
-        {
-            vehicle = new Vehicle("MotorCycle");
-        }
-
-        public override void BuildFrame()
-        {
-            vehicle["frame"] = "MotorCycle Frame";
-        }
-
-        public override void BuildEngine()
-        {
-            vehicle["engine"] = "500 cc";
-        }
-
-        public override void BuildWheels()
-        {
-            vehicle["wheels"] = "2";
-        }
-
-        public override void BuildDoors()
-        {
-            vehicle["doors"] = "0";
+            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
+            {
+                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
+            }
         }
     }
 
-    /// <summary>
-    /// The 'ConcreteBuilder2' class
-    /// </summary>
-
-    class CarBuilder : VehicleBuilder
+    class Program
     {
-        public CarBuilder()
+        static void Main(string[] args)
         {
-            vehicle = new Vehicle("Car");
-        }
+            // The client code.
+            var subject = new Subject();
+            var observerA = new ConcreteObserverA();
+            subject.Attach(observerA);
 
-        public override void BuildFrame()
-        {
-            vehicle["frame"] = "Car Frame";
-        }
+            var observerB = new ConcreteObserverB();
+            subject.Attach(observerB);
 
-        public override void BuildEngine()
-        {
-            vehicle["engine"] = "2500 cc";
-        }
+            subject.SomeBusinessLogic();
+            subject.SomeBusinessLogic();
 
-        public override void BuildWheels()
-        {
-            vehicle["wheels"] = "4";
-        }
+            subject.Detach(observerB);
 
-        public override void BuildDoors()
-        {
-            vehicle["doors"] = "4";
-        }
-    }
-
-    /// <summary>
-    /// The 'ConcreteBuilder3' class
-    /// </summary>
-
-    class ScooterBuilder : VehicleBuilder
-    {
-        public ScooterBuilder()
-        {
-            vehicle = new Vehicle("Scooter");
-        }
-
-        public override void BuildFrame()
-        {
-            vehicle["frame"] = "Scooter Frame";
-        }
-
-        public override void BuildEngine()
-        {
-            vehicle["engine"] = "50 cc";
-        }
-
-        public override void BuildWheels()
-        {
-            vehicle["wheels"] = "2";
-        }
-
-        public override void BuildDoors()
-        {
-            vehicle["doors"] = "0";
-        }
-    }
-
-    /// <summary>
-    /// The 'Product' class
-    /// </summary>
-
-    class Vehicle
-    {
-        private string _vehicleType;
-        private Dictionary<string, string> _parts =
-          new Dictionary<string, string>();
-
-        // Constructor
-
-        public Vehicle(string vehicleType)
-        {
-            this._vehicleType = vehicleType;
-        }
-
-        // Indexer
-
-        public string this[string key]
-        {
-            get { return _parts[key]; }
-            set { _parts[key] = value; }
-        }
-
-        public void Show()
-        {
-            Console.WriteLine("\n---------------------------");
-            Console.WriteLine("Vehicle Type: {0}", _vehicleType);
-            Console.WriteLine(" Frame : {0}", _parts["frame"]);
-            Console.WriteLine(" Engine : {0}", _parts["engine"]);
-            Console.WriteLine(" #Wheels: {0}", _parts["wheels"]);
-            Console.WriteLine(" #Doors : {0}", _parts["doors"]);
+            subject.SomeBusinessLogic();
         }
     }
 }
