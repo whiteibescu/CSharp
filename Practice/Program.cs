@@ -1,121 +1,134 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
-namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
+namespace Composite.RealWorld
 {
-    public interface IObserver
+    /// <summary>
+    /// Composite Design Pattern
+    /// </summary>
+
+    public class Program
     {
-        // Receive update from subject
-        void Update(ISubject subject);
+        public static void Main(string[] args)
+        {
+            // Create a tree structure 
+
+            CompositeElement root = new CompositeElement("Picture");
+            root.Add(new PrimitiveElement("Red Line"));
+            root.Add(new PrimitiveElement("Blue Circle"));
+            root.Add(new PrimitiveElement("Green Box"));
+
+            // Create a branch
+
+            CompositeElement comp = new CompositeElement("Two Circles");
+            comp.Add(new PrimitiveElement("Black Circle"));
+            comp.Add(new PrimitiveElement("White Circle"));
+            root.Add(comp);
+
+            // Add and remove a PrimitiveElement
+
+            PrimitiveElement pe = new PrimitiveElement("Yellow Line");
+            root.Add(pe);
+            root.Remove(pe);
+
+            // Recursively display nodes
+
+            root.Display(1);
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
     }
 
-    public interface ISubject
+    /// <summary>
+    /// The 'Component' Treenode
+    /// </summary>
+
+    public abstract class DrawingElement
     {
-        // Attach an observer to the subject.
-        void Attach(IObserver observer);
+        protected string name;
 
-        // Detach an observer from the subject.
-        void Detach(IObserver observer);
+        // Constructor
 
-        // Notify all observers about an event.
-        void Notify();
+        public DrawingElement(string name)
+        {
+            this.name = name;
+        }
+
+        public abstract void Add(DrawingElement d);
+        public abstract void Remove(DrawingElement d);
+        public abstract void Display(int indent);
     }
 
-    // The Subject owns some important state and notifies observers when the
-    // state changes.
-    public class Subject : ISubject
+    /// <summary>
+    /// The 'Leaf' class
+    /// </summary>
+
+    public class PrimitiveElement : DrawingElement
     {
-        // For the sake of simplicity, the Subject's state, essential to all
-        // subscribers, is stored in this variable.
-        public int State { get; set; } = -0;
+        // Constructor
 
-        // List of subscribers. In real life, the list of subscribers can be
-        // stored more comprehensively (categorized by event type, etc.).
-        private List<IObserver> _observers = new List<IObserver>();
-
-        // The subscription management methods.
-        public void Attach(IObserver observer)
+        public PrimitiveElement(string name)
+            : base(name)
         {
-            Console.WriteLine("Subject: Attached an observer.");
-            this._observers.Add(observer);
         }
 
-        public void Detach(IObserver observer)
+        public override void Add(DrawingElement c)
         {
-            this._observers.Remove(observer);
-            Console.WriteLine("Subject: Detached an observer.");
+            Console.WriteLine(
+                "Cannot add to a PrimitiveElement");
         }
 
-        // Trigger an update in each subscriber.
-        public void Notify()
+        public override void Remove(DrawingElement c)
         {
-            Console.WriteLine("Subject: Notifying observers...");
+            Console.WriteLine(
+                "Cannot remove from a PrimitiveElement");
+        }
 
-            foreach (var observer in _observers)
+        public override void Display(int indent)
+        {
+            Console.WriteLine(
+                new String('-', indent) + " " + name);
+        }
+    }
+
+    /// <summary>
+    /// The 'Composite' class
+    /// </summary>
+
+    public class CompositeElement : DrawingElement
+    {
+        List<DrawingElement> elements = new List<DrawingElement>();
+
+        // Constructor
+
+        public CompositeElement(string name)
+            : base(name)
+        {
+        }
+
+        public override void Add(DrawingElement d)
+        {
+            elements.Add(d);
+        }
+
+        public override void Remove(DrawingElement d)
+        {
+            elements.Remove(d);
+        }
+
+        public override void Display(int indent)
+        {
+            Console.WriteLine(new String('-', indent) +
+                "+ " + name);
+
+            // Display each child element on this node
+
+            foreach (DrawingElement d in elements)
             {
-                observer.Update(this);
+                d.Display(indent + 2);
             }
-        }
-
-        // Usually, the subscription logic is only a fraction of what a Subject
-        // can really do. Subjects commonly hold some important business logic,
-        // that triggers a notification method whenever something important is
-        // about to happen (or after it).
-        public void SomeBusinessLogic()
-        {
-            Console.WriteLine("\nSubject: I'm doing something important.");
-            this.State = new Random().Next(0, 10);
-
-            Thread.Sleep(15);
-
-            Console.WriteLine("Subject: My state has just changed to: " + this.State);
-            this.Notify();
-        }
-    }
-
-    // Concrete Observers react to the updates issued by the Subject they had
-    // been attached to.
-    class ConcreteObserverA : IObserver
-    {
-        public void Update(ISubject subject)
-        {
-            if ((subject as Subject).State < 3)
-            {
-                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
-            }
-        }
-    }
-
-    class ConcreteObserverB : IObserver
-    {
-        public void Update(ISubject subject)
-        {
-            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
-            {
-                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
-            }
-        }
-    }
-
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            // The client code.
-            var subject = new Subject();
-            var observerA = new ConcreteObserverA();
-            subject.Attach(observerA);
-
-            var observerB = new ConcreteObserverB();
-            subject.Attach(observerB);
-
-            subject.SomeBusinessLogic();
-            subject.SomeBusinessLogic();
-
-            subject.Detach(observerB);
-
-            subject.SomeBusinessLogic();
         }
     }
 }
