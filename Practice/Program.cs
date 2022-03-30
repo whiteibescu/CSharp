@@ -1,62 +1,79 @@
 ﻿using System;
 
-namespace Factory
+namespace Facade_Pattern
 {
-    public interface IFactory
+    public class MainApp
     {
-        void Drive(int miles);
-    }
-
-    public class Scooter : IFactory
-    {
-        public void Drive(int miles)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Drive the Scooter : " + miles.ToString() + "km");
-        }
-    }
+            Facade facade = new Facade();
 
-    public class Bike : IFactory
-    {
-        public void Drive(int miles)
-        {
-            Console.WriteLine("Drive the Bike : " + miles.ToString() + "km");
-        }
-    }
-
-    public abstract class VehicleFactory
-    {
-        public abstract IFactory GetVehicle(string Vehicle);
-    }
-
-    public class ConcreteVehcileFactory : VehicleFactory
-    {
-        public override IFactory GetVehicle(string Vehicle)
-        {
-            switch (Vehicle)
-            {
-                case "Scooter":
-                    return new Scooter();
-                case "Bike":
-                    return new Bike();
-                default:
-                    throw new ApplicationException(string.Format("Vehicle '{0}' cannot be created", Vehicle));
-            }
-        }
-    }
-
-    class MainApp
-    {
-        public static void Main()
-        {
-            VehicleFactory factory = new ConcreteVehcileFactory();
-
-            IFactory scooter = factory.GetVehicle("Scooter");
-            scooter.Drive(10);
-
-            IFactory bike = factory.GetVehicle("Bike");
-            bike.Drive(20);
+            facade.MethodA();
+            facade.MethodB();
 
             Console.ReadKey();
+        }
+    }
+
+    public class SubSystemOne
+    {
+        public void MethodOne()
+        {
+            Console.WriteLine("SubSystemOne Method");
+        }
+    }
+    public class SubSystemTwo
+    {
+        public void MethodTwo()
+        {
+            Console.WriteLine("SubSystemTwo Method");
+        }
+    }
+
+    public class SubSystemThree
+    {
+        public void MethodThree()
+        {
+            Console.WriteLine("SubSystemThree Method");
+        }
+    }
+
+    public class SubSystemFour
+    {
+        public void MethodFour()
+        {
+            Console.WriteLine("SubsystemFour Method");
+        }
+    }
+
+    public class Facade
+    {
+        SubSystemOne one;
+        SubSystemTwo two;
+        SubSystemThree three;
+        SubSystemFour four;
+
+        public Facade()
+        {
+            one = new SubSystemOne();
+            two = new SubSystemTwo();
+            three = new SubSystemThree();
+            four = new SubSystemFour();
+        }
+
+        public void MethodA()
+        {
+            Console.WriteLine("\nMethodA() ----");
+            one.MethodOne();
+            two.MethodTwo();
+            four.MethodFour();
+        }
+
+        public void MethodB()
+        {
+            Console.WriteLine("\nMethodA() ----");
+            two.MethodTwo();
+            three.MethodThree();
         }
     }
 }
