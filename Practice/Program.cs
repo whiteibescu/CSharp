@@ -1,253 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Design_Pattern
+namespace Factory
 {
-    public class FlyWeightPattern
+    public interface IFactory
     {
-        public static void Main(string[] args)
+        void Drive(int miles);
+    }
+
+    public class Scooter : IFactory
+    {
+        public void Drive(int miles)
         {
-            // Arbitrary extrinsic state
+            Console.WriteLine("Drive the Scooter : " + miles.ToString() + "km");
+        }
+    }
 
-            int extrinsicstate = 22;
+    public class Bike : IFactory
+    {
+        public void Drive(int miles)
+        {
+            Console.WriteLine("Drive the Bike : " + miles.ToString() + "km");
+        }
+    }
 
-            FlyweightFactory factory = new FlyweightFactory();
+    public abstract class VehicleFactory
+    {
+        public abstract IFactory GetVehicle(string Vehicle);
+    }
 
-            // Work with different flyweight instances
+    public class ConcreteVehcileFactory : VehicleFactory
+    {
+        public override IFactory GetVehicle(string Vehicle)
+        {
+            switch (Vehicle)
+            {
+                case "Scooter":
+                    return new Scooter();
+                case "Bike":
+                    return new Bike();
+                default:
+                    throw new ApplicationException(string.Format("Vehicle '{0}' cannot be created", Vehicle));
+            }
+        }
+    }
 
-            Flyweight fx = factory.GetFlyweight("X");
-            fx.Operation(--extrinsicstate);
+    class MainApp
+    {
+        public static void Main()
+        {
+            VehicleFactory factory = new ConcreteVehcileFactory();
 
-            Flyweight fy = factory.GetFlyweight("Y");
-            fy.Operation(--extrinsicstate);
+            IFactory scooter = factory.GetVehicle("Scooter");
+            scooter.Drive(10);
 
-            Flyweight fz = factory.GetFlyweight("Z");
-            fz.Operation(--extrinsicstate);
-
-            UnsharedConcreteFlyweight fu = new
-                UnsharedConcreteFlyweight();
-
-            fu.Operation(--extrinsicstate);
-
-            // Wait for user
+            IFactory bike = factory.GetVehicle("Bike");
+            bike.Drive(20);
 
             Console.ReadKey();
-        }
-    }
-    /// <summary>
-    /// The 'FlyweightFactory' class
-    /// </summary>
-
-    public class FlyweightFactory
-    {
-        private Dictionary<string, Flyweight> flyweights { get; set; } = new Dictionary<string, Flyweight>();
-
-        // Constructor
-
-        public FlyweightFactory()
-        {
-            flyweights.Add("X", new ConcreteFlyweight());
-            flyweights.Add("Y", new ConcreteFlyweight());
-            flyweights.Add("Z", new ConcreteFlyweight());
-        }
-
-        public Flyweight GetFlyweight(string key)
-        {
-            return ((Flyweight)flyweights[key]);
-        }
-    }
-
-    /// <summary>
-    /// The 'Flyweight' abstract class
-    /// </summary>
-
-    public abstract class Flyweight
-    {
-        public abstract void Operation(int extrinsicstate);
-    }
-
-    /// <summary>
-    /// The 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class ConcreteFlyweight : Flyweight
-    {
-        public override void Operation(int extrinsicstate)
-        {
-            Console.WriteLine("ConcreteFlyweight: " + extrinsicstate);
-        }
-    }
-
-    /// <summary>
-    /// The 'UnsharedConcreteFlyweight' class
-    /// </summary>
-
-    public class UnsharedConcreteFlyweight : Flyweight
-    {
-        public override void Operation(int extrinsicstate)
-        {
-            Console.WriteLine("UnsharedConcreteFlyweight: " +
-                extrinsicstate);
-        }
-    }
-
-    /// Real Live Coding
-    /// Flyweight Design Pattern
-    /// </summary>
-
-    public class _FlyWeight
-    {
-        public static void Main(string[] args)
-        {
-            // Build a document with text
-
-            string document = "AAZZBBZB";
-            char[] chars = document.ToCharArray();
-
-            CharacterFactory factory = new CharacterFactory();
-
-            // extrinsic state
-
-            int pointSize = 10;
-
-            // For each character use a flyweight object
-
-            foreach (char c in chars)
-            {
-                pointSize++;
-                Character character = factory.GetCharacter(c);
-                character.Display(pointSize);
-            }
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'FlyweightFactory' class
-    /// </summary>
-
-    public class CharacterFactory
-    {
-        private Dictionary<char, Character> characters = new Dictionary<char, Character>();
-
-        public Character GetCharacter(char key)
-        {
-            // Uses "lazy initialization"
-
-            Character character = null;
-
-            if (characters.ContainsKey(key))
-            {
-                character = characters[key];
-            }
-            else
-            {
-                switch (key)
-                {
-                    case 'A': character = new CharacterA(); break;
-                    case 'B': character = new CharacterB(); break;
-                    //...
-                    case 'Z': character = new CharacterZ(); break;
-                }
-                characters.Add(key, character);
-            }
-            return character;
-        }
-    }
-
-    /// <summary>
-    /// The 'Flyweight' abstract class
-    /// </summary>
-
-    public abstract class Character
-    {
-        protected char symbol;
-        protected int width;
-        protected int height;
-        protected int ascent;
-        protected int descent;
-        protected int pointSize;
-
-        public abstract void Display(int pointSize);
-    }
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterA : Character
-    {
-        // Constructor
-        public CharacterA()
-        {
-            symbol = 'A';
-            height = 100;
-            width = 120;
-            ascent = 70;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(symbol +
-                " (pointsize " + this.pointSize + ")");
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterB : Character
-    {
-        // Constructor
-
-        public CharacterB()
-        {
-            symbol = 'B';
-            height = 100;
-            width = 140;
-            ascent = 72;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(this.symbol +
-                " (pointsize " + this.pointSize + ")");
-        }
-
-    }
-
-    // ... C, D, E, etc.
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterZ : Character
-    {
-        // Constructor
-
-        public CharacterZ()
-        {
-            symbol = 'Z';
-            height = 100;
-            width = 100;
-            ascent = 68;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(this.symbol +
-                " (pointsize " + this.pointSize + ")");
         }
     }
 }
