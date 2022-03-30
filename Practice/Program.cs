@@ -1,90 +1,253 @@
 ﻿using System;
+using System.Collections.Generic;
 
-
-namespace Memento.Structural
+namespace Design_Pattern
 {
-    /// <summary>
-    /// Memento Design Pattern
-    /// </summary>
-    public class Program
+    public class FlyWeightPattern
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Originator o = new Originator();
-            o.State = "On";
+            // Arbitrary extrinsic state
 
-            Caretaker c = new Caretaker();
-            c.Memento = o.CreateMemento();
+            int extrinsicstate = 22;
 
-            o.State = "Off";
+            FlyweightFactory factory = new FlyweightFactory();
 
-            o.SetMemento(c.Memento);
+            // Work with different flyweight instances
+
+            Flyweight fx = factory.GetFlyweight("X");
+            fx.Operation(--extrinsicstate);
+
+            Flyweight fy = factory.GetFlyweight("Y");
+            fy.Operation(--extrinsicstate);
+
+            Flyweight fz = factory.GetFlyweight("Z");
+            fz.Operation(--extrinsicstate);
+
+            UnsharedConcreteFlyweight fu = new
+                UnsharedConcreteFlyweight();
+
+            fu.Operation(--extrinsicstate);
+
+            // Wait for user
 
             Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// The 'FlyweightFactory' class
+    /// </summary>
 
+    public class FlyweightFactory
+    {
+        private Dictionary<string, Flyweight> flyweights { get; set; } = new Dictionary<string, Flyweight>();
+
+        // Constructor
+
+        public FlyweightFactory()
+        {
+            flyweights.Add("X", new ConcreteFlyweight());
+            flyweights.Add("Y", new ConcreteFlyweight());
+            flyweights.Add("Z", new ConcreteFlyweight());
+        }
+
+        public Flyweight GetFlyweight(string key)
+        {
+            return ((Flyweight)flyweights[key]);
         }
     }
 
     /// <summary>
-    /// The 'Originator' class
+    /// The 'Flyweight' abstract class
     /// </summary>
 
-    public class Originator
+    public abstract class Flyweight
     {
-        string state;
+        public abstract void Operation(int extrinsicstate);
+    }
 
-        public string State
+    /// <summary>
+    /// The 'ConcreteFlyweight' class
+    /// </summary>
+
+    public class ConcreteFlyweight : Flyweight
+    {
+        public override void Operation(int extrinsicstate)
         {
-            get { return state; }
-            set
+            Console.WriteLine("ConcreteFlyweight: " + extrinsicstate);
+        }
+    }
+
+    /// <summary>
+    /// The 'UnsharedConcreteFlyweight' class
+    /// </summary>
+
+    public class UnsharedConcreteFlyweight : Flyweight
+    {
+        public override void Operation(int extrinsicstate)
+        {
+            Console.WriteLine("UnsharedConcreteFlyweight: " +
+                extrinsicstate);
+        }
+    }
+
+    /// Real Live Coding
+    /// Flyweight Design Pattern
+    /// </summary>
+
+    public class _FlyWeight
+    {
+        public static void Main(string[] args)
+        {
+            // Build a document with text
+
+            string document = "AAZZBBZB";
+            char[] chars = document.ToCharArray();
+
+            CharacterFactory factory = new CharacterFactory();
+
+            // extrinsic state
+
+            int pointSize = 10;
+
+            // For each character use a flyweight object
+
+            foreach (char c in chars)
             {
-                state = value;
-                Console.WriteLine("Satate = " + state);
+                pointSize++;
+                Character character = factory.GetCharacter(c);
+                character.Display(pointSize);
             }
-        }
 
-        public Memento CreateMemento()
-        {
-            return (new Memento(state));
-        }
+            // Wait for user
 
-        public void SetMemento(Memento memento)
-        {
-            Console.WriteLine("Restoring state...");
-            State = memento.State;
-        }
-    }
-    /// <summary>
-    /// The 'Memento' class
-    /// </summary>
-    public class Memento
-    {
-        string state;
-
-        public Memento(string state)
-        {
-            this.state = state;
-        }
-
-        public string State
-        {
-            get { return state; }
+            Console.ReadKey();
         }
     }
 
     /// <summary>
-    /// The 'Caretaker' class
+    /// The 'FlyweightFactory' class
     /// </summary>
 
-
-    public class Caretaker
+    public class CharacterFactory
     {
-        Memento memento;
+        private Dictionary<char, Character> characters = new Dictionary<char, Character>();
 
-        public Memento Memento
+        public Character GetCharacter(char key)
         {
-            set { memento = value; }
-            get { return memento; }
+            // Uses "lazy initialization"
+
+            Character character = null;
+
+            if (characters.ContainsKey(key))
+            {
+                character = characters[key];
+            }
+            else
+            {
+                switch (key)
+                {
+                    case 'A': character = new CharacterA(); break;
+                    case 'B': character = new CharacterB(); break;
+                    //...
+                    case 'Z': character = new CharacterZ(); break;
+                }
+                characters.Add(key, character);
+            }
+            return character;
+        }
+    }
+
+    /// <summary>
+    /// The 'Flyweight' abstract class
+    /// </summary>
+
+    public abstract class Character
+    {
+        protected char symbol;
+        protected int width;
+        protected int height;
+        protected int ascent;
+        protected int descent;
+        protected int pointSize;
+
+        public abstract void Display(int pointSize);
+    }
+
+    /// <summary>
+    /// A 'ConcreteFlyweight' class
+    /// </summary>
+
+    public class CharacterA : Character
+    {
+        // Constructor
+        public CharacterA()
+        {
+            symbol = 'A';
+            height = 100;
+            width = 120;
+            ascent = 70;
+            descent = 0;
+        }
+
+        public override void Display(int pointSize)
+        {
+            this.pointSize = pointSize;
+            Console.WriteLine(symbol +
+                " (pointsize " + this.pointSize + ")");
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteFlyweight' class
+    /// </summary>
+
+    public class CharacterB : Character
+    {
+        // Constructor
+
+        public CharacterB()
+        {
+            symbol = 'B';
+            height = 100;
+            width = 140;
+            ascent = 72;
+            descent = 0;
+        }
+
+        public override void Display(int pointSize)
+        {
+            this.pointSize = pointSize;
+            Console.WriteLine(this.symbol +
+                " (pointsize " + this.pointSize + ")");
+        }
+
+    }
+
+    // ... C, D, E, etc.
+
+    /// <summary>
+    /// A 'ConcreteFlyweight' class
+    /// </summary>
+
+    public class CharacterZ : Character
+    {
+        // Constructor
+
+        public CharacterZ()
+        {
+            symbol = 'Z';
+            height = 100;
+            width = 100;
+            ascent = 68;
+            descent = 0;
+        }
+
+        public override void Display(int pointSize)
+        {
+            this.pointSize = pointSize;
+            Console.WriteLine(this.symbol +
+                " (pointsize " + this.pointSize + ")");
         }
     }
 }
