@@ -2,78 +2,101 @@
 
 namespace Facade_Pattern
 {
-    public class MainApp
+    public class Program2
     {
         public static void Main(string[] args)
         {
-            Facade facade = new Facade();
-
-            facade.MethodA();
-            facade.MethodB();
-
+            // Facade
+            Mortgage mortgage = new Mortgage();
+            // Evaluate mortgage eligibility for customer
+            Customer customer = new Customer("Ann McKinsey");
+            bool eligible = mortgage.IsEligible(customer, 125000);
+            Console.WriteLine("\n" + customer.Name +
+                    " has been " + (eligible ? "Approved" : "Rejected"));
+            // Wait for user
             Console.ReadKey();
         }
     }
-
-    public class SubSystemOne
+    /// <summary>
+    /// The 'Subsystem ClassA' class
+    /// </summary>
+    public class Bank
     {
-        public void MethodOne()
+        public bool HasSufficientSavings(Customer c, int amount)
         {
-            Console.WriteLine("SubSystemOne Method");
+            Console.WriteLine("Check bank for " + c.Name);
+            return true;
         }
     }
-    public class SubSystemTwo
+    /// <summary>
+    /// The 'Subsystem ClassB' class
+    /// </summary>
+    public class Credit
     {
-        public void MethodTwo()
+        public bool HasGoodCredit(Customer c)
         {
-            Console.WriteLine("SubSystemTwo Method");
+            Console.WriteLine("Check credit for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassC' class
+    /// </summary>
+    public class Loan
+    {
+        public bool HasNoBadLoans(Customer c)
+        {
+            Console.WriteLine("Check loans for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// Customer class
+    /// </summary>
+    public class Customer
+    {
+        private string name;
+        // Constructor
+        public Customer(string name)
+        {
+            this.name = name;
+        }
+        public string Name
+        {
+            get { return name; }
         }
     }
 
-    public class SubSystemThree
+    /// <summary>
+    /// The 'Facade' class
+    /// </summary>
+    public class Mortgage
     {
-        public void MethodThree()
+        Bank bank = new Bank();
+        Loan loan = new Loan();
+        Credit credit = new Credit();
+        public bool IsEligible(Customer cust, int amount)
         {
-            Console.WriteLine("SubSystemThree Method");
+            Console.WriteLine("{0} applies for {1:C} loan\n",
+                cust.Name, amount);
+            bool eligible = true;
+            // Check creditworthyness of applicant
+            if (!bank.HasSufficientSavings(cust, amount))
+            {
+                eligible = false;
+            }
+            else if (!loan.HasNoBadLoans(cust))
+            {
+                eligible = false;
+            }
+            else if (!credit.HasGoodCredit(cust))
+            {
+                eligible = false;
+            }
+            return eligible;
         }
     }
 
-    public class SubSystemFour
-    {
-        public void MethodFour()
-        {
-            Console.WriteLine("SubsystemFour Method");
-        }
-    }
+}
 
-    public class Facade
-    {
-        SubSystemOne one;
-        SubSystemTwo two;
-        SubSystemThree three;
-        SubSystemFour four;
-
-        public Facade()
-        {
-            one = new SubSystemOne();
-            two = new SubSystemTwo();
-            three = new SubSystemThree();
-            four = new SubSystemFour();
-        }
-
-        public void MethodA()
-        {
-            Console.WriteLine("\nMethodA() ----");
-            one.MethodOne();
-            two.MethodTwo();
-            four.MethodFour();
-        }
-
-        public void MethodB()
-        {
-            Console.WriteLine("\nMethodA() ----");
-            two.MethodTwo();
-            three.MethodThree();
-        }
-    }
 }
