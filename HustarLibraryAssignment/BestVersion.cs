@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BookManager
 {
@@ -41,7 +39,7 @@ namespace BookManager
                 string strString = Console.ReadLine();
                 if (strString == "")
                 {
-                    return strList; ;
+                    return strList;
                 }
                 ++iIndex;
                 strList.Add(strString);
@@ -91,7 +89,7 @@ namespace BookManager
         public bool InputData(IBookMgr bookMgr)
         {
             m_ISBN = BookUtil.InputString("ISBN : ");
-            if (bookMgr.SearchBook(m_ISBN, Book.CompareISBN) != -1)
+            if (bookMgr.SearchBook(m_ISBN, CompareISBN) != -1)
             {
                 Console.WriteLine("이미 등록된 책입니다.");
                 return false;
