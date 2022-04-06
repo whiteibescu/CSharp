@@ -6,7 +6,6 @@ namespace BookManager
 {
     delegate bool StringCompareDelegate(string str1, string str2);
     delegate bool CompareBookDelegate(Book book, string str);
-
     static class BookUtil
     {
         public static int GetInputInt()
@@ -25,20 +24,18 @@ namespace BookManager
                 }
             }
         }
-
         public static string InputString(string strTitle)
         {
             Console.Write(strTitle);
             return Console.ReadLine();
         }
-
         public static List<string> InputList(string strTitle)
         {
             List<string> strList = new List<string>();
             int iIndex = 1;
             while (true)
             {
-                Console.Write($"{strTitle}{iIndex} : ");
+                Console.Write("{0}{1} : ", strTitle, iIndex);
                 string strString = Console.ReadLine();
                 if (strString == "")
                 {
@@ -52,20 +49,17 @@ namespace BookManager
         {
             for (int i = 0; i < strList.Count; i++)
             {
-                Console.WriteLine($"{strTitle}{i + 1} : {strList[i]}");
+                Console.WriteLine("{0}{1} : {2}", strTitle, i + 1, strList[i]);
             }
         }
-
         public static bool StringEqual(string str1, string str2)
         {
             return str1 == str2;
         }
-
         public static bool StringContains(string str1, string str2)
         {
             return str1.Contains(str2);
         }
-
         public static bool SearchInList(List<string> strList, string str, StringCompareDelegate compareDelegate)
         {
             for (int i = 0; i < strList.Count; i++)
@@ -78,7 +72,6 @@ namespace BookManager
             return false;
         }
     }
-
     interface IBookMgr
     {
         int SearchBook(string strISBN, CompareBookDelegate compareBookDelegate);
@@ -88,15 +81,20 @@ namespace BookManager
     {
         public void ModifyData()
         {
-            m_BookTitle = BookUtil.InputString("책 제목");
-            m_ISBN = BookUtil.InputString("저자");
-
+            m_BookTitle = BookUtil.InputString("책제목 : ");
+            m_BookAuthors = BookUtil.InputList("저자");
+            m_BookContents = BookUtil.InputList("목차");
+            m_BookPublisher = BookUtil.InputString("출판사 : ");
         }
         public bool InputData(IBookMgr bookMgr)
         {
             m_ISBN = BookUtil.InputString("ISBN : ");
-            if (bookMgr.SearchBook(m_ISBN, Book.CompareISBN) != -1)
-                ModifyData();
+            if (bookMgr.SearchBook(m_ISBN, CompareISBN) != -1)
+            {
+                Console.WriteLine("이미 등록된 책입니다.");
+                return false;
+            }
+            ModifyData();
             return true;
         }
         public void PrintData()
@@ -115,6 +113,7 @@ namespace BookManager
         {
             return book.m_BookTitle == strTitle;
         }
+
         public static bool FindAuthor(Book book, string strAuthor)
         {
             return BookUtil.SearchInList(book.m_BookAuthors, strAuthor, BookUtil.StringEqual);
@@ -136,11 +135,8 @@ namespace BookManager
             }
             return strBuilder.ToString();
         }
-
-        
-
-        private string m_BookTitle;
         private string m_ISBN;
+        private string m_BookTitle;
         private List<string> m_BookAuthors;
         private List<string> m_BookContents;
         private string m_BookPublisher;
@@ -180,7 +176,7 @@ namespace BookManager
             }
             return -1;
         }
-        public void SearchBook(string strTitle, string strErrMsg, CompareBookDelegate compareBookDelegate)
+        public void SearchBook(string strTitle, string strErrMsg, CompareBookDelegate compareBookDelegate) //단일검색
         {
             string str = BookUtil.InputString(strTitle);
             int iIndex = SearchBook(str, compareBookDelegate);
@@ -205,8 +201,7 @@ namespace BookManager
             }
             return ResultList;
         }
-
-        public void SearchInList(string strTitle, string strErrMsg, CompareBookDelegate compareBookDelegate)
+        public void SearchInList(string strTitle, string strErrMsg, CompareBookDelegate compareBookDelegate) //다중검색
         {
             string strAuthor = BookUtil.InputString(strTitle);
             List<int> ResultList = SearchInList(strAuthor, compareBookDelegate);
@@ -229,7 +224,7 @@ namespace BookManager
                 Console.WriteLine("2. 책제목으로 검색");
                 Console.WriteLine("3. 저자로 검색");
                 Console.WriteLine("4. 목차로 검색");
-                Console.WriteLine("5. 종료");
+                Console.WriteLine("0. 종료");
                 iChoice = BookUtil.GetInputInt();
                 switch (iChoice)
                 {
@@ -250,7 +245,6 @@ namespace BookManager
                 }
             }
         }
-
         public int DisplayTitleAndAuthorsList(List<int> Result)
         {
             for (int i = 0; i < Result.Count; i++)
@@ -264,7 +258,143 @@ namespace BookManager
             }
             return -1;
         }
+        public void DeleteBook(List<int> Result)
+        {
+            int iChoice = DisplayTitleAndAuthorsList(Result);
+            if (iChoice != -1)
+            {
+                m_BookList.RemoveAt(Result[iChoice]);
+            }
+        }
+        public void DeleteBook(string strTitle, string strErrMsg, CompareBookDelegate compareBookDelegate)
+        {
+            string str = BookUtil.InputString(strTitle);
+            List<int> Result = SearchInList(str, compareBookDelegate);
+            if (Result.Count > 0)
+            {
+                DeleteBook(Result);
+            }
+            else
+            {
+                Console.WriteLine(strErrMsg);
+            }
+        }
+        public void DeleteBookMenu()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("1. 책제목으로 검색후 삭제");
+                Console.WriteLine("2. 저자로 검색후 삭제");
+                Console.WriteLine("3. 목차로 검색후 삭제");
+                Console.WriteLine("0. 종료");
+                iChoice = BookUtil.GetInputInt();
+                switch (iChoice)
+                {
+                    case 1:
+                        DeleteBook("삭제할 책제목 : ", "삭제하려는 제목의 도서는 존재하지 않습니다.", Book.CompareBookTitle);
+                        break;
+                    case 2:
+                        DeleteBook("삭제할 저자책 : ", "삭제하려는 저자의 도서는 존재하지 않습니다.", Book.FindAuthor);
+                        break;
+                    case 3:
+                        DeleteBook("삭제할 목차 : ", "삭제하려는 목차의 도서는 존재하지 않습니다.", Book.FindContents);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        public void ModifyBook(List<int> Result)
+        {
+            int iChoice = DisplayTitleAndAuthorsList(Result);
+            if (iChoice != -1)
+            {
+                m_BookList[Result[iChoice]].ModifyData();
+            }
+        }
+        public void ModifyBook(string strTitle, string strErrMsg, CompareBookDelegate compareBookDelegate)
+        {
+            string str = BookUtil.InputString(strTitle);
+            List<int> Result = SearchInList(str, compareBookDelegate);
+            if (Result.Count > 0)
+            {
+                ModifyBook(Result);
+            }
+            else
+            {
+                Console.WriteLine(strErrMsg);
+            }
+        }
+        public void ModifyBookMenu()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("1. 책제목으로 검색후 수정");
+                Console.WriteLine("2. 저자로 검색후 수정");
+                Console.WriteLine("3. 목차로 검색후 수정");
+                Console.WriteLine("0. 종료");
+                iChoice = BookUtil.GetInputInt();
+                switch (iChoice)
+                {
+                    case 1:
+                        ModifyBook("수정할 책제목 : ", "수정하려는 제목의 도서는 존재하지 않습니다.", Book.CompareBookTitle);
+                        break;
+                    case 2:
+                        ModifyBook("수정할 저자책 : ", "수정하려는 저자의 도서는 존재하지 않습니다.", Book.FindAuthor);
+                        break;
+                    case 3:
+                        ModifyBook("수정할 목차 : ", "수정하려는 목차의 도서는 존재하지 않습니다.", Book.FindContents);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
+        public void Menu()
+        {
+            int iChoice = 1;
+            while (iChoice != 0)
+            {
+                Console.WriteLine("1. 도서등록");
+                Console.WriteLine("2. 도서출력");
+                Console.WriteLine("3. 도서검색");
+                Console.WriteLine("4. 도서삭제");
+                Console.WriteLine("5. 도서수정");
+                Console.WriteLine("0. 종료");
+                iChoice = BookUtil.GetInputInt();
+                switch (iChoice)
+                {
+                    case 1:
+                        InsertBook();
+                        break;
+                    case 2:
+                        PrintAllBooks();
+                        break;
+                    case 3:
+                        SearchBookMenu();
+                        break;
+                    case 4:
+                        DeleteBookMenu();
+                        break;
+                    case 5:
+                        ModifyBookMenu();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
         private List<Book> m_BookList = new List<Book>();
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            BookManager b = new BookManager();
+            b.Menu();
+        }
     }
 }
