@@ -4,45 +4,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace grammar
+namespace HustarDay08
 {
-    class Cat
+
+    class Enemy
     {
-        public void DisplayInfo()
+        public Enemy(string EnemyName)
         {
-            Console.WriteLine("이름 : {0}", NAME);
+            m_EnemyName = EnemyName;
+            EnemyMgr.StopGameEvent += () => { };
         }
 
-        public string NAME
+        private void EnemyMgr_StopGameEvent()
         {
-            get;
-            set;
+            throw new NotImplementedException();
         }
+        private string m_EnemyName;
+    }
+    delegate void StopGameDelegate();
 
-        public int AGE
+    class EnemyMgr
+    {
+        public void DiePlayer()
         {
-            get;
-            set;
+            StopGameEvent();
         }
+        public static event StopGameDelegate StopGameEvent;
     }
     class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            List<int> intList = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            for (int i = 0; i < intList.Count; i++)
-            {
-                Console.WriteLine("{0}", intList[i]);
-            }
-            intList.ForEach((i) => Console.WriteLine(i));
-
-            var newList = from e in intList
-                          where e % 2 == 0
-                          select new { NAME = "야옹이" + e };
-            foreach (var e in newList)
-            {
-                Console.WriteLine("NAME : {0}", e.NAME);
-            }
-        } 
+            EnemyMgr mgr = new EnemyMgr();
+            Enemy m1 = new Enemy("적군1");
+            Enemy m2 = new Enemy("적군2");
+            Enemy m3 = new Enemy("적군3");
+            Enemy m4 = new Enemy("적군4");
+            Enemy m5 = new Enemy("적군5");
+            Enemy m6 = new Enemy("적군6");
+            mgr.DiePlayer();
+        }
     }
 }
