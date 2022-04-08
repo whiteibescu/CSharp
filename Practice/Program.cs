@@ -1,287 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Command.Structural
+namespace grammar
 {
-    /// <summary>
-    /// Command Design Pattern
-    /// </summary>
-
-    public class Program
+    class Cat
     {
-        public static void Main(string[] args)
+        public void DisplayInfo()
         {
-            // Create receiver, command, and invoker
+            Console.WriteLine("이름 : {0}", NAME);
+        }
 
-            Receiver receiver = new Receiver();
-            Command command = new ConcreteCommand(receiver);
-            Invoker invoker = new Invoker();
+        public string NAME
+        {
+            get;
+            set;
+        }
 
-            // Set and execute command
-
-            invoker.SetCommand(command);
-            invoker.ExecuteCommand();
-
-            // Wait for user
-
-            Console.ReadKey();
+        public int AGE
+        {
+            get;
+            set;
         }
     }
-
-    /// <summary>
-    /// The 'Command' abstract class
-    /// </summary>
-
-    public abstract class Command
+    class Program
     {
-        protected Receiver receiver;
-
-        // Constructor
-
-        public Command(Receiver receiver)
+        static void Main()
         {
-            this.receiver = receiver;
-        }
-
-        public abstract void Execute();
-    }
-
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
-
-    public class ConcreteCommand : Command
-    {
-        // Constructor
-
-        public ConcreteCommand(Receiver receiver) :
-            base(receiver)
-        {
-        }
-
-        public override void Execute()
-        {
-            receiver.Action();
-        }
-    }
-
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Receiver
-    {
-        public void Action()
-        {
-            Console.WriteLine("Called Receiver.Action()");
-        }
-    }
-
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
-
-    public class Invoker
-    {
-        Command command;
-
-        public void SetCommand(Command command)
-        {
-            this.command = command;
-        }
-
-        public void ExecuteCommand()
-        {
-            command.Execute();
-        }
-    }
-
-    /// <summary>
-    /// Command Design Pattern
-    /// </summary>
-
-    public class Program6
-    {
-        public static void Main(string[] args)
-        {
-            // Create user and let her compute
-
-            User user = new User();
-
-            // User presses calculator buttons
-
-            user.Compute('+', 100);
-            user.Compute('-', 50);
-            user.Compute('*', 10);
-            user.Compute('/', 2);
-
-            // Undo 4 commands
-
-            user.Undo(4);
-
-            // Redo 3 commands
-
-            user.Redo(3);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'Command' abstract class
-    /// </summary>
-
-    public abstract class Command
-    {
-        public abstract void Execute();
-        public abstract void UnExecute();
-    }
-
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
-
-    public class CalculatorCommand : Command
-    {
-        char @operator;
-        int operand;
-        Calculator calculator;
-
-        // Constructor
-
-        public CalculatorCommand(Calculator calculator,
-            char @operator, int operand)
-        {
-            this.calculator = calculator;
-            this.@operator = @operator;
-            this.operand = operand;
-        }
-
-        // Gets operator
-
-        public char Operator
-        {
-            set { @operator = value; }
-        }
-
-        // Get operand
-
-        public int Operand
-        {
-            set { operand = value; }
-        }
-
-        // Execute new command
-
-        public override void Execute()
-        {
-            calculator.Operation(@operator, operand);
-        }
-
-        // Unexecute last command
-
-        public override void UnExecute()
-        {
-            calculator.Operation(Undo(@operator), operand);
-        }
-
-        // Returns opposite operator for given operator
-
-        private char Undo(char @operator)
-        {
-            switch (@operator)
+            List<int> intList = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            for (int i = 0; i < intList.Count; i++)
             {
-                case '+': return '-';
-                case '-': return '+';
-                case '*': return '/';
-                case '/': return '*';
-                default:
-                    throw new
-             ArgumentException("@operator");
+                Console.WriteLine("{0}", intList[i]);
             }
-        }
-    }
+            intList.ForEach((i) => Console.WriteLine(i));
 
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Calculator
-    {
-        int curr = 0;
-
-        public void Operation(char @operator, int operand)
-        {
-            switch (@operator)
+            var newList = from e in intList
+                          where e % 2 == 0
+                          select new { NAME = "야옹이" + e };
+            foreach (var e in newList)
             {
-                case '+': curr += operand; break;
-                case '-': curr -= operand; break;
-                case '*': curr *= operand; break;
-                case '/': curr /= operand; break;
+                Console.WriteLine("NAME : {0}", e.NAME);
             }
-            Console.WriteLine(
-                "Current value = {0,3} (following {1} {2})",
-                curr, @operator, operand);
-        }
-    }
-
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
-
-    public class User
-    {
-        // Initializers
-
-        Calculator calculator = new Calculator();
-        List<Command> commands = new List<Command>();
-        int current = 0;
-
-        public void Redo(int levels)
-        {
-            Console.WriteLine("\n---- Redo {0} levels ", levels);
-            // Perform redo operations
-            for (int i = 0; i < levels; i++)
-            {
-                if (current < commands.Count - 1)
-                {
-                    Command command = commands[current++];
-                    command.Execute();
-                }
-            }
-        }
-
-        public void Undo(int levels)
-        {
-            Console.WriteLine("\n---- Undo {0} levels ", levels);
-
-            // Perform undo operations
-
-            for (int i = 0; i < levels; i++)
-            {
-                if (current > 0)
-                {
-                    Command command = commands[--current] as Command;
-                    command.UnExecute();
-                }
-            }
-        }
-
-        public void Compute(char @operator, int operand)
-        {
-            // Create command operation and execute it
-
-            Command command = new CalculatorCommand(calculator, @operator, operand);
-            command.Execute();
-
-            // Add command to undo list
-
-            commands.Add(command);
-            current++;
-        }
-
-
+        } 
     }
 }
