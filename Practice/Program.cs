@@ -1,35 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Decorator.RealWorld
+namespace Bridge.RealWorld
 {
     /// <summary>
-    /// Decorator Design Pattern
+    /// Bridge Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create book
+            // Create RefinedAbstraction
 
-            Book book = new Book("Worley", "Inside ASP.NET", 10);
-            book.Display();
+            var customers = new Customers();
 
-            // Create video
+            // Set ConcreteImplementor
 
-            Video video = new Video("Spielberg", "Jaws", 23, 92);
-            video.Display();
+            customers.Data = new CustomersData("Chicago");
 
-            // Make video borrowable, then borrow and display
+            // Exercise the bridge
 
-            Console.WriteLine("\nMaking video borrowable:");
+            customers.Show();
+            customers.Next();
+            customers.Show();
+            customers.Next();
+            customers.Show();
+            customers.Add("Henry Velasquez");
 
-            Borrowable borrowvideo = new Borrowable(video);
-            borrowvideo.BorrowItem("Customer #1");
-            borrowvideo.BorrowItem("Customer #2");
-
-            borrowvideo.Display();
+            customers.ShowAll();
 
             // Wait for user
 
@@ -37,134 +36,148 @@ namespace Decorator.RealWorld
         }
     }
     /// <summary>
-    /// The 'Component' abstract class
+    /// The 'Abstraction' class
     /// </summary>
 
-    public abstract class LibraryItem
+    public class CustomersBase
     {
-        private int numCopies;
+        private DataObject dataObject;
 
-        public int NumCopies
+        public DataObject Data
         {
-            get { return numCopies; }
-            set { numCopies = value; }
+            set { dataObject = value; }
+            get { return dataObject; }
         }
 
-        public abstract void Display();
-    }
-
-    /// <summary>
-    /// The 'ConcreteComponent' class
-    /// </summary>
-
-    public class Book : LibraryItem
-    {
-        private string author;
-        private string title;
-
-        // Constructor
-
-        public Book(string author, string title, int numCopies)
+        public virtual void Next()
         {
-            this.author = author;
-            this.title = title;
-            this.NumCopies = numCopies;
+            dataObject.NextRecord();
         }
 
-        public override void Display()
+        public virtual void Prior()
         {
-            Console.WriteLine("\nBook ------ ");
-            Console.WriteLine(" Author: {0}", author);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
-        }
-    }
-
-    /// <summary>
-    /// The 'ConcreteComponent' class
-    /// </summary>
-
-    public class Video : LibraryItem
-    {
-        private string director;
-        private string title;
-        private int playTime;
-
-        // Constructor
-
-        public Video(string director, string title, int numCopies, int playTime)
-        {
-            this.director = director;
-            this.title = title;
-            this.NumCopies = numCopies;
-            this.playTime = playTime;
+            dataObject.PriorRecord();
         }
 
-        public override void Display()
+        public virtual void Add(string customer)
         {
-            Console.WriteLine("\nVideo ----- ");
-            Console.WriteLine(" Director: {0}", director);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
-            Console.WriteLine(" Playtime: {0}\n", playTime);
+            dataObject.AddRecord(customer);
+        }
+
+        public virtual void Delete(string customer)
+        {
+            dataObject.DeleteRecord(customer);
+        }
+
+        public virtual void Show()
+        {
+            dataObject.ShowRecord();
+        }
+
+        public virtual void ShowAll()
+        {
+            dataObject.ShowAllRecords();
         }
     }
 
     /// <summary>
-    /// The 'Decorator' abstract class
+    /// The 'RefinedAbstraction' class
     /// </summary>
 
-    public abstract class Decorator : LibraryItem
+    public class Customers : CustomersBase
     {
-        protected LibraryItem libraryItem;
-
-        // Constructor
-
-        public Decorator(LibraryItem libraryItem)
+        public override void ShowAll()
         {
-            this.libraryItem = libraryItem;
-        }
+            // Add separator lines
 
-        public override void Display()
-        {
-            libraryItem.Display();
+            Console.WriteLine();
+            Console.WriteLine("------------------------");
+            base.ShowAll();
+            Console.WriteLine("------------------------");
         }
     }
 
     /// <summary>
-    /// The 'ConcreteDecorator' class
+    /// The 'Implementor' abstract class
     /// </summary>
 
-    public class Borrowable : Decorator
+    public abstract class DataObject
     {
-        protected readonly List<string> borrowers = new List<string>();
+        public abstract void NextRecord();
+        public abstract void PriorRecord();
+        public abstract void AddRecord(string name);
+        public abstract void DeleteRecord(string name);
+        public abstract string GetCurrentRecord();
+        public abstract void ShowRecord();
+        public abstract void ShowAllRecords();
+    }
 
-        // Constructor
+    /// <summary>
+    /// The 'ConcreteImplementor' class
+    /// </summary>
 
-        public Borrowable(LibraryItem libraryItem)
-            : base(libraryItem)
+    public class CustomersData : DataObject
+    {
+        private readonly List<string> customers = new List<string>();
+        private int current = 0;
+        private string city;
+
+        public CustomersData(string city)
         {
+            this.city = city;
+
+            // Loaded from a database 
+
+            customers.Add("Jim Jones");
+            customers.Add("Samual Jackson");
+            customers.Add("Allen Good");
+            customers.Add("Ann Stills");
+            customers.Add("Lisa Giolani");
         }
 
-        public void BorrowItem(string name)
+        public override void NextRecord()
         {
-            borrowers.Add(name);
-            libraryItem.NumCopies--;
-        }
-
-        public void ReturnItem(string name)
-        {
-            borrowers.Remove(name);
-            libraryItem.NumCopies++;
-        }
-
-        public override void Display()
-        {
-            base.Display();
-
-            foreach (string borrower in borrowers)
+            if (current <= customers.Count - 1)
             {
-                Console.WriteLine(" borrower: " + borrower);
+                current++;
+            }
+        }
+
+        public override void PriorRecord()
+        {
+            if (current > 0)
+            {
+                current--;
+            }
+        }
+
+        public override void AddRecord(string customer)
+        {
+            customers.Add(customer);
+        }
+
+        public override void DeleteRecord(string customer)
+        {
+            customers.Remove(customer);
+        }
+
+        public override string GetCurrentRecord()
+        {
+            return customers[current];
+        }
+
+        public override void ShowRecord()
+        {
+            Console.WriteLine(customers[current]);
+        }
+
+        public override void ShowAllRecords()
+        {
+            Console.WriteLine("Customer City: " + city);
+
+            foreach (string customer in customers)
+            {
+                Console.WriteLine(" " + customer);
             }
         }
     }
