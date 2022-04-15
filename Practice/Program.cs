@@ -1,184 +1,216 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Bridge.RealWorld
+namespace DoFactory.GangOfFour.Builder.RealWorld
 {
     /// <summary>
-    /// Bridge Design Pattern
+    /// MainApp startup class for Real-World 
+    /// Builder Design Pattern.
     /// </summary>
 
-    public class Program
+    public class MainApp
     {
-        public static void Main(string[] args)
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+
+        public static void Main()
         {
-            // Create RefinedAbstraction
+            VehicleBuilder builder;
 
-            var customers = new Customers();
+            // Create shop with vehicle builders
 
-            // Set ConcreteImplementor
+            Shop shop = new Shop();
 
-            customers.Data = new CustomersData("Chicago");
+            // Construct and display vehicles
 
-            // Exercise the bridge
+            builder = new ScooterBuilder();
+            shop.Construct(builder);
+            builder.Vehicle.Show();
 
-            customers.Show();
-            customers.Next();
-            customers.Show();
-            customers.Next();
-            customers.Show();
-            customers.Add("Henry Velasquez");
+            builder = new CarBuilder();
+            shop.Construct(builder);
+            builder.Vehicle.Show();
 
-            customers.ShowAll();
+            builder = new MotorCycleBuilder();
+            shop.Construct(builder);
+            builder.Vehicle.Show();
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
+
     /// <summary>
-    /// The 'Abstraction' class
+    /// The 'Director' class
     /// </summary>
 
-    public class CustomersBase
+    class Shop
     {
-        private DataObject dataObject;
+        // Builder uses a complex series of steps
 
-        public DataObject Data
+        public void Construct(VehicleBuilder vehicleBuilder)
         {
-            set { dataObject = value; }
-            get { return dataObject; }
-        }
-
-        public virtual void Next()
-        {
-            dataObject.NextRecord();
-        }
-
-        public virtual void Prior()
-        {
-            dataObject.PriorRecord();
-        }
-
-        public virtual void Add(string customer)
-        {
-            dataObject.AddRecord(customer);
-        }
-
-        public virtual void Delete(string customer)
-        {
-            dataObject.DeleteRecord(customer);
-        }
-
-        public virtual void Show()
-        {
-            dataObject.ShowRecord();
-        }
-
-        public virtual void ShowAll()
-        {
-            dataObject.ShowAllRecords();
+            vehicleBuilder.BuildFrame();
+            vehicleBuilder.BuildEngine();
+            vehicleBuilder.BuildWheels();
+            vehicleBuilder.BuildDoors();
         }
     }
 
     /// <summary>
-    /// The 'RefinedAbstraction' class
+    /// The 'Builder' abstract class
     /// </summary>
 
-    public class Customers : CustomersBase
+    abstract class VehicleBuilder
     {
-        public override void ShowAll()
-        {
-            // Add separator lines
+        protected Vehicle vehicle;
 
-            Console.WriteLine();
-            Console.WriteLine("------------------------");
-            base.ShowAll();
-            Console.WriteLine("------------------------");
+        // Gets vehicle instance
+
+        public Vehicle Vehicle
+        {
+            get { return vehicle; }
+        }
+
+        // Abstract build methods
+
+        public abstract void BuildFrame();
+        public abstract void BuildEngine();
+        public abstract void BuildWheels();
+        public abstract void BuildDoors();
+    }
+
+    /// <summary>
+    /// The 'ConcreteBuilder1' class
+    /// </summary>
+
+    class MotorCycleBuilder : VehicleBuilder
+    {
+        public MotorCycleBuilder()
+        {
+            vehicle = new Vehicle("MotorCycle");
+        }
+
+        public override void BuildFrame()
+        {
+            vehicle["frame"] = "MotorCycle Frame";
+        }
+
+        public override void BuildEngine()
+        {
+            vehicle["engine"] = "500 cc";
+        }
+
+        public override void BuildWheels()
+        {
+            vehicle["wheels"] = "2";
+        }
+
+        public override void BuildDoors()
+        {
+            vehicle["doors"] = "0";
         }
     }
 
     /// <summary>
-    /// The 'Implementor' abstract class
+    /// The 'ConcreteBuilder2' class
     /// </summary>
 
-    public abstract class DataObject
+    class CarBuilder : VehicleBuilder
     {
-        public abstract void NextRecord();
-        public abstract void PriorRecord();
-        public abstract void AddRecord(string name);
-        public abstract void DeleteRecord(string name);
-        public abstract string GetCurrentRecord();
-        public abstract void ShowRecord();
-        public abstract void ShowAllRecords();
+        public CarBuilder()
+        {
+            vehicle = new Vehicle("Car");
+        }
+
+        public override void BuildFrame()
+        {
+            vehicle["frame"] = "Car Frame";
+        }
+
+        public override void BuildEngine()
+        {
+            vehicle["engine"] = "2500 cc";
+        }
+
+        public override void BuildWheels()
+        {
+            vehicle["wheels"] = "4";
+        }
+
+        public override void BuildDoors()
+        {
+            vehicle["doors"] = "4";
+        }
     }
 
     /// <summary>
-    /// The 'ConcreteImplementor' class
+    /// The 'ConcreteBuilder3' class
     /// </summary>
 
-    public class CustomersData : DataObject
+    class ScooterBuilder : VehicleBuilder
     {
-        private readonly List<string> customers = new List<string>();
-        private int current = 0;
-        private string city;
-
-        public CustomersData(string city)
+        public ScooterBuilder()
         {
-            this.city = city;
-
-            // Loaded from a database 
-
-            customers.Add("Jim Jones");
-            customers.Add("Samual Jackson");
-            customers.Add("Allen Good");
-            customers.Add("Ann Stills");
-            customers.Add("Lisa Giolani");
+            vehicle = new Vehicle("Scooter");
         }
 
-        public override void NextRecord()
+        public override void BuildFrame()
         {
-            if (current <= customers.Count - 1)
-            {
-                current++;
-            }
+            vehicle["frame"] = "Scooter Frame";
         }
 
-        public override void PriorRecord()
+        public override void BuildEngine()
         {
-            if (current > 0)
-            {
-                current--;
-            }
+            vehicle["engine"] = "50 cc";
         }
 
-        public override void AddRecord(string customer)
+        public override void BuildWheels()
         {
-            customers.Add(customer);
+            vehicle["wheels"] = "2";
         }
 
-        public override void DeleteRecord(string customer)
+        public override void BuildDoors()
         {
-            customers.Remove(customer);
+            vehicle["doors"] = "0";
+        }
+    }
+
+    /// <summary>
+    /// The 'Product' class
+    /// </summary>
+
+    class Vehicle
+    {
+        private string _vehicleType;
+        private Dictionary<string, string> _parts =
+          new Dictionary<string, string>();
+
+        // Constructor
+
+        public Vehicle(string vehicleType)
+        {
+            this._vehicleType = vehicleType;
         }
 
-        public override string GetCurrentRecord()
+        // Indexer
+
+        public string this[string key]
         {
-            return customers[current];
+            get { return _parts[key]; }
+            set { _parts[key] = value; }
         }
 
-        public override void ShowRecord()
+        public void Show()
         {
-            Console.WriteLine(customers[current]);
-        }
-
-        public override void ShowAllRecords()
-        {
-            Console.WriteLine("Customer City: " + city);
-
-            foreach (string customer in customers)
-            {
-                Console.WriteLine(" " + customer);
-            }
+            Console.WriteLine("\n---------------------------");
+            Console.WriteLine("Vehicle Type: {0}", _vehicleType);
+            Console.WriteLine(" Frame : {0}", _parts["frame"]);
+            Console.WriteLine(" Engine : {0}", _parts["engine"]);
+            Console.WriteLine(" #Wheels: {0}", _parts["wheels"]);
+            Console.WriteLine(" #Doors : {0}", _parts["doors"]);
         }
     }
 }
