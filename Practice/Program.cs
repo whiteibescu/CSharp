@@ -1,287 +1,266 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Command.Structural
+namespace Chain.Structural
 {
     /// <summary>
-    /// Command Design Pattern
+    /// Chain of Responsibility Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create receiver, command, and invoker
+            // Setup Chain of Responsibility
 
-            Receiver receiver = new Receiver();
-            Command command = new ConcreteCommand(receiver);
-            Invoker invoker = new Invoker();
+            Handler h1 = new ConcreteHandler1();
+            Handler h2 = new ConcreteHandler2();
+            Handler h3 = new ConcreteHandler3();
+            h1.SetSuccessor(h2);
+            h2.SetSuccessor(h3);
 
-            // Set and execute command
+            // Generate and process request
 
-            invoker.SetCommand(command);
-            invoker.ExecuteCommand();
+            int[] requests = { 2, 5, 14, 22, 18, 3, 27, 20 };
+
+            foreach (int request in requests)
+            {
+                h1.HandleRequest(request);
+            }
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
-
     /// <summary>
-    /// The 'Command' abstract class
+    /// The 'Handler' abstract class
     /// </summary>
 
-    public abstract class Command
+    public abstract class Handler
     {
-        protected Receiver receiver;
+        protected Handler successor;
 
-        // Constructor
-
-        public Command(Receiver receiver)
+        public void SetSuccessor(Handler successor)
         {
-            this.receiver = receiver;
+            this.successor = successor;
         }
 
-        public abstract void Execute();
+        public abstract void HandleRequest(int request);
     }
 
     /// <summary>
-    /// The 'ConcreteCommand' class
+    /// The 'ConcreteHandler1' class
     /// </summary>
 
-    public class ConcreteCommand : Command
+    public class ConcreteHandler1 : Handler
     {
-        // Constructor
-
-        public ConcreteCommand(Receiver receiver) :
-            base(receiver)
+        public override void HandleRequest(int request)
         {
-        }
-
-        public override void Execute()
-        {
-            receiver.Action();
-        }
-    }
-
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Receiver
-    {
-        public void Action()
-        {
-            Console.WriteLine("Called Receiver.Action()");
+            if (request >= 0 && request < 10)
+            {
+                Console.WriteLine("{0} handled request {1}",
+                    this.GetType().Name, request);
+            }
+            else if (successor != null)
+            {
+                successor.HandleRequest(request);
+            }
         }
     }
 
     /// <summary>
-    /// The 'Invoker' class
+    /// The 'ConcreteHandler2' class
     /// </summary>
 
-    public class Invoker
+    public class ConcreteHandler2 : Handler
     {
-        Command command;
-
-        public void SetCommand(Command command)
+        public override void HandleRequest(int request)
         {
-            this.command = command;
-        }
-
-        public void ExecuteCommand()
-        {
-            command.Execute();
+            if (request >= 10 && request < 20)
+            {
+                Console.WriteLine("{0} handled request {1}",
+                    this.GetType().Name, request);
+            }
+            else if (successor != null)
+            {
+                successor.HandleRequest(request);
+            }
         }
     }
 
     /// <summary>
-    /// Command Design Pattern
+    /// The 'ConcreteHandler3' class
     /// </summary>
 
-    public class Program6
+    public class ConcreteHandler3 : Handler
+    {
+        public override void HandleRequest(int request)
+        {
+            if (request >= 20 && request < 30)
+            {
+                Console.WriteLine("{0} handled request {1}",
+                    this.GetType().Name, request);
+            }
+            else if (successor != null)
+            {
+                successor.HandleRequest(request);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Chain of Responsibility Design Pattern
+    /// </summary>
+
+    public class Program
     {
         public static void Main(string[] args)
         {
-            // Create user and let her compute
+            // Setup Chain of Responsibility
 
-            User user = new User();
+            Approver larry = new Director();
+            Approver sam = new VicePresident();
+            Approver tammy = new President();
 
-            // User presses calculator buttons
+            larry.SetSuccessor(sam);
+            sam.SetSuccessor(tammy);
 
-            user.Compute('+', 100);
-            user.Compute('-', 50);
-            user.Compute('*', 10);
-            user.Compute('/', 2);
+            // Generate and process purchase requests
 
-            // Undo 4 commands
+            Purchase p = new Purchase(2034, 350.00, "Supplies");
+            larry.ProcessRequest(p);
 
-            user.Undo(4);
+            p = new Purchase(2035, 32590.10, "Project X");
+            larry.ProcessRequest(p);
 
-            // Redo 3 commands
-
-            user.Redo(3);
+            p = new Purchase(2036, 122100.00, "Project Y");
+            larry.ProcessRequest(p);
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
-
     /// <summary>
-    /// The 'Command' abstract class
+    /// The 'Handler' abstract class
     /// </summary>
 
-    public abstract class Command
+    public abstract class Approver
     {
-        public abstract void Execute();
-        public abstract void UnExecute();
+        protected Approver successor;
+
+        public void SetSuccessor(Approver successor)
+        {
+            this.successor = successor;
+        }
+
+        public abstract void ProcessRequest(Purchase purchase);
     }
 
     /// <summary>
-    /// The 'ConcreteCommand' class
+    /// The 'ConcreteHandler' class
     /// </summary>
 
-    public class CalculatorCommand : Command
+    public class Director : Approver
     {
-        char @operator;
-        int operand;
-        Calculator calculator;
+        public override void ProcessRequest(Purchase purchase)
+        {
+            if (purchase.Amount < 10000.0)
+            {
+                Console.WriteLine("{0} approved request# {1}",
+                    this.GetType().Name, purchase.Number);
+            }
+            else if (successor != null)
+            {
+                successor.ProcessRequest(purchase);
+            }
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteHandler' class
+    /// </summary>
+
+    public class VicePresident : Approver
+    {
+        public override void ProcessRequest(Purchase purchase)
+        {
+            if (purchase.Amount < 25000.0)
+            {
+                Console.WriteLine("{0} approved request# {1}",
+                    this.GetType().Name, purchase.Number);
+            }
+            else if (successor != null)
+            {
+                successor.ProcessRequest(purchase);
+            }
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteHandler' class
+    /// </summary>
+
+    public class President : Approver
+    {
+        public override void ProcessRequest(Purchase purchase)
+        {
+            if (purchase.Amount < 100000.0)
+            {
+                Console.WriteLine("{0} approved request# {1}",
+                    this.GetType().Name, purchase.Number);
+            }
+            else
+            {
+                Console.WriteLine(
+                    "Request# {0} requires an executive meeting!",
+                    purchase.Number);
+            }
+        }
+    }
+
+    /// Real Live
+    /// Class holding request details
+    /// </summary>
+
+    public class Purchase
+    {
+        int number;
+        double amount;
+        string purpose;
 
         // Constructor
 
-        public CalculatorCommand(Calculator calculator,
-            char @operator, int operand)
+        public Purchase(int number, double amount, string purpose)
         {
-            this.calculator = calculator;
-            this.@operator = @operator;
-            this.operand = operand;
+            this.number = number;
+            this.amount = amount;
+            this.purpose = purpose;
         }
 
-        // Gets operator
+        // Gets or sets purchase number
 
-        public char Operator
+        public int Number
         {
-            set { @operator = value; }
+            get { return number; }
+            set { number = value; }
         }
 
-        // Get operand
+        // Gets or sets purchase amount
 
-        public int Operand
+        public double Amount
         {
-            set { operand = value; }
+            get { return amount; }
+            set { amount = value; }
         }
 
-        // Execute new command
+        // Gets or sets purchase purpose
 
-        public override void Execute()
+        public string Purpose
         {
-            calculator.Operation(@operator, operand);
-        }
-
-        // Unexecute last command
-
-        public override void UnExecute()
-        {
-            calculator.Operation(Undo(@operator), operand);
-        }
-
-        // Returns opposite operator for given operator
-
-        private char Undo(char @operator)
-        {
-            switch (@operator)
-            {
-                case '+': return '-';
-                case '-': return '+';
-                case '*': return '/';
-                case '/': return '*';
-                default:
-                    throw new
-             ArgumentException("@operator");
-            }
+            get { return purpose; }
+            set { purpose = value; }
         }
     }
 
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Calculator
-    {
-        int curr = 0;
-
-        public void Operation(char @operator, int operand)
-        {
-            switch (@operator)
-            {
-                case '+': curr += operand; break;
-                case '-': curr -= operand; break;
-                case '*': curr *= operand; break;
-                case '/': curr /= operand; break;
-            }
-            Console.WriteLine(
-                "Current value = {0,3} (following {1} {2})",
-                curr, @operator, operand);
-        }
-    }
-
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
-
-    public class User
-    {
-        // Initializers
-
-        Calculator calculator = new Calculator();
-        List<Command> commands = new List<Command>();
-        int current = 0;
-
-        public void Redo(int levels)
-        {
-            Console.WriteLine("\n---- Redo {0} levels ", levels);
-            // Perform redo operations
-            for (int i = 0; i < levels; i++)
-            {
-                if (current < commands.Count - 1)
-                {
-                    Command command = commands[current++];
-                    command.Execute();
-                }
-            }
-        }
-
-        public void Undo(int levels)
-        {
-            Console.WriteLine("\n---- Undo {0} levels ", levels);
-
-            // Perform undo operations
-
-            for (int i = 0; i < levels; i++)
-            {
-                if (current > 0)
-                {
-                    Command command = commands[--current] as Command;
-                    command.UnExecute();
-                }
-            }
-        }
-
-        public void Compute(char @operator, int operand)
-        {
-            // Create command operation and execute it
-
-            Command command = new CalculatorCommand(calculator, @operator, operand);
-            command.Execute();
-
-            // Add command to undo list
-
-            commands.Add(command);
-            current++;
-        }
-
-
-    }
 }
