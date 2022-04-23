@@ -1,171 +1,202 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Decorator.RealWorld
+namespace Design_Pattern
 {
-    /// <summary>
-    /// Decorator Design Pattern
+
+    /// Structural code in C#
+    /// Facade Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create book
+            Facade facade = new Facade();
 
-            Book book = new Book("Worley", "Inside ASP.NET", 10);
-            book.Display();
-
-            // Create video
-
-            Video video = new Video("Spielberg", "Jaws", 23, 92);
-            video.Display();
-
-            // Make video borrowable, then borrow and display
-
-            Console.WriteLine("\nMaking video borrowable:");
-
-            Borrowable borrowvideo = new Borrowable(video);
-            borrowvideo.BorrowItem("Customer #1");
-            borrowvideo.BorrowItem("Customer #2");
-
-            borrowvideo.Display();
+            facade.MethodA();
+            facade.MethodB();
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
-    /// <summary>
-    /// The 'Component' abstract class
-    /// </summary>
-
-    public abstract class LibraryItem
-    {
-        private int numCopies;
-
-        public int NumCopies
-        {
-            get { return numCopies; }
-            set { numCopies = value; }
-        }
-
-        public abstract void Display();
-    }
 
     /// <summary>
-    /// The 'ConcreteComponent' class
+    /// The 'Subsystem ClassA' class
     /// </summary>
 
-    public class Book : LibraryItem
+    public class SubSystemOne
     {
-        private string author;
-        private string title;
-
-        // Constructor
-
-        public Book(string author, string title, int numCopies)
+        public void MethodOne()
         {
-            this.author = author;
-            this.title = title;
-            this.NumCopies = numCopies;
-        }
-
-        public override void Display()
-        {
-            Console.WriteLine("\nBook ------ ");
-            Console.WriteLine(" Author: {0}", author);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
+            Console.WriteLine(" SubSystemOne Method");
         }
     }
 
     /// <summary>
-    /// The 'ConcreteComponent' class
+    /// The 'Subsystem ClassB' class
     /// </summary>
 
-    public class Video : LibraryItem
+    public class SubSystemTwo
     {
-        private string director;
-        private string title;
-        private int playTime;
-
-        // Constructor
-
-        public Video(string director, string title, int numCopies, int playTime)
+        public void MethodTwo()
         {
-            this.director = director;
-            this.title = title;
-            this.NumCopies = numCopies;
-            this.playTime = playTime;
-        }
-
-        public override void Display()
-        {
-            Console.WriteLine("\nVideo ----- ");
-            Console.WriteLine(" Director: {0}", director);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
-            Console.WriteLine(" Playtime: {0}\n", playTime);
+            Console.WriteLine(" SubSystemTwo Method");
         }
     }
 
     /// <summary>
-    /// The 'Decorator' abstract class
+    /// The 'Subsystem ClassC' class
     /// </summary>
 
-    public abstract class Decorator : LibraryItem
+    public class SubSystemThree
     {
-        protected LibraryItem libraryItem;
-
-        // Constructor
-
-        public Decorator(LibraryItem libraryItem)
+        public void MethodThree()
         {
-            this.libraryItem = libraryItem;
-        }
-
-        public override void Display()
-        {
-            libraryItem.Display();
+            Console.WriteLine(" SubSystemThree Method");
         }
     }
 
     /// <summary>
-    /// The 'ConcreteDecorator' class
+    /// The 'Subsystem ClassD' class
     /// </summary>
 
-    public class Borrowable : Decorator
+    public class SubSystemFour
     {
-        protected readonly List<string> borrowers = new List<string>();
+        public void MethodFour()
+        {
+            Console.WriteLine(" SubSystemFour Method");
+        }
+    }
 
+    /// <summary>
+    /// The 'Facade' class
+    /// </summary>
+
+    public class Facade
+    {
+        SubSystemOne one;
+        SubSystemTwo two;
+        SubSystemThree three;
+        SubSystemFour four;
+
+        public Facade()
+        {
+            one = new SubSystemOne();
+            two = new SubSystemTwo();
+            three = new SubSystemThree();
+            four = new SubSystemFour();
+        }
+
+        public void MethodA()
+        {
+            Console.WriteLine("\nMethodA() ---- ");
+            one.MethodOne();
+            two.MethodTwo();
+            four.MethodFour();
+        }
+
+        public void MethodB()
+        {
+            Console.WriteLine("\nMethodB() ---- ");
+            two.MethodTwo();
+            three.MethodThree();
+        }
+    }
+    public class Program2
+    {
+        public static void Main(string[] args)
+        {
+            // Facade
+            Mortgage mortgage = new Mortgage();
+            // Evaluate mortgage eligibility for customer
+            Customer customer = new Customer("Ann McKinsey");
+            bool eligible = mortgage.IsEligible(customer, 125000);
+            Console.WriteLine("\n" + customer.Name +
+                    " has been " + (eligible ? "Approved" : "Rejected"));
+            // Wait for user
+            Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassA' class
+    /// </summary>
+    public class Bank
+    {
+        public bool HasSufficientSavings(Customer c, int amount)
+        {
+            Console.WriteLine("Check bank for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassB' class
+    /// </summary>
+    public class Credit
+    {
+        public bool HasGoodCredit(Customer c)
+        {
+            Console.WriteLine("Check credit for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassC' class
+    /// </summary>
+    public class Loan
+    {
+        public bool HasNoBadLoans(Customer c)
+        {
+            Console.WriteLine("Check loans for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// Customer class
+    /// </summary>
+    public class Customer
+    {
+        private string name;
         // Constructor
-
-        public Borrowable(LibraryItem libraryItem)
-            : base(libraryItem)
+        public Customer(string name)
         {
+            this.name = name;
         }
-
-        public void BorrowItem(string name)
+        public string Name
         {
-            borrowers.Add(name);
-            libraryItem.NumCopies--;
+            get { return name; }
         }
+    }
 
-        public void ReturnItem(string name)
+    /// <summary>
+    /// The 'Facade' class
+    /// </summary>
+    public class Mortgage
+    {
+        Bank bank = new Bank();
+        Loan loan = new Loan();
+        Credit credit = new Credit();
+        public bool IsEligible(Customer cust, int amount)
         {
-            borrowers.Remove(name);
-            libraryItem.NumCopies++;
-        }
-
-        public override void Display()
-        {
-            base.Display();
-
-            foreach (string borrower in borrowers)
+            Console.WriteLine("{0} applies for {1:C} loan\n",
+                cust.Name, amount);
+            bool eligible = true;
+            // Check creditworthyness of applicant
+            if (!bank.HasSufficientSavings(cust, amount))
             {
-                Console.WriteLine(" borrower: " + borrower);
+                eligible = false;
             }
+            else if (!loan.HasNoBadLoans(cust))
+            {
+                eligible = false;
+            }
+            else if (!credit.HasGoodCredit(cust))
+            {
+                eligible = false;
+            }
+            return eligible;
         }
     }
+
 }
