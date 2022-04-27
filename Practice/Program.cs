@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Interpreter.Structural
+namespace Iterator.Structural
 {
     /// <summary>
-    /// Interpreter Design Pattern
+    /// Iterator Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            Context context = new Context();
+            ConcreteAggregate a = new ConcreteAggregate();
+            a[0] = "Item A";
+            a[1] = "Item B";
+            a[2] = "Item C";
+            a[3] = "Item D";
 
-            // Usually a tree 
+            // Create Iterator and provide aggregate
 
-            List<AbstractExpression> list = new List<AbstractExpression>();
+            Iterator i = a.CreateIterator();
 
-            // Populate 'abstract syntax tree' 
+            Console.WriteLine("Iterating over collection:");
 
-            list.Add(new TerminalExpression());
-            list.Add(new NonterminalExpression());
-            list.Add(new TerminalExpression());
-            list.Add(new TerminalExpression());
+            object item = i.First();
 
-            // Interpret
-
-            foreach (AbstractExpression exp in list)
+            while (item != null)
             {
-                exp.Interpret(context);
+                Console.WriteLine(item);
+                item = i.Next();
             }
 
             // Wait for user
@@ -38,212 +38,275 @@ namespace Interpreter.Structural
     }
 
     /// <summary>
-    /// The 'Context' class
+    /// The 'Aggregate' abstract class
     /// </summary>
 
-    public class Context
+    public abstract class Aggregate
     {
+        public abstract Iterator CreateIterator();
     }
 
     /// <summary>
-    /// The 'AbstractExpression' abstract class
+    /// The 'ConcreteAggregate' class
     /// </summary>
 
-    public abstract class AbstractExpression
+    public class ConcreteAggregate : Aggregate
     {
-        public abstract void Interpret(Context context);
-    }
+        List<object> items = new List<object>();
 
-    /// <summary>
-    /// The 'TerminalExpression' class
-    /// </summary>
-
-    public class TerminalExpression : AbstractExpression
-    {
-        public override void Interpret(Context context)
+        public override Iterator CreateIterator()
         {
-            Console.WriteLine("Called Terminal.Interpret()");
+            return new ConcreteIterator(this);
+        }
+
+        // Get item count
+
+        public int Count
+        {
+            get { return items.Count; }
+        }
+
+        // Indexer
+
+        public object this[int index]
+        {
+            get { return items[index]; }
+            set { items.Insert(index, value); }
         }
     }
 
     /// <summary>
-    /// The 'NonterminalExpression' class
+    /// The 'Iterator' abstract class
     /// </summary>
 
-    public class NonterminalExpression : AbstractExpression
+    public abstract class Iterator
     {
-        public override void Interpret(Context context)
-        {
-            Console.WriteLine("Called Nonterminal.Interpret()");
-        }
-    }
-
-    /// RealWorld
-    /// Interpreter Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            string roman = "MCMXXVIII";
-            Context context = new Context(roman);
-
-            // Build the 'parse tree'
-
-            List<Expression> tree = new List<Expression>();
-            tree.Add(new ThousandExpression());
-            tree.Add(new HundredExpression());
-            tree.Add(new TenExpression());
-            tree.Add(new OneExpression());
-
-            // Interpret
-
-            foreach (Expression exp in tree)
-            {
-                exp.Interpret(context);
-            }
-
-            Console.WriteLine("{0} = {1}",
-                roman, context.Output);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
+        public abstract object First();
+        public abstract object Next();
+        public abstract bool IsDone();
+        public abstract object CurrentItem();
     }
 
     /// <summary>
-    /// The 'Context' class
+    /// The 'ConcreteIterator' class
     /// </summary>
 
-    public class Context
+    public class ConcreteIterator : Iterator
     {
-        string input;
-        int output;
+        ConcreteAggregate aggregate;
+        int current = 0;
 
         // Constructor
 
-        public Context(string input)
+        public ConcreteIterator(ConcreteAggregate aggregate)
         {
-            this.input = input;
+            this.aggregate = aggregate;
         }
 
-        public string Input
+        // Gets first iteration item
+
+        public override object First()
         {
-            get { return input; }
-            set { input = value; }
+            return aggregate[0];
         }
 
-        public int Output
+        // Gets next iteration item
+
+        public override object Next()
         {
-            get { return output; }
-            set { output = value; }
+            object ret = null;
+            if (current < aggregate.Count - 1)
+            {
+                ret = aggregate[++current];
+            }
+
+            return ret;
+        }
+
+        // Gets current iteration item
+
+        public override object CurrentItem()
+        {
+            return aggregate[current];
+        }
+
+        // Gets whether iterations are complete
+
+        public override bool IsDone()
+        {
+            return current >= aggregate.Count;
+        }
+    }
+
+    /// Real World
+    /// Iterator Design Pattern
+    /// </summary>
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Build a collection
+
+            Collection collection = new Collection();
+            collection[0] = new Item("Item 0");
+            collection[1] = new Item("Item 1");
+            collection[2] = new Item("Item 2");
+            collection[3] = new Item("Item 3");
+            collection[4] = new Item("Item 4");
+            collection[5] = new Item("Item 5");
+            collection[6] = new Item("Item 6");
+            collection[7] = new Item("Item 7");
+            collection[8] = new Item("Item 8");
+
+            // Create iterator
+
+            Iterator iterator = collection.CreateIterator();
+
+            // Skip every other item
+
+            iterator.Step = 2;
+
+            Console.WriteLine("Iterating over collection:");
+
+            for (Item item = iterator.First();
+                !iterator.IsDone; item = iterator.Next())
+            {
+                Console.WriteLine(item.Name);
+            }
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// A collection item
+    /// </summary>
+
+    public class Item
+    {
+        string name;
+
+        // Constructor
+
+        public Item(string name)
+        {
+            this.name = name;
+        }
+
+        public string Name
+        {
+            get { return name; }
         }
     }
 
     /// <summary>
-    /// The 'AbstractExpression' class
+    /// The 'Aggregate' interface
     /// </summary>
 
-    public abstract class Expression
+    public interface IAbstractCollection
     {
-        public void Interpret(Context context)
+        Iterator CreateIterator();
+    }
+
+    /// <summary>
+    /// The 'ConcreteAggregate' class
+    /// </summary>
+
+    public class Collection : IAbstractCollection
+    {
+        List<Item> items = new List<Item>();
+
+        public Iterator CreateIterator()
         {
-            if (context.Input.Length == 0)
-                return;
-
-            if (context.Input.StartsWith(Nine()))
-            {
-                context.Output += (9 * Multiplier());
-                context.Input = context.Input.Substring(2);
-            }
-            else if (context.Input.StartsWith(Four()))
-            {
-                context.Output += (4 * Multiplier());
-                context.Input = context.Input.Substring(2);
-            }
-            else if (context.Input.StartsWith(Five()))
-            {
-                context.Output += (5 * Multiplier());
-                context.Input = context.Input.Substring(1);
-            }
-
-            while (context.Input.StartsWith(One()))
-            {
-                context.Output += (1 * Multiplier());
-                context.Input = context.Input.Substring(1);
-            }
+            return new Iterator(this);
         }
 
-        public abstract string One();
-        public abstract string Four();
-        public abstract string Five();
-        public abstract string Nine();
-        public abstract int Multiplier();
+        // Gets item count
+
+        public int Count
+        {
+            get { return items.Count; }
+        }
+
+        // Indexer
+
+        public Item this[int index]
+        {
+            get { return items[index]; }
+            set { items.Add(value); }
+        }
     }
 
     /// <summary>
-    /// A 'TerminalExpression' class
-    /// <remarks>
-    /// Thousand checks for the Roman Numeral M 
-    /// </remarks>
+    /// The 'Iterator' interface
     /// </summary>
 
-    public class ThousandExpression : Expression
+    public interface IAbstractIterator
     {
-        public override string One() { return "M"; }
-        public override string Four() { return " "; }
-        public override string Five() { return " "; }
-        public override string Nine() { return " "; }
-        public override int Multiplier() { return 1000; }
+        Item First();
+        Item Next();
+        bool IsDone { get; }
+        Item CurrentItem { get; }
     }
 
     /// <summary>
-    /// A 'TerminalExpression' class
-    /// <remarks>
-    /// Hundred checks C, CD, D or CM
-    /// </remarks>
+    /// The 'ConcreteIterator' class
     /// </summary>
 
-    public class HundredExpression : Expression
+    public class Iterator : IAbstractIterator
     {
-        public override string One() { return "C"; }
-        public override string Four() { return "CD"; }
-        public override string Five() { return "D"; }
-        public override string Nine() { return "CM"; }
-        public override int Multiplier() { return 100; }
-    }
+        Collection collection;
+        int current = 0;
+        int step = 1;
 
-    /// <summary>
-    /// A 'TerminalExpression' class
-    /// <remarks>
-    /// Ten checks for X, XL, L and XC
-    /// </remarks>
-    /// </summary>
+        // Constructor
 
-    public class TenExpression : Expression
-    {
-        public override string One() { return "X"; }
-        public override string Four() { return "XL"; }
-        public override string Five() { return "L"; }
-        public override string Nine() { return "XC"; }
-        public override int Multiplier() { return 10; }
-    }
+        public Iterator(Collection collection)
+        {
+            this.collection = collection;
+        }
 
-    /// <summary>
-    /// A 'TerminalExpression' class
-    /// <remarks>
-    /// One checks for I, II, III, IV, V, VI, VI, VII, VIII, IX
-    /// </remarks>
-    /// </summary>
+        // Gets first item
 
-    public class OneExpression : Expression
-    {
-        public override string One() { return "I"; }
-        public override string Four() { return "IV"; }
-        public override string Five() { return "V"; }
-        public override string Nine() { return "IX"; }
-        public override int Multiplier() { return 1; }
+        public Item First()
+        {
+            current = 0;
+            return collection[current] as Item;
+        }
+
+        // Gets next item
+
+        public Item Next()
+        {
+            current += step;
+            if (!IsDone)
+                return collection[current] as Item;
+            else
+                return null;
+        }
+
+        // Gets or sets stepsize
+
+        public int Step
+        {
+            get { return step; }
+            set { step = value; }
+        }
+
+        // Gets current iterator item
+
+        public Item CurrentItem
+        {
+            get { return collection[current] as Item; }
+        }
+
+        // Gets whether iteration is complete
+
+        public bool IsDone
+        {
+            get { return current >= collection.Count; }
+        }
     }
 }
