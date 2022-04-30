@@ -1,121 +1,97 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
-namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
+namespace Prototype.RealWorld
 {
-    public interface IObserver
+    /// <summary>
+    /// Prototype Design Pattern
+    /// </summary>
+
+    public class Program
     {
-        // Receive update from subject
-        void Update(ISubject subject);
-    }
-
-    public interface ISubject
-    {
-        // Attach an observer to the subject.
-        void Attach(IObserver observer);
-
-        // Detach an observer from the subject.
-        void Detach(IObserver observer);
-
-        // Notify all observers about an event.
-        void Notify();
-    }
-
-    // The Subject owns some important state and notifies observers when the
-    // state changes.
-    public class Subject : ISubject
-    {
-        // For the sake of simplicity, the Subject's state, essential to all
-        // subscribers, is stored in this variable.
-        public int State { get; set; } = -0;
-
-        // List of subscribers. In real life, the list of subscribers can be
-        // stored more comprehensively (categorized by event type, etc.).
-        private List<IObserver> _observers = new List<IObserver>();
-
-        // The subscription management methods.
-        public void Attach(IObserver observer)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Subject: Attached an observer.");
-            this._observers.Add(observer);
-        }
+            ColorManager colormanager = new ColorManager();
 
-        public void Detach(IObserver observer)
-        {
-            this._observers.Remove(observer);
-            Console.WriteLine("Subject: Detached an observer.");
-        }
+            // Initialize with standard colors
 
-        // Trigger an update in each subscriber.
-        public void Notify()
-        {
-            Console.WriteLine("Subject: Notifying observers...");
+            colormanager["red"] = new Color(255, 0, 0);
+            colormanager["green"] = new Color(0, 255, 0);
+            colormanager["blue"] = new Color(0, 0, 255);
 
-            foreach (var observer in _observers)
-            {
-                observer.Update(this);
-            }
-        }
+            // User adds personalized colors
 
-        // Usually, the subscription logic is only a fraction of what a Subject
-        // can really do. Subjects commonly hold some important business logic,
-        // that triggers a notification method whenever something important is
-        // about to happen (or after it).
-        public void SomeBusinessLogic()
-        {
-            Console.WriteLine("\nSubject: I'm doing something important.");
-            this.State = new Random().Next(0, 10);
+            colormanager["angry"] = new Color(255, 54, 0);
+            colormanager["peace"] = new Color(128, 211, 128);
+            colormanager["flame"] = new Color(211, 34, 20);
 
-            Thread.Sleep(15);
+            // User clones selected colors
 
-            Console.WriteLine("Subject: My state has just changed to: " + this.State);
-            this.Notify();
+            Color color1 = colormanager["red"].Clone() as Color;
+            Color color2 = colormanager["peace"].Clone() as Color;
+            Color color3 = colormanager["flame"].Clone() as Color;
+
+            // Wait for user
+
+            Console.ReadKey();
         }
     }
 
-    // Concrete Observers react to the updates issued by the Subject they had
-    // been attached to.
-    class ConcreteObserverA : IObserver
+    /// <summary>
+    /// The 'Prototype' abstract class
+    /// </summary>
+
+    public abstract class ColorPrototype
     {
-        public void Update(ISubject subject)
+        public abstract ColorPrototype Clone();
+    }
+
+    /// <summary>
+    /// The 'ConcretePrototype' class
+    /// </summary>
+
+    public class Color : ColorPrototype
+    {
+        int red;
+        int green;
+        int blue;
+
+        // Constructor
+
+        public Color(int red, int green, int blue)
         {
-            if ((subject as Subject).State < 3)
-            {
-                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
-            }
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+        }
+
+        // Create a shallow copy
+
+        public override ColorPrototype Clone()
+        {
+            Console.WriteLine(
+                "Cloning color RGB: {0,3},{1,3},{2,3}",
+                red, green, blue);
+
+            return this.MemberwiseClone() as ColorPrototype;
         }
     }
 
-    class ConcreteObserverB : IObserver
+    /// <summary>
+    /// Prototype manager
+    /// </summary>
+
+    public class ColorManager
     {
-        public void Update(ISubject subject)
+        private Dictionary<string, ColorPrototype> colors =
+            new Dictionary<string, ColorPrototype>();
+
+        // Indexer
+
+        public ColorPrototype this[string key]
         {
-            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
-            {
-                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
-            }
-        }
-    }
-
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            // The client code.
-            var subject = new Subject();
-            var observerA = new ConcreteObserverA();
-            subject.Attach(observerA);
-
-            var observerB = new ConcreteObserverB();
-            subject.Attach(observerB);
-
-            subject.SomeBusinessLogic();
-            subject.SomeBusinessLogic();
-
-            subject.Detach(observerB);
-
-            subject.SomeBusinessLogic();
+            get { return colors[key]; }
+            set { colors.Add(key, value); }
         }
     }
 }
