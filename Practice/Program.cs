@@ -1,35 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Prototype.RealWorld
+namespace Proxy.Structural
 {
     /// <summary>
-    /// Prototype Design Pattern
+    /// Proxy Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            ColorManager colormanager = new ColorManager();
+            // Create proxy and request a service
 
-            // Initialize with standard colors
-
-            colormanager["red"] = new Color(255, 0, 0);
-            colormanager["green"] = new Color(0, 255, 0);
-            colormanager["blue"] = new Color(0, 0, 255);
-
-            // User adds personalized colors
-
-            colormanager["angry"] = new Color(255, 54, 0);
-            colormanager["peace"] = new Color(128, 211, 128);
-            colormanager["flame"] = new Color(211, 34, 20);
-
-            // User clones selected colors
-
-            Color color1 = colormanager["red"].Clone() as Color;
-            Color color2 = colormanager["peace"].Clone() as Color;
-            Color color3 = colormanager["flame"].Clone() as Color;
+            Proxy proxy = new Proxy();
+            proxy.Request();
 
             // Wait for user
 
@@ -38,60 +22,120 @@ namespace Prototype.RealWorld
     }
 
     /// <summary>
-    /// The 'Prototype' abstract class
+    /// The 'Subject' abstract class
     /// </summary>
 
-    public abstract class ColorPrototype
+    public abstract class Subject
     {
-        public abstract ColorPrototype Clone();
+        public abstract void Request();
     }
 
     /// <summary>
-    /// The 'ConcretePrototype' class
+    /// The 'RealSubject' class
     /// </summary>
 
-    public class Color : ColorPrototype
+    public class RealSubject : Subject
     {
-        int red;
-        int green;
-        int blue;
-
-        // Constructor
-
-        public Color(int red, int green, int blue)
+        public override void Request()
         {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-        }
-
-        // Create a shallow copy
-
-        public override ColorPrototype Clone()
-        {
-            Console.WriteLine(
-                "Cloning color RGB: {0,3},{1,3},{2,3}",
-                red, green, blue);
-
-            return this.MemberwiseClone() as ColorPrototype;
+            Console.WriteLine("Called RealSubject.Request()");
         }
     }
 
     /// <summary>
-    /// Prototype manager
+    /// The 'Proxy' class
     /// </summary>
 
-    public class ColorManager
+    public class Proxy : Subject
     {
-        private Dictionary<string, ColorPrototype> colors =
-            new Dictionary<string, ColorPrototype>();
+        private RealSubject realSubject;
 
-        // Indexer
-
-        public ColorPrototype this[string key]
+        public override void Request()
         {
-            get { return colors[key]; }
-            set { colors.Add(key, value); }
+            // Use 'lazy initialization'
+
+            if (realSubject == null)
+            {
+                realSubject = new RealSubject();
+            }
+
+            realSubject.Request();
+        }
+    }
+
+    /// Real Live 
+    /// Proxy Design Pattern
+    /// </summary>
+
+    public class Program5
+    {
+        public static void Main(string[] args)
+        {
+            // Create math proxy
+
+            MathProxy proxy = new MathProxy();
+
+            // Do the math
+
+            Console.WriteLine("4 + 2 = " + proxy.Add(4, 2));
+            Console.WriteLine("4 - 2 = " + proxy.Sub(4, 2));
+            Console.WriteLine("4 * 2 = " + proxy.Mul(4, 2));
+            Console.WriteLine("4 / 2 = " + proxy.Div(4, 2));
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
+    /// The 'Subject interface
+    /// </summary>
+
+    public interface IMath
+    {
+        double Add(double x, double y);
+        double Sub(double x, double y);
+        double Mul(double x, double y);
+        double Div(double x, double y);
+    }
+
+    /// <summary>
+    /// The 'RealSubject' class
+    /// </summary>
+
+    public class Math : IMath
+    {
+        public double Add(double x, double y) { return x + y; }
+        public double Sub(double x, double y) { return x - y; }
+        public double Mul(double x, double y) { return x * y; }
+        public double Div(double x, double y) { return x / y; }
+    }
+
+    /// <summary>
+    /// The 'Proxy Object' class
+    /// </summary>
+
+    public class MathProxy : IMath
+    {
+        private Math math = new Math();
+
+        public double Add(double x, double y)
+        {
+            return math.Add(x, y);
+        }
+        public double Sub(double x, double y)
+        {
+            return math.Sub(x, y);
+        }
+        public double Mul(double x, double y)
+        {
+            return math.Mul(x, y);
+        }
+        public double Div(double x, double y)
+        {
+            return math.Div(x, y);
         }
     }
 }
+
