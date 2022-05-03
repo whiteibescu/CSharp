@@ -1,86 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Proxy.Structural
+namespace Singleton.RealWorld
 {
     /// <summary>
-    /// Proxy Design Pattern
+    /// Singleton Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create proxy and request a service
+            LoadBalancer b1 = LoadBalancer.GetLoadBalancer();
+            LoadBalancer b2 = LoadBalancer.GetLoadBalancer();
+            LoadBalancer b3 = LoadBalancer.GetLoadBalancer();
+            LoadBalancer b4 = LoadBalancer.GetLoadBalancer();
 
-            Proxy proxy = new Proxy();
-            proxy.Request();
+            // Same instance?
 
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'Subject' abstract class
-    /// </summary>
-
-    public abstract class Subject
-    {
-        public abstract void Request();
-    }
-
-    /// <summary>
-    /// The 'RealSubject' class
-    /// </summary>
-
-    public class RealSubject : Subject
-    {
-        public override void Request()
-        {
-            Console.WriteLine("Called RealSubject.Request()");
-        }
-    }
-
-    /// <summary>
-    /// The 'Proxy' class
-    /// </summary>
-
-    public class Proxy : Subject
-    {
-        private RealSubject realSubject;
-
-        public override void Request()
-        {
-            // Use 'lazy initialization'
-
-            if (realSubject == null)
+            if (b1 == b2 && b2 == b3 && b3 == b4)
             {
-                realSubject = new RealSubject();
+                Console.WriteLine("Same instance\n");
             }
 
-            realSubject.Request();
-        }
-    }
+            // Load balance 15 server requests
 
-    /// Real Live 
-    /// Proxy Design Pattern
-    /// </summary>
-
-    public class Program5
-    {
-        public static void Main(string[] args)
-        {
-            // Create math proxy
-
-            MathProxy proxy = new MathProxy();
-
-            // Do the math
-
-            Console.WriteLine("4 + 2 = " + proxy.Add(4, 2));
-            Console.WriteLine("4 - 2 = " + proxy.Sub(4, 2));
-            Console.WriteLine("4 * 2 = " + proxy.Mul(4, 2));
-            Console.WriteLine("4 / 2 = " + proxy.Div(4, 2));
+            LoadBalancer balancer = LoadBalancer.GetLoadBalancer();
+            for (int i = 0; i < 15; i++)
+            {
+                string server = balancer.Server;
+                Console.WriteLine("Dispatch Request to: " + server);
+            }
 
             // Wait for user
 
@@ -89,53 +39,97 @@ namespace Proxy.Structural
     }
 
     /// <summary>
-    /// The 'Subject interface
+    /// The 'Singleton' class
     /// </summary>
 
-    public interface IMath
+    public class LoadBalancer
     {
-        double Add(double x, double y);
-        double Sub(double x, double y);
-        double Mul(double x, double y);
-        double Div(double x, double y);
-    }
+        static LoadBalancer instance;
+        List<string> servers = new List<string>();
+        Random random = new Random();
 
-    /// <summary>
-    /// The 'RealSubject' class
-    /// </summary>
+        // Lock synchronization object
 
-    public class Math : IMath
-    {
-        public double Add(double x, double y) { return x + y; }
-        public double Sub(double x, double y) { return x - y; }
-        public double Mul(double x, double y) { return x * y; }
-        public double Div(double x, double y) { return x / y; }
-    }
+        private static object locker = new object();
 
-    /// <summary>
-    /// The 'Proxy Object' class
-    /// </summary>
+        // Constructor (protected)
 
-    public class MathProxy : IMath
-    {
-        private Math math = new Math();
-
-        public double Add(double x, double y)
+        protected LoadBalancer()
         {
-            return math.Add(x, y);
+            // List of available servers
+            servers.Add("ServerI");
+            servers.Add("ServerII");
+            servers.Add("ServerIII");
+            servers.Add("ServerIV");
+            servers.Add("ServerV");
         }
-        public double Sub(double x, double y)
+
+        public static LoadBalancer GetLoadBalancer()
         {
-            return math.Sub(x, y);
+            // Support multithreaded applications through
+            // 'Double checked locking' pattern which (once
+            // the instance exists) avoids locking each
+            // time the method is invoked
+
+            if (instance == null)
+            {
+                lock (locker)
+                {
+                    if (instance == null)
+                    {
+                        instance = new LoadBalancer();
+                    }
+                }
+            }
+
+            return instance;
         }
-        public double Mul(double x, double y)
+
+        // Simple, but effective random load balancer
+
+        public string Server
         {
-            return math.Mul(x, y);
-        }
-        public double Div(double x, double y)
-        {
-            return math.Div(x, y);
+            get
+            {
+                int r = random.Next(servers.Count);
+                return servers[r].ToString();
+            }
         }
     }
 }
 
+namespace Singleton.Structual
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            Singleton s1 = Singleton.Instance();
+            Singleton s2 = Singleton.Instance();
+
+            if (s1 == s2)
+            {
+                Console.WriteLine("Objects are the same shit");
+            }
+
+            Console.ReadKey();
+        }
+    }
+
+    public class Singleton
+    {
+        static Singleton instance;
+
+        protected Singleton() { }
+
+        public static Singleton Instance()
+        {
+            if (instance == null)
+            {
+                instance = new Singleton();
+            }
+
+            return instance;
+        }
+    }
+}
