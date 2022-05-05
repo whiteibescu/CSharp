@@ -1,36 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Singleton.RealWorld
+namespace DoFactory.GangOfFour.Builder.Structural
 {
     /// <summary>
-    /// Singleton Design Pattern
+    /// MainApp startup class for Structural
+    /// Builder Design Pattern.
     /// </summary>
 
-    public class Program
+    public class MainApp
     {
-        public static void Main(string[] args)
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+
+        public static void Main()
         {
-            LoadBalancer b1 = LoadBalancer.GetLoadBalancer();
-            LoadBalancer b2 = LoadBalancer.GetLoadBalancer();
-            LoadBalancer b3 = LoadBalancer.GetLoadBalancer();
-            LoadBalancer b4 = LoadBalancer.GetLoadBalancer();
+            // Create director and builders
 
-            // Same instance?
+            Director director = new Director();
 
-            if (b1 == b2 && b2 == b3 && b3 == b4)
-            {
-                Console.WriteLine("Same instance\n");
-            }
+            Builder b1 = new ConcreteBuilder1();
+            Builder b2 = new ConcreteBuilder2();
 
-            // Load balance 15 server requests
+            // Construct two products
 
-            LoadBalancer balancer = LoadBalancer.GetLoadBalancer();
-            for (int i = 0; i < 15; i++)
-            {
-                string server = balancer.Server;
-                Console.WriteLine("Dispatch Request to: " + server);
-            }
+            director.Construct(b1);
+            Product p1 = b1.GetResult();
+            p1.Show();
+
+            director.Construct(b2);
+            Product p2 = b2.GetResult();
+            p2.Show();
 
             // Wait for user
 
@@ -39,97 +40,97 @@ namespace Singleton.RealWorld
     }
 
     /// <summary>
-    /// The 'Singleton' class
+    /// The 'Director' class
     /// </summary>
 
-    public class LoadBalancer
+    class Director
     {
-        static LoadBalancer instance;
-        List<string> servers = new List<string>();
-        Random random = new Random();
+        // Builder uses a complex series of steps
 
-        // Lock synchronization object
-
-        private static object locker = new object();
-
-        // Constructor (protected)
-
-        protected LoadBalancer()
+        public void Construct(Builder builder)
         {
-            // List of available servers
-            servers.Add("ServerI");
-            servers.Add("ServerII");
-            servers.Add("ServerIII");
-            servers.Add("ServerIV");
-            servers.Add("ServerV");
-        }
-
-        public static LoadBalancer GetLoadBalancer()
-        {
-            // Support multithreaded applications through
-            // 'Double checked locking' pattern which (once
-            // the instance exists) avoids locking each
-            // time the method is invoked
-
-            if (instance == null)
-            {
-                lock (locker)
-                {
-                    if (instance == null)
-                    {
-                        instance = new LoadBalancer();
-                    }
-                }
-            }
-
-            return instance;
-        }
-
-        // Simple, but effective random load balancer
-
-        public string Server
-        {
-            get
-            {
-                int r = random.Next(servers.Count);
-                return servers[r].ToString();
-            }
-        }
-    }
-}
-
-namespace Singleton.Structual
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            Singleton s1 = Singleton.Instance();
-            Singleton s2 = Singleton.Instance();
-
-            if (s1 == s2)
-            {
-                Console.WriteLine("Objects are the same shit");
-            }
-
-            Console.ReadKey();
+            builder.BuildPartA();
+            builder.BuildPartB();
         }
     }
 
-    public class Singleton
+    /// <summary>
+    /// The 'Builder' abstract class
+    /// </summary>
+
+    abstract class Builder
     {
-        static Singleton instance;
+        public abstract void BuildPartA();
+        public abstract void BuildPartB();
+        public abstract Product GetResult();
+    }
 
-        protected Singleton() { }
+    /// <summary>
+    /// The 'ConcreteBuilder1' class
+    /// </summary>
 
-        public static Singleton Instance()
+    class ConcreteBuilder1 : Builder
+    {
+        private Product _product = new Product();
+
+        public override void BuildPartA()
         {
-            if (instance == null)
-            {
-                instance = new Singleton();
-            }
+            _product.Add("PartA");
+        }
 
-            return instance;
+        public override void BuildPartB()
+        {
+            _product.Add("PartB");
+        }
+
+        public override Product GetResult()
+        {
+            return _product;
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteBuilder2' class
+    /// </summary>
+
+    class ConcreteBuilder2 : Builder
+    {
+        private Product _product = new Product();
+
+        public override void BuildPartA()
+        {
+            _product.Add("PartX");
+        }
+
+        public override void BuildPartB()
+        {
+            _product.Add("PartY");
+        }
+
+        public override Product GetResult()
+        {
+            return _product;
+        }
+    }
+
+    /// <summary>
+    /// The 'Product' class
+    /// </summary>
+
+    class Product
+    {
+        private List<string> _parts = new List<string>();
+
+        public void Add(string part)
+        {
+            _parts.Add(part);
+        }
+
+        public void Show()
+        {
+            Console.WriteLine("\nProduct Parts -------");
+            foreach (string part in _parts)
+                Console.WriteLine(part);
         }
     }
 }
