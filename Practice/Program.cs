@@ -1,27 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Strategy.Structural
+namespace Template.RealWorld
 {
     /// <summary>
-    /// Strategy Design Pattern
+    /// Template Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            Context context;
+            DataAccessor categories = new Categories();
+            categories.Run(5);
 
-            // Three contexts following different strategies
-
-            context = new Context(new ConcreteStrategyA());
-            context.ContextInterface();
-
-            context = new Context(new ConcreteStrategyB());
-            context.ContextInterface();
-
-            context = new Context(new ConcreteStrategyC());
-            context.ContextInterface();
+            DataAccessor products = new Products();
+            products.Run(3);
 
             // Wait for user
 
@@ -30,71 +24,237 @@ namespace Strategy.Structural
     }
 
     /// <summary>
-    /// The 'Strategy' abstract class
+    /// The 'AbstractClass' abstract class
     /// </summary>
 
-    public abstract class Strategy
+    public abstract class DataAccessor
     {
-        public abstract void AlgorithmInterface();
-    }
+        public abstract void Connect();
+        public abstract void Select();
+        public abstract void Process(int top);
+        public abstract void Disconnect();
 
-    /// <summary>
-    /// A 'ConcreteStrategy' class
-    /// </summary>
+        // The 'Template Method' 
 
-    public class ConcreteStrategyA : Strategy
-    {
-        public override void AlgorithmInterface()
+        public void Run(int top)
         {
-            Console.WriteLine(
-                "Called ConcreteStrategyA.AlgorithmInterface()");
+            Connect();
+            Select();
+            Process(top);
+            Disconnect();
         }
     }
 
     /// <summary>
-    /// A 'ConcreteStrategy' class
+    /// A 'ConcreteClass' class
     /// </summary>
 
-    public class ConcreteStrategyB : Strategy
+    public class Categories : DataAccessor
     {
-        public override void AlgorithmInterface()
+        private List<string> categories;
+
+        public override void Connect()
         {
-            Console.WriteLine(
-                "Called ConcreteStrategyB.AlgorithmInterface()");
+            categories = new List<string>();
+        }
+
+        public override void Select()
+        {
+            categories.Add("Red");
+            categories.Add("Green");
+            categories.Add("Blue");
+            categories.Add("Yellow");
+            categories.Add("Purple");
+            categories.Add("White");
+            categories.Add("Black");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Categories ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(categories[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            categories.Clear();
         }
     }
 
     /// <summary>
-    /// A 'ConcreteStrategy' class
+    /// A 'ConcreteClass' class
     /// </summary>
 
-    public class ConcreteStrategyC : Strategy
+    public class Products : DataAccessor
     {
-        public override void AlgorithmInterface()
+        private List<string> products;
+
+        public override void Connect()
         {
-            Console.WriteLine(
-                "Called ConcreteStrategyC.AlgorithmInterface()");
+            products = new List<string>();
+        }
+
+        public override void Select()
+        {
+            products.Add("Car");
+            products.Add("Bike");
+            products.Add("Boat");
+            products.Add("Truck");
+            products.Add("Moped");
+            products.Add("Rollerskate");
+            products.Add("Stroller");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Products ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(products[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            products.Clear();
+        }
+    }
+}
+
+namespace Template.RealWorlds
+{
+    /// <summary>
+    /// Template Design Pattern
+    /// </summary>
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            DataAccessor categories = new Categories();
+            categories.Run(5);
+
+            DataAccessor products = new Products();
+            products.Run(3);
+
+            // Wait for user
+
+            Console.ReadKey();
         }
     }
 
     /// <summary>
-    /// The 'Context' class
+    /// The 'AbstractClass' abstract class
     /// </summary>
 
-    public class Context
+    public abstract class DataAccessor
     {
-        Strategy strategy;
+        public abstract void Connect();
+        public abstract void Select();
+        public abstract void Process(int top);
+        public abstract void Disconnect();
 
-        // Constructor
+        // The 'Template Method' 
 
-        public Context(Strategy strategy)
+        public void Run(int top)
         {
-            this.strategy = strategy;
+            Connect();
+            Select();
+            Process(top);
+            Disconnect();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Categories : DataAccessor
+    {
+        private List<string> categories;
+
+        public override void Connect()
+        {
+            categories = new List<string>();
         }
 
-        public void ContextInterface()
+        public override void Select()
         {
-            strategy.AlgorithmInterface();
+            categories.Add("Red");
+            categories.Add("Green");
+            categories.Add("Blue");
+            categories.Add("Yellow");
+            categories.Add("Purple");
+            categories.Add("White");
+            categories.Add("Black");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Categories ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(categories[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            categories.Clear();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Products : DataAccessor
+    {
+        private List<string> products;
+
+        public override void Connect()
+        {
+            products = new List<string>();
+        }
+
+        public override void Select()
+        {
+            products.Add("Car");
+            products.Add("Bike");
+            products.Add("Boat");
+            products.Add("Truck");
+            products.Add("Moped");
+            products.Add("Rollerskate");
+            products.Add("Stroller");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Products ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(products[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            products.Clear();
         }
     }
 }
