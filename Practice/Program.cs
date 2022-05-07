@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Template.RealWorld
+namespace Visitor.RealWorld
 {
     /// <summary>
-    /// Template Design Pattern
+    /// Visitor Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+            // Setup employee collection
 
-            DataAccessor products = new Products();
-            products.Run(3);
+            Employees employee = new Employees();
+            employee.Attach(new Clerk());
+            employee.Attach(new Director());
+            employee.Attach(new President());
+
+            // Employees are 'visited'
+
+            employee.Accept(new IncomeVisitor());
+            employee.Accept(new VacationVisitor());
 
             // Wait for user
 
@@ -24,237 +30,162 @@ namespace Template.RealWorld
     }
 
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'Visitor' interface
     /// </summary>
 
-    public abstract class DataAccessor
+    public interface IVisitor
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+        void Visit(Element element);
+    }
 
-        // The 'Template Method' 
+    /// <summary>
+    /// A 'ConcreteVisitor' class
+    /// </summary>
 
-        public void Run(int top)
+    public class IncomeVisitor : IVisitor
+    {
+        public void Visit(Element element)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
+            Employee employee = element as Employee;
+
+            // Provide 10% pay raise
+
+            employee.Income *= 1.10;
+
+            Console.WriteLine("{0} {1}'s new income: {2:C}",
+                employee.GetType().Name, employee.Name,
+                employee.Income);
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// A 'ConcreteVisitor' class
     /// </summary>
 
-    public class Categories : DataAccessor
+    public class VacationVisitor : IVisitor
     {
-        private List<string> categories;
-
-        public override void Connect()
+        public void Visit(Element element)
         {
-            categories = new List<string>();
+            Employee employee = element as Employee;
+
+            // Provide 3 extra vacation days
+
+            employee.VacationDays += 3;
+
+            Console.WriteLine("{0} {1}'s new vacation days: {2}",
+                employee.GetType().Name, employee.Name,
+                employee.VacationDays);
+        }
+    }
+
+    /// <summary>
+    /// The 'Element' abstract class
+    /// </summary>
+
+    public abstract class Element
+    {
+        public abstract void Accept(IVisitor visitor);
+    }
+
+    /// <summary>
+    /// The 'ConcreteElement' class
+    /// </summary>
+
+    public class Employee : Element
+    {
+        private string name;
+        private double income;
+        private int vacationDays;
+
+        // Constructor
+
+        public Employee(string name, double income,
+            int vacationDays)
+        {
+            this.name = name;
+            this.income = income;
+            this.vacationDays = vacationDays;
         }
 
-        public override void Select()
+        public string Name
         {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
+            get { return name; }
+            set { name = value; }
         }
 
-        public override void Process(int top)
+        public double Income
         {
-            Console.WriteLine("Categories ---- ");
+            get { return income; }
+            set { income = value; }
+        }
 
-            for (int i = 0; i < top; i++)
+        public int VacationDays
+        {
+            get { return vacationDays; }
+            set { vacationDays = value; }
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+    }
+
+    /// <summary>
+    /// The 'ObjectStructure' class
+    /// </summary>
+
+    public class Employees
+    {
+        private List<Employee> employees = new List<Employee>();
+
+        public void Attach(Employee employee)
+        {
+            employees.Add(employee);
+        }
+
+        public void Detach(Employee employee)
+        {
+            employees.Remove(employee);
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            foreach (Employee employee in employees)
             {
-                Console.WriteLine(categories[i]);
+                employee.Accept(visitor);
             }
-
             Console.WriteLine();
         }
+    }
 
-        public override void Disconnect()
+    // Three employee types
+
+    public class Clerk : Employee
+    {
+        // Constructor
+
+        public Clerk()
+            : base("Kevin", 25000.0, 14)
         {
-            categories.Clear();
         }
     }
 
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
+    public class Director : Employee
     {
-        private List<string> products;
-
-        public override void Connect()
+        // Constructor
+        public Director()
+            : base("Elly", 35000.0, 16)
         {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
-    }
-}
-
-namespace Template.RealWorlds
-{
-    /// <summary>
-    /// Template Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
-
-            DataAccessor products = new Products();
-            products.Run(3);
-
-            // Wait for user
-
-            Console.ReadKey();
         }
     }
 
-    /// <summary>
-    /// The 'AbstractClass' abstract class
-    /// </summary>
-
-    public abstract class DataAccessor
+    public class President : Employee
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
-
-        // The 'Template Method' 
-
-        public void Run(int top)
+        // Constructor
+        public President()
+            : base("Eric", 45000.0, 21)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Categories : DataAccessor
-    {
-        private List<string> categories;
-
-        public override void Connect()
-        {
-            categories = new List<string>();
-        }
-
-        public override void Select()
-        {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
         }
     }
 }
