@@ -1,260 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
-namespace Template.RealWorld
+namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
 {
-    /// <summary>
-    /// Template Design Pattern
-    /// </summary>
-
-    public class Program
+    public interface IObserver
     {
-        public static void Main(string[] args)
-        {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
-
-            DataAccessor products = new Products();
-            products.Run(3);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
+        // Receive update from subject
+        void Update(ISubject subject);
     }
 
-    /// <summary>
-    /// The 'AbstractClass' abstract class
-    /// </summary>
-
-    public abstract class DataAccessor
+    public interface ISubject
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+        // Attach an observer to the subject.
+        void Attach(IObserver observer);
 
-        // The 'Template Method' 
+        // Detach an observer from the subject.
+        void Detach(IObserver observer);
 
-        public void Run(int top)
-        {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
-        }
+        // Notify all observers about an event.
+        void Notify();
     }
 
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Categories : DataAccessor
+    // The Subject owns some important state and notifies observers when the
+    // state changes.
+    public class Subject : ISubject
     {
-        private List<string> categories;
+        // For the sake of simplicity, the Subject's state, essential to all
+        // subscribers, is stored in this variable.
+        public int State { get; set; } = -0;
 
-        public override void Connect()
+        // List of subscribers. In real life, the list of subscribers can be
+        // stored more comprehensively (categorized by event type, etc.).
+        private List<IObserver> _observers = new List<IObserver>();
+
+        // The subscription management methods.
+        public void Attach(IObserver observer)
         {
-            categories = new List<string>();
+            Console.WriteLine("Subject: Attached an observer.");
+            this._observers.Add(observer);
         }
 
-        public override void Select()
+        public void Detach(IObserver observer)
         {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
+            this._observers.Remove(observer);
+            Console.WriteLine("Subject: Detached an observer.");
         }
 
-        public override void Process(int top)
+        // Trigger an update in each subscriber.
+        public void Notify()
         {
-            Console.WriteLine("Categories ---- ");
+            Console.WriteLine("Subject: Notifying observers...");
 
-            for (int i = 0; i < top; i++)
+            foreach (var observer in _observers)
             {
-                Console.WriteLine(categories[i]);
+                observer.Update(this);
             }
-
-            Console.WriteLine();
         }
 
-        public override void Disconnect()
+        // Usually, the subscription logic is only a fraction of what a Subject
+        // can really do. Subjects commonly hold some important business logic,
+        // that triggers a notification method whenever something important is
+        // about to happen (or after it).
+        public void SomeBusinessLogic()
         {
-            categories.Clear();
+            Console.WriteLine("\nSubject: I'm doing something important.");
+            this.State = new Random().Next(0, 10);
+
+            Thread.Sleep(15);
+
+            Console.WriteLine("Subject: My state has just changed to: " + this.State);
+            this.Notify();
         }
     }
 
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
+    // Concrete Observers react to the updates issued by the Subject they had
+    // been attached to.
+    class ConcreteObserverA : IObserver
     {
-        private List<string> products;
-
-        public override void Connect()
+        public void Update(ISubject subject)
         {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
+            if ((subject as Subject).State < 3)
             {
-                Console.WriteLine(products[i]);
+                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
             }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
-    }
-}
-
-namespace Template.RealWorlds
-{
-    /// <summary>
-    /// Template Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
-
-            DataAccessor products = new Products();
-            products.Run(3);
-
-            // Wait for user
-
-            Console.ReadKey();
         }
     }
 
-    /// <summary>
-    /// The 'AbstractClass' abstract class
-    /// </summary>
-
-    public abstract class DataAccessor
+    class ConcreteObserverB : IObserver
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
-
-        // The 'Template Method' 
-
-        public void Run(int top)
+        public void Update(ISubject subject)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Categories : DataAccessor
-    {
-        private List<string> categories;
-
-        public override void Connect()
-        {
-            categories = new List<string>();
-        }
-
-        public override void Select()
-        {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
+            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
             {
-                Console.WriteLine(categories[i]);
+                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
             }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
         }
     }
 
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
+    class Program
     {
-        private List<string> products;
-
-        public override void Connect()
+        static void Main(string[] args)
         {
-            products = new List<string>();
-        }
+            // The client code.
+            var subject = new Subject();
+            var observerA = new ConcreteObserverA();
+            subject.Attach(observerA);
 
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
+            var observerB = new ConcreteObserverB();
+            subject.Attach(observerB);
 
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
+            subject.SomeBusinessLogic();
+            subject.SomeBusinessLogic();
 
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
+            subject.Detach(observerB);
 
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
+            subject.SomeBusinessLogic();
         }
     }
 }
