@@ -1,27 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Visitor.RealWorld
+namespace Design_Pattern
 {
-    /// <summary>
-    /// Visitor Design Pattern
-    /// </summary>
-    public class Program
 
+    /// Structural code in C#
+    /// Facade Design Pattern
+    /// </summary>
+
+    public class Program
     {
         public static void Main(string[] args)
         {
-            // Setup employee collection
+            Facade facade = new Facade();
 
-            Employees employee = new Employees();
-            employee.Attach(new Clerk());
-            employee.Attach(new Director());
-            employee.Attach(new President());
-
-            // Employees are 'visited'
-
-            employee.Accept(new IncomeVisitor());
-            employee.Accept(new VacationVisitor());
+            facade.MethodA();
+            facade.MethodB();
 
             // Wait for user
 
@@ -30,162 +23,180 @@ namespace Visitor.RealWorld
     }
 
     /// <summary>
-    /// The 'Visitor' interface
+    /// The 'Subsystem ClassA' class
     /// </summary>
 
-    public interface IVisitor
+    public class SubSystemOne
     {
-        void Visit(Element element);
-    }
-
-    /// <summary>
-    /// A 'ConcreteVisitor' class
-    /// </summary>
-
-    public class IncomeVisitor : IVisitor
-    {
-        public void Visit(Element element)
+        public void MethodOne()
         {
-            Employee employee = element as Employee;
-
-            // Provide 10% pay raise
-
-            employee.Income *= 1.10;
-
-            Console.WriteLine("{0} {1}'s new income: {2:C}",
-                employee.GetType().Name, employee.Name,
-                employee.Income);
+            Console.WriteLine(" SubSystemOne Method");
         }
     }
 
     /// <summary>
-    /// A 'ConcreteVisitor' class
+    /// The 'Subsystem ClassB' class
     /// </summary>
 
-    public class VacationVisitor : IVisitor
+    public class SubSystemTwo
     {
-        public void Visit(Element element)
+        public void MethodTwo()
         {
-            Employee employee = element as Employee;
-
-            // Provide 3 extra vacation days
-
-            employee.VacationDays += 3;
-
-            Console.WriteLine("{0} {1}'s new vacation days: {2}",
-                employee.GetType().Name, employee.Name,
-                employee.VacationDays);
+            Console.WriteLine(" SubSystemTwo Method");
         }
     }
 
     /// <summary>
-    /// The 'Element' abstract class
+    /// The 'Subsystem ClassC' class
     /// </summary>
 
-    public abstract class Element
+    public class SubSystemThree
     {
-        public abstract void Accept(IVisitor visitor);
+        public void MethodThree()
+        {
+            Console.WriteLine(" SubSystemThree Method");
+        }
     }
 
     /// <summary>
-    /// The 'ConcreteElement' class
+    /// The 'Subsystem ClassD' class
     /// </summary>
 
-    public class Employee : Element
+    public class SubSystemFour
+    {
+        public void MethodFour()
+        {
+            Console.WriteLine(" SubSystemFour Method");
+        }
+    }
+
+    /// <summary>
+    /// The 'Facade' class
+    /// </summary>
+
+    public class Facade
+    {
+        SubSystemOne one;
+        SubSystemTwo two;
+        SubSystemThree three;
+        SubSystemFour four;
+
+        public Facade()
+        {
+            one = new SubSystemOne();
+            two = new SubSystemTwo();
+            three = new SubSystemThree();
+            four = new SubSystemFour();
+        }
+
+        public void MethodA()
+        {
+            Console.WriteLine("\nMethodA() ---- ");
+            one.MethodOne();
+            two.MethodTwo();
+            four.MethodFour();
+        }
+
+        public void MethodB()
+        {
+            Console.WriteLine("\nMethodB() ---- ");
+            two.MethodTwo();
+            three.MethodThree();
+        }
+    }
+    public class Program2
+    {
+        public static void Main(string[] args)
+        {
+            // Facade
+            Mortgage mortgage = new Mortgage();
+            // Evaluate mortgage eligibility for customer
+            Customer customer = new Customer("Ann McKinsey");
+            bool eligible = mortgage.IsEligible(customer, 125000);
+            Console.WriteLine("\n" + customer.Name +
+                    " has been " + (eligible ? "Approved" : "Rejected"));
+            // Wait for user
+            Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassA' class
+    /// </summary>
+    public class Bank
+    {
+        public bool HasSufficientSavings(Customer c, int amount)
+        {
+            Console.WriteLine("Check bank for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassB' class
+    /// </summary>
+    public class Credit
+    {
+        public bool HasGoodCredit(Customer c)
+        {
+            Console.WriteLine("Check credit for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassC' class
+    /// </summary>
+    public class Loan
+    {
+        public bool HasNoBadLoans(Customer c)
+        {
+            Console.WriteLine("Check loans for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// Customer class
+    /// </summary>
+    public class Customer
     {
         private string name;
-        private double income;
-        private int vacationDays;
-
         // Constructor
-
-        public Employee(string name, double income,
-            int vacationDays)
+        public Customer(string name)
         {
             this.name = name;
-            this.income = income;
-            this.vacationDays = vacationDays;
         }
-
         public string Name
         {
             get { return name; }
-            set { name = value; }
-        }
-
-        public double Income
-        {
-            get { return income; }
-            set { income = value; }
-        }
-
-        public int VacationDays
-        {
-            get { return vacationDays; }
-            set { vacationDays = value; }
-        }
-
-        public override void Accept(IVisitor visitor)
-        {
-            visitor.Visit(this);
         }
     }
 
     /// <summary>
-    /// The 'ObjectStructure' class
+    /// The 'Facade' class
     /// </summary>
-
-    public class Employees
+    public class Mortgage
     {
-        private List<Employee> employees = new List<Employee>();
-
-        public void Attach(Employee employee)
+        Bank bank = new Bank();
+        Loan loan = new Loan();
+        Credit credit = new Credit();
+        public bool IsEligible(Customer cust, int amount)
         {
-            employees.Add(employee);
-        }
-
-        public void Detach(Employee employee)
-        {
-            employees.Remove(employee);
-        }
-
-        public void Accept(IVisitor visitor)
-        {
-            foreach (Employee employee in employees)
+            Console.WriteLine("{0} applies for {1:C} loan\n",
+                cust.Name, amount);
+            bool eligible = true;
+            // Check creditworthyness of applicant
+            if (!bank.HasSufficientSavings(cust, amount))
             {
-                employee.Accept(visitor);
+                eligible = false;
             }
-            Console.WriteLine();
+            else if (!loan.HasNoBadLoans(cust))
+            {
+                eligible = false;
+            }
+            else if (!credit.HasGoodCredit(cust))
+            {
+                eligible = false;
+            }
+            return eligible;
         }
     }
 
-    // Three employee types
-
-    public class Clerk : Employee
-    {
-        // Constructor
-
-        public Clerk()
-            : base("Kevin", 25000.0, 14)
-        {
-        }
-    }
-
-    public class Director : Employee
-    {
-        // Constructor
-        public Director()
-            : base("Elly", 35000.0, 16)
-        {
-        }
-    }
-
-    public class President : Employee
-    {
-        // Constructor
-        public President()
-            : base("Eric", 45000.0, 21)
-        {
-        }
-    }
 }
