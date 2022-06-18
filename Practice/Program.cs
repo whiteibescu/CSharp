@@ -1,20 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Design_Pattern
+namespace Composite.RealWorld
 {
-
-    /// Structural code in C#
-    /// Facade Design Pattern
+    /// <summary>
+    /// Composite Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            Facade facade = new Facade();
+            // Create a tree structure 
 
-            facade.MethodA();
-            facade.MethodB();
+            CompositeElement root = new CompositeElement("Picture");
+            root.Add(new PrimitiveElement("Red Line"));
+            root.Add(new PrimitiveElement("Blue Circle"));
+            root.Add(new PrimitiveElement("Green Box"));
+
+            // Create a branch
+
+            CompositeElement comp = new CompositeElement("Two Circles");
+            comp.Add(new PrimitiveElement("Black Circle"));
+            comp.Add(new PrimitiveElement("White Circle"));
+            root.Add(comp);
+
+            // Add and remove a PrimitiveElement
+
+            PrimitiveElement pe = new PrimitiveElement("Yellow Line");
+            root.Add(pe);
+            root.Remove(pe);
+
+            // Recursively display nodes
+
+            root.Display(1);
 
             // Wait for user
 
@@ -23,180 +42,93 @@ namespace Design_Pattern
     }
 
     /// <summary>
-    /// The 'Subsystem ClassA' class
+    /// The 'Component' Treenode
     /// </summary>
 
-    public class SubSystemOne
+    public abstract class DrawingElement
     {
-        public void MethodOne()
-        {
-            Console.WriteLine(" SubSystemOne Method");
-        }
-    }
+        protected string name;
 
-    /// <summary>
-    /// The 'Subsystem ClassB' class
-    /// </summary>
-
-    public class SubSystemTwo
-    {
-        public void MethodTwo()
-        {
-            Console.WriteLine(" SubSystemTwo Method");
-        }
-    }
-
-    /// <summary>
-    /// The 'Subsystem ClassC' class
-    /// </summary>
-
-    public class SubSystemThree
-    {
-        public void MethodThree()
-        {
-            Console.WriteLine(" SubSystemThree Method");
-        }
-    }
-
-    /// <summary>
-    /// The 'Subsystem ClassD' class
-    /// </summary>
-
-    public class SubSystemFour
-    {
-        public void MethodFour()
-        {
-            Console.WriteLine(" SubSystemFour Method");
-        }
-    }
-
-    /// <summary>
-    /// The 'Facade' class
-    /// </summary>
-
-    public class Facade
-    {
-        SubSystemOne one;
-        SubSystemTwo two;
-        SubSystemThree three;
-        SubSystemFour four;
-
-        public Facade()
-        {
-            one = new SubSystemOne();
-            two = new SubSystemTwo();
-            three = new SubSystemThree();
-            four = new SubSystemFour();
-        }
-
-        public void MethodA()
-        {
-            Console.WriteLine("\nMethodA() ---- ");
-            one.MethodOne();
-            two.MethodTwo();
-            four.MethodFour();
-        }
-
-        public void MethodB()
-        {
-            Console.WriteLine("\nMethodB() ---- ");
-            two.MethodTwo();
-            three.MethodThree();
-        }
-    }
-    public class Program2
-    {
-        public static void Main(string[] args)
-        {
-            // Facade
-            Mortgage mortgage = new Mortgage();
-            // Evaluate mortgage eligibility for customer
-            Customer customer = new Customer("Ann McKinsey");
-            bool eligible = mortgage.IsEligible(customer, 125000);
-            Console.WriteLine("\n" + customer.Name +
-                    " has been " + (eligible ? "Approved" : "Rejected"));
-            // Wait for user
-            Console.ReadKey();
-        }
-    }
-    /// <summary>
-    /// The 'Subsystem ClassA' class
-    /// </summary>
-    public class Bank
-    {
-        public bool HasSufficientSavings(Customer c, int amount)
-        {
-            Console.WriteLine("Check bank for " + c.Name);
-            return true;
-        }
-    }
-    /// <summary>
-    /// The 'Subsystem ClassB' class
-    /// </summary>
-    public class Credit
-    {
-        public bool HasGoodCredit(Customer c)
-        {
-            Console.WriteLine("Check credit for " + c.Name);
-            return true;
-        }
-    }
-    /// <summary>
-    /// The 'Subsystem ClassC' class
-    /// </summary>
-    public class Loan
-    {
-        public bool HasNoBadLoans(Customer c)
-        {
-            Console.WriteLine("Check loans for " + c.Name);
-            return true;
-        }
-    }
-    /// <summary>
-    /// Customer class
-    /// </summary>
-    public class Customer
-    {
-        private string name;
         // Constructor
-        public Customer(string name)
+
+        public DrawingElement(string name)
         {
             this.name = name;
         }
-        public string Name
+
+        public abstract void Add(DrawingElement d);
+        public abstract void Remove(DrawingElement d);
+        public abstract void Display(int indent);
+    }
+
+    /// <summary>
+    /// The 'Leaf' class
+    /// </summary>
+
+    public class PrimitiveElement : DrawingElement
+    {
+        // Constructor
+
+        public PrimitiveElement(string name)
+            : base(name)
         {
-            get { return name; }
+        }
+
+        public override void Add(DrawingElement c)
+        {
+            Console.WriteLine(
+                "Cannot add to a PrimitiveElement");
+        }
+
+        public override void Remove(DrawingElement c)
+        {
+            Console.WriteLine(
+                "Cannot remove from a PrimitiveElement");
+        }
+
+        public override void Display(int indent)
+        {
+            Console.WriteLine(
+                new String('-', indent) + " " + name);
         }
     }
 
     /// <summary>
-    /// The 'Facade' class
+    /// The 'Composite' class
     /// </summary>
-    public class Mortgage
+
+    public class CompositeElement : DrawingElement
     {
-        Bank bank = new Bank();
-        Loan loan = new Loan();
-        Credit credit = new Credit();
-        public bool IsEligible(Customer cust, int amount)
+        List<DrawingElement> elements = new List<DrawingElement>();
+
+        // Constructor
+
+        public CompositeElement(string name)
+            : base(name)
         {
-            Console.WriteLine("{0} applies for {1:C} loan\n",
-                cust.Name, amount);
-            bool eligible = true;
-            // Check creditworthyness of applicant
-            if (!bank.HasSufficientSavings(cust, amount))
+        }
+
+        public override void Add(DrawingElement d)
+        {
+            elements.Add(d);
+        }
+
+        public override void Remove(DrawingElement d)
+        {
+            elements.Remove(d);
+        }
+
+        public override void Display(int indent)
+        {
+            Console.WriteLine(new String('-', indent) +
+                "+ " + name);
+
+            // Display each child element on this node
+
+            foreach (DrawingElement d in elements)
             {
-                eligible = false;
+                d.Display(indent + 2);
             }
-            else if (!loan.HasNoBadLoans(cust))
-            {
-                eligible = false;
-            }
-            else if (!credit.HasGoodCredit(cust))
-            {
-                eligible = false;
-            }
-            return eligible;
         }
     }
-
 }
