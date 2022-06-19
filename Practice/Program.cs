@@ -1,133 +1,170 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Composite.RealWorld
+namespace Decorator.RealWorld
 {
     /// <summary>
-    /// Composite Design Pattern
+    /// Decorator Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create a tree structure 
+            // Create book
 
-            CompositeElement root = new CompositeElement("Picture");
-            root.Add(new PrimitiveElement("Red Line"));
-            root.Add(new PrimitiveElement("Blue Circle"));
-            root.Add(new PrimitiveElement("Green Box"));
+            Book book = new Book("Worley", "Inside ASP.NET", 10);
+            book.Display();
 
-            // Create a branch
+            // Create video
 
-            CompositeElement comp = new CompositeElement("Two Circles");
-            comp.Add(new PrimitiveElement("Black Circle"));
-            comp.Add(new PrimitiveElement("White Circle"));
-            root.Add(comp);
+            Video video = new Video("Spielberg", "Jaws", 23, 92);
+            video.Display();
 
-            // Add and remove a PrimitiveElement
+            // Make video borrowable, then borrow and display
 
-            PrimitiveElement pe = new PrimitiveElement("Yellow Line");
-            root.Add(pe);
-            root.Remove(pe);
+            Console.WriteLine("\nMaking video borrowable:");
 
-            // Recursively display nodes
+            Borrowable borrowvideo = new Borrowable(video);
+            borrowvideo.BorrowItem("Customer #1");
+            borrowvideo.BorrowItem("Customer #2");
 
-            root.Display(1);
+            borrowvideo.Display();
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
-
     /// <summary>
-    /// The 'Component' Treenode
+    /// The 'Component' abstract class
     /// </summary>
 
-    public abstract class DrawingElement
+    public abstract class LibraryItem
     {
-        protected string name;
+        private int numCopies;
 
-        // Constructor
-
-        public DrawingElement(string name)
+        public int NumCopies
         {
-            this.name = name;
+            get { return numCopies; }
+            set { numCopies = value; }
         }
 
-        public abstract void Add(DrawingElement d);
-        public abstract void Remove(DrawingElement d);
-        public abstract void Display(int indent);
+        public abstract void Display();
     }
 
     /// <summary>
-    /// The 'Leaf' class
+    /// The 'ConcreteComponent' class
     /// </summary>
 
-    public class PrimitiveElement : DrawingElement
+    public class Book : LibraryItem
     {
+        private string author;
+        private string title;
+
         // Constructor
 
-        public PrimitiveElement(string name)
-            : base(name)
+        public Book(string author, string title, int numCopies)
         {
+            this.author = author;
+            this.title = title;
+            this.NumCopies = numCopies;
         }
 
-        public override void Add(DrawingElement c)
+        public override void Display()
         {
-            Console.WriteLine(
-                "Cannot add to a PrimitiveElement");
-        }
-
-        public override void Remove(DrawingElement c)
-        {
-            Console.WriteLine(
-                "Cannot remove from a PrimitiveElement");
-        }
-
-        public override void Display(int indent)
-        {
-            Console.WriteLine(
-                new String('-', indent) + " " + name);
+            Console.WriteLine("\nBook ------ ");
+            Console.WriteLine(" Author: {0}", author);
+            Console.WriteLine(" Title: {0}", title);
+            Console.WriteLine(" # Copies: {0}", NumCopies);
         }
     }
 
     /// <summary>
-    /// The 'Composite' class
+    /// The 'ConcreteComponent' class
     /// </summary>
 
-    public class CompositeElement : DrawingElement
+    public class Video : LibraryItem
     {
-        List<DrawingElement> elements = new List<DrawingElement>();
+        private string director;
+        private string title;
+        private int playTime;
 
         // Constructor
 
-        public CompositeElement(string name)
-            : base(name)
+        public Video(string director, string title, int numCopies, int playTime)
+        {
+            this.director = director;
+            this.title = title;
+            this.NumCopies = numCopies;
+            this.playTime = playTime;
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine("\nVideo ----- ");
+            Console.WriteLine(" Director: {0}", director);
+            Console.WriteLine(" Title: {0}", title);
+            Console.WriteLine(" # Copies: {0}", NumCopies);
+            Console.WriteLine(" Playtime: {0}\n", playTime);
+        }
+    }
+
+    /// <summary>
+    /// The 'Decorator' abstract class
+    /// </summary>
+
+    public abstract class Decorator : LibraryItem
+    {
+        protected LibraryItem libraryItem;
+
+        // Constructor
+
+        public Decorator(LibraryItem libraryItem)
+        {
+            this.libraryItem = libraryItem;
+        }
+
+        public override void Display()
+        {
+            libraryItem.Display();
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteDecorator' class
+    /// </summary>
+
+    public class Borrowable : Decorator
+    {
+        protected readonly List<string> borrowers = new List<string>();
+
+        // Constructor
+
+        public Borrowable(LibraryItem libraryItem)
+            : base(libraryItem)
         {
         }
 
-        public override void Add(DrawingElement d)
+        public void BorrowItem(string name)
         {
-            elements.Add(d);
+            borrowers.Add(name);
+            libraryItem.NumCopies--;
         }
 
-        public override void Remove(DrawingElement d)
+        public void ReturnItem(string name)
         {
-            elements.Remove(d);
+            borrowers.Remove(name);
+            libraryItem.NumCopies++;
         }
 
-        public override void Display(int indent)
+        public override void Display()
         {
-            Console.WriteLine(new String('-', indent) +
-                "+ " + name);
+            base.Display();
 
-            // Display each child element on this node
-
-            foreach (DrawingElement d in elements)
+            foreach (string borrower in borrowers)
             {
-                d.Display(indent + 2);
+                Console.WriteLine(" borrower: " + borrower);
             }
         }
     }
