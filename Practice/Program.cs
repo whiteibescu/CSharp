@@ -1,287 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
-namespace Command.Structural
+namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
 {
-    /// <summary>
-    /// Command Design Pattern
-    /// </summary>
-
-    public class Program
+    public interface IObserver
     {
-        public static void Main(string[] args)
-        {
-            // Create receiver, command, and invoker
-
-            Receiver receiver = new Receiver();
-            Command command = new ConcreteCommand(receiver);
-            Invoker invoker = new Invoker();
-
-            // Set and execute command
-
-            invoker.SetCommand(command);
-            invoker.ExecuteCommand();
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
+        // Receive update from subject
+        void Update(ISubject subject);
     }
 
-    /// <summary>
-    /// The 'Command' abstract class
-    /// </summary>
-
-    public abstract class Command
+    public interface ISubject
     {
-        protected Receiver receiver;
+        // Attach an observer to the subject.
+        void Attach(IObserver observer);
 
-        // Constructor
+        // Detach an observer from the subject.
+        void Detach(IObserver observer);
 
-        public Command(Receiver receiver)
-        {
-            this.receiver = receiver;
-        }
-
-        public abstract void Execute();
+        // Notify all observers about an event.
+        void Notify();
     }
 
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
-
-    public class ConcreteCommand : Command
+    // The Subject owns some important state and notifies observers when the
+    // state changes.
+    public class Subject : ISubject
     {
-        // Constructor
+        // For the sake of simplicity, the Subject's state, essential to all
+        // subscribers, is stored in this variable.
+        public int State { get; set; } = -0;
 
-        public ConcreteCommand(Receiver receiver) :
-            base(receiver)
+        // List of subscribers. In real life, the list of subscribers can be
+        // stored more comprehensively (categorized by event type, etc.).
+        private List<IObserver> _observers = new List<IObserver>();
+
+        // The subscription management methods.
+        public void Attach(IObserver observer)
         {
+            Console.WriteLine("Subject: Attached an observer.");
+            this._observers.Add(observer);
         }
 
-        public override void Execute()
+        public void Detach(IObserver observer)
         {
-            receiver.Action();
-        }
-    }
-
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Receiver
-    {
-        public void Action()
-        {
-            Console.WriteLine("Called Receiver.Action()");
-        }
-    }
-
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
-
-    public class Invoker
-    {
-        Command command;
-
-        public void SetCommand(Command command)
-        {
-            this.command = command;
+            this._observers.Remove(observer);
+            Console.WriteLine("Subject: Detached an observer.");
         }
 
-        public void ExecuteCommand()
+        // Trigger an update in each subscriber.
+        public void Notify()
         {
-            command.Execute();
-        }
-    }
+            Console.WriteLine("Subject: Notifying observers...");
 
-    /// <summary>
-    /// Command Design Pattern
-    /// </summary>
-
-    public class Program6
-    {
-        public static void Main(string[] args)
-        {
-            // Create user and let her compute
-
-            User user = new User();
-
-            // User presses calculator buttons
-
-            user.Compute('+', 100);
-            user.Compute('-', 50);
-            user.Compute('*', 10);
-            user.Compute('/', 2);
-
-            // Undo 4 commands
-
-            user.Undo(4);
-
-            // Redo 3 commands
-
-            user.Redo(3);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'Command' abstract class
-    /// </summary>
-
-    public abstract class Command
-    {
-        public abstract void Execute();
-        public abstract void UnExecute();
-    }
-
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
-
-    public class CalculatorCommand : Command
-    {
-        char @operator;
-        int operand;
-        Calculator calculator;
-
-        // Constructor
-
-        public CalculatorCommand(Calculator calculator,
-            char @operator, int operand)
-        {
-            this.calculator = calculator;
-            this.@operator = @operator;
-            this.operand = operand;
-        }
-
-        // Gets operator
-
-        public char Operator
-        {
-            set { @operator = value; }
-        }
-
-        // Get operand
-
-        public int Operand
-        {
-            set { operand = value; }
-        }
-
-        // Execute new command
-
-        public override void Execute()
-        {
-            calculator.Operation(@operator, operand);
-        }
-
-        // Unexecute last command
-
-        public override void UnExecute()
-        {
-            calculator.Operation(Undo(@operator), operand);
-        }
-
-        // Returns opposite operator for given operator
-
-        private char Undo(char @operator)
-        {
-            switch (@operator)
+            foreach (var observer in _observers)
             {
-                case '+': return '-';
-                case '-': return '+';
-                case '*': return '/';
-                case '/': return '*';
-                default:
-                    throw new
-             ArgumentException("@operator");
+                observer.Update(this);
+            }
+        }
+
+        // Usually, the subscription logic is only a fraction of what a Subject
+        // can really do. Subjects commonly hold some important business logic,
+        // that triggers a notification method whenever something important is
+        // about to happen (or after it).
+        public void SomeBusinessLogic()
+        {
+            Console.WriteLine("\nSubject: I'm doing something important.");
+            this.State = new Random().Next(0, 10);
+
+            Thread.Sleep(15);
+
+            Console.WriteLine("Subject: My state has just changed to: " + this.State);
+            this.Notify();
+        }
+    }
+
+    // Concrete Observers react to the updates issued by the Subject they had
+    // been attached to.
+    class ConcreteObserverA : IObserver
+    {
+        public void Update(ISubject subject)
+        {
+            if ((subject as Subject).State < 3)
+            {
+                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
             }
         }
     }
 
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Calculator
+    class ConcreteObserverB : IObserver
     {
-        int curr = 0;
-
-        public void Operation(char @operator, int operand)
+        public void Update(ISubject subject)
         {
-            switch (@operator)
+            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
             {
-                case '+': curr += operand; break;
-                case '-': curr -= operand; break;
-                case '*': curr *= operand; break;
-                case '/': curr /= operand; break;
+                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
             }
-            Console.WriteLine(
-                "Current value = {0,3} (following {1} {2})",
-                curr, @operator, operand);
         }
     }
 
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
-
-    public class User
+    class Program
     {
-        // Initializers
-
-        Calculator calculator = new Calculator();
-        List<Command> commands = new List<Command>();
-        int current = 0;
-
-        public void Redo(int levels)
+        static void Main(string[] args)
         {
-            Console.WriteLine("\n---- Redo {0} levels ", levels);
-            // Perform redo operations
-            for (int i = 0; i < levels; i++)
-            {
-                if (current < commands.Count - 1)
-                {
-                    Command command = commands[current++];
-                    command.Execute();
-                }
-            }
+            // The client code.
+            var subject = new Subject();
+            var observerA = new ConcreteObserverA();
+            subject.Attach(observerA);
+
+            var observerB = new ConcreteObserverB();
+            subject.Attach(observerB);
+
+            subject.SomeBusinessLogic();
+            subject.SomeBusinessLogic();
+
+            subject.Detach(observerB);
+
+            subject.SomeBusinessLogic();
         }
-
-        public void Undo(int levels)
-        {
-            Console.WriteLine("\n---- Undo {0} levels ", levels);
-
-            // Perform undo operations
-
-            for (int i = 0; i < levels; i++)
-            {
-                if (current > 0)
-                {
-                    Command command = commands[--current] as Command;
-                    command.UnExecute();
-                }
-            }
-        }
-
-        public void Compute(char @operator, int operand)
-        {
-            // Create command operation and execute it
-
-            Command command = new CalculatorCommand(calculator, @operator, operand);
-            command.Execute();
-
-            // Add command to undo list
-
-            commands.Add(command);
-            current++;
-        }
-
-
     }
 }
