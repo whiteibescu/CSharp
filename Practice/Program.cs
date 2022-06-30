@@ -1,121 +1,266 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
 
-namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
+namespace Chain.Structural
 {
-    public interface IObserver
+    /// <summary>
+    /// Chain of Responsibility Design Pattern
+    /// </summary>
+
+    public class Program
     {
-        // Receive update from subject
-        void Update(ISubject subject);
-    }
-
-    public interface ISubject
-    {
-        // Attach an observer to the subject.
-        void Attach(IObserver observer);
-
-        // Detach an observer from the subject.
-        void Detach(IObserver observer);
-
-        // Notify all observers about an event.
-        void Notify();
-    }
-
-    // The Subject owns some important state and notifies observers when the
-    // state changes.
-    public class Subject : ISubject
-    {
-        // For the sake of simplicity, the Subject's state, essential to all
-        // subscribers, is stored in this variable.
-        public int State { get; set; } = -0;
-
-        // List of subscribers. In real life, the list of subscribers can be
-        // stored more comprehensively (categorized by event type, etc.).
-        private List<IObserver> _observers = new List<IObserver>();
-
-        // The subscription management methods.
-        public void Attach(IObserver observer)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Subject: Attached an observer.");
-            this._observers.Add(observer);
-        }
+            // Setup Chain of Responsibility
 
-        public void Detach(IObserver observer)
-        {
-            this._observers.Remove(observer);
-            Console.WriteLine("Subject: Detached an observer.");
-        }
+            Handler h1 = new ConcreteHandler1();
+            Handler h2 = new ConcreteHandler2();
+            Handler h3 = new ConcreteHandler3();
+            h1.SetSuccessor(h2);
+            h2.SetSuccessor(h3);
 
-        // Trigger an update in each subscriber.
-        public void Notify()
-        {
-            Console.WriteLine("Subject: Notifying observers...");
+            // Generate and process request
 
-            foreach (var observer in _observers)
+            int[] requests = { 2, 5, 14, 22, 18, 3, 27, 20 };
+
+            foreach (int request in requests)
             {
-                observer.Update(this);
+                h1.HandleRequest(request);
             }
-        }
 
-        // Usually, the subscription logic is only a fraction of what a Subject
-        // can really do. Subjects commonly hold some important business logic,
-        // that triggers a notification method whenever something important is
-        // about to happen (or after it).
-        public void SomeBusinessLogic()
-        {
-            Console.WriteLine("\nSubject: I'm doing something important.");
-            this.State = new Random().Next(0, 10);
+            // Wait for user
 
-            Thread.Sleep(15);
-
-            Console.WriteLine("Subject: My state has just changed to: " + this.State);
-            this.Notify();
+            Console.ReadKey();
         }
     }
+    /// <summary>
+    /// The 'Handler' abstract class
+    /// </summary>
 
-    // Concrete Observers react to the updates issued by the Subject they had
-    // been attached to.
-    class ConcreteObserverA : IObserver
+    public abstract class Handler
     {
-        public void Update(ISubject subject)
+        protected Handler successor;
+
+        public void SetSuccessor(Handler successor)
         {
-            if ((subject as Subject).State < 3)
+            this.successor = successor;
+        }
+
+        public abstract void HandleRequest(int request);
+    }
+
+    /// <summary>
+    /// The 'ConcreteHandler1' class
+    /// </summary>
+
+    public class ConcreteHandler1 : Handler
+    {
+        public override void HandleRequest(int request)
+        {
+            if (request >= 0 && request < 10)
             {
-                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
+                Console.WriteLine("{0} handled request {1}",
+                    this.GetType().Name, request);
+            }
+            else if (successor != null)
+            {
+                successor.HandleRequest(request);
             }
         }
     }
 
-    class ConcreteObserverB : IObserver
+    /// <summary>
+    /// The 'ConcreteHandler2' class
+    /// </summary>
+
+    public class ConcreteHandler2 : Handler
     {
-        public void Update(ISubject subject)
+        public override void HandleRequest(int request)
         {
-            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
+            if (request >= 10 && request < 20)
             {
-                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
+                Console.WriteLine("{0} handled request {1}",
+                    this.GetType().Name, request);
+            }
+            else if (successor != null)
+            {
+                successor.HandleRequest(request);
             }
         }
     }
 
-    class Program
+    /// <summary>
+    /// The 'ConcreteHandler3' class
+    /// </summary>
+
+    public class ConcreteHandler3 : Handler
     {
-        static void Main(string[] args)
+        public override void HandleRequest(int request)
         {
-            // The client code.
-            var subject = new Subject();
-            var observerA = new ConcreteObserverA();
-            subject.Attach(observerA);
-
-            var observerB = new ConcreteObserverB();
-            subject.Attach(observerB);
-
-            subject.SomeBusinessLogic();
-            subject.SomeBusinessLogic();
-
-            subject.Detach(observerB);
-
-            subject.SomeBusinessLogic();
+            if (request >= 20 && request < 30)
+            {
+                Console.WriteLine("{0} handled request {1}",
+                    this.GetType().Name, request);
+            }
+            else if (successor != null)
+            {
+                successor.HandleRequest(request);
+            }
         }
     }
+
+    /// <summary>
+    /// Chain of Responsibility Design Pattern
+    /// </summary>
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Setup Chain of Responsibility
+
+            Approver larry = new Director();
+            Approver sam = new VicePresident();
+            Approver tammy = new President();
+
+            larry.SetSuccessor(sam);
+            sam.SetSuccessor(tammy);
+
+            // Generate and process purchase requests
+
+            Purchase p = new Purchase(2034, 350.00, "Supplies");
+            larry.ProcessRequest(p);
+
+            p = new Purchase(2035, 32590.10, "Project X");
+            larry.ProcessRequest(p);
+
+            p = new Purchase(2036, 122100.00, "Project Y");
+            larry.ProcessRequest(p);
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// The 'Handler' abstract class
+    /// </summary>
+
+    public abstract class Approver
+    {
+        protected Approver successor;
+
+        public void SetSuccessor(Approver successor)
+        {
+            this.successor = successor;
+        }
+
+        public abstract void ProcessRequest(Purchase purchase);
+    }
+
+    /// <summary>
+    /// The 'ConcreteHandler' class
+    /// </summary>
+
+    public class Director : Approver
+    {
+        public override void ProcessRequest(Purchase purchase)
+        {
+            if (purchase.Amount < 10000.0)
+            {
+                Console.WriteLine("{0} approved request# {1}",
+                    this.GetType().Name, purchase.Number);
+            }
+            else if (successor != null)
+            {
+                successor.ProcessRequest(purchase);
+            }
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteHandler' class
+    /// </summary>
+
+    public class VicePresident : Approver
+    {
+        public override void ProcessRequest(Purchase purchase)
+        {
+            if (purchase.Amount < 25000.0)
+            {
+                Console.WriteLine("{0} approved request# {1}",
+                    this.GetType().Name, purchase.Number);
+            }
+            else if (successor != null)
+            {
+                successor.ProcessRequest(purchase);
+            }
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteHandler' class
+    /// </summary>
+
+    public class President : Approver
+    {
+        public override void ProcessRequest(Purchase purchase)
+        {
+            if (purchase.Amount < 100000.0)
+            {
+                Console.WriteLine("{0} approved request# {1}",
+                    this.GetType().Name, purchase.Number);
+            }
+            else
+            {
+                Console.WriteLine(
+                    "Request# {0} requires an executive meeting!",
+                    purchase.Number);
+            }
+        }
+    }
+
+    /// Real Live
+    /// Class holding request details
+    /// </summary>
+
+    public class Purchase
+    {
+        int number;
+        double amount;
+        string purpose;
+
+        // Constructor
+
+        public Purchase(int number, double amount, string purpose)
+        {
+            this.number = number;
+            this.amount = amount;
+            this.purpose = purpose;
+        }
+
+        // Gets or sets purchase number
+
+        public int Number
+        {
+            get { return number; }
+            set { number = value; }
+        }
+
+        // Gets or sets purchase amount
+
+        public double Amount
+        {
+            get { return amount; }
+            set { amount = value; }
+        }
+
+        // Gets or sets purchase purpose
+
+        public string Purpose
+        {
+            get { return purpose; }
+            set { purpose = value; }
+        }
+    }
+
 }
