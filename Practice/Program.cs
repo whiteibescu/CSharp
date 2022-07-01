@@ -1,121 +1,141 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
 
-namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
+namespace Proxy.Structural
 {
-    public interface IObserver
+    /// <summary>
+    /// Proxy Design Pattern
+    /// </summary>
+
+    public class Program
     {
-        // Receive update from subject
-        void Update(ISubject subject);
+        public static void Main(string[] args)
+        {
+            // Create proxy and request a service
+
+            Proxy proxy = new Proxy();
+            proxy.Request();
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
     }
 
-    public interface ISubject
+    /// <summary>
+    /// The 'Subject' abstract class
+    /// </summary>
+
+    public abstract class Subject
     {
-        // Attach an observer to the subject.
-        void Attach(IObserver observer);
-
-        // Detach an observer from the subject.
-        void Detach(IObserver observer);
-
-        // Notify all observers about an event.
-        void Notify();
+        public abstract void Request();
     }
 
-    // The Subject owns some important state and notifies observers when the
-    // state changes.
-    public class Subject : ISubject
+    /// <summary>
+    /// The 'RealSubject' class
+    /// </summary>
+
+    public class RealSubject : Subject
     {
-        // For the sake of simplicity, the Subject's state, essential to all
-        // subscribers, is stored in this variable.
-        public int State { get; set; } = -0;
-
-        // List of subscribers. In real life, the list of subscribers can be
-        // stored more comprehensively (categorized by event type, etc.).
-        private List<IObserver> _observers = new List<IObserver>();
-
-        // The subscription management methods.
-        public void Attach(IObserver observer)
+        public override void Request()
         {
-            Console.WriteLine("Subject: Attached an observer.");
-            this._observers.Add(observer);
+            Console.WriteLine("Called RealSubject.Request()");
         }
+    }
 
-        public void Detach(IObserver observer)
+    /// <summary>
+    /// The 'Proxy' class
+    /// </summary>
+
+    public class Proxy : Subject
+    {
+        private RealSubject realSubject;
+
+        public override void Request()
         {
-            this._observers.Remove(observer);
-            Console.WriteLine("Subject: Detached an observer.");
-        }
+            // Use 'lazy initialization'
 
-        // Trigger an update in each subscriber.
-        public void Notify()
-        {
-            Console.WriteLine("Subject: Notifying observers...");
-
-            foreach (var observer in _observers)
+            if (realSubject == null)
             {
-                observer.Update(this);
+                realSubject = new RealSubject();
             }
-        }
 
-        // Usually, the subscription logic is only a fraction of what a Subject
-        // can really do. Subjects commonly hold some important business logic,
-        // that triggers a notification method whenever something important is
-        // about to happen (or after it).
-        public void SomeBusinessLogic()
-        {
-            Console.WriteLine("\nSubject: I'm doing something important.");
-            this.State = new Random().Next(0, 10);
-
-            Thread.Sleep(15);
-
-            Console.WriteLine("Subject: My state has just changed to: " + this.State);
-            this.Notify();
+            realSubject.Request();
         }
     }
 
-    // Concrete Observers react to the updates issued by the Subject they had
-    // been attached to.
-    class ConcreteObserverA : IObserver
+    /// Real Live 
+    /// Proxy Design Pattern
+    /// </summary>
+
+    public class Program5
     {
-        public void Update(ISubject subject)
+        public static void Main(string[] args)
         {
-            if ((subject as Subject).State < 3)
-            {
-                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
-            }
+            // Create math proxy
+
+            MathProxy proxy = new MathProxy();
+
+            // Do the math
+
+            Console.WriteLine("4 + 2 = " + proxy.Add(4, 2));
+            Console.WriteLine("4 - 2 = " + proxy.Sub(4, 2));
+            Console.WriteLine("4 * 2 = " + proxy.Mul(4, 2));
+            Console.WriteLine("4 / 2 = " + proxy.Div(4, 2));
+
+            // Wait for user
+
+            Console.ReadKey();
         }
     }
 
-    class ConcreteObserverB : IObserver
+    /// <summary>
+    /// The 'Subject interface
+    /// </summary>
+
+    public interface IMath
     {
-        public void Update(ISubject subject)
-        {
-            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
-            {
-                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
-            }
-        }
+        double Add(double x, double y);
+        double Sub(double x, double y);
+        double Mul(double x, double y);
+        double Div(double x, double y);
     }
 
-    class Program
+    /// <summary>
+    /// The 'RealSubject' class
+    /// </summary>
+
+    public class Math : IMath
     {
-        static void Main(string[] args)
+        public double Add(double x, double y) { return x + y; }
+        public double Sub(double x, double y) { return x - y; }
+        public double Mul(double x, double y) { return x * y; }
+        public double Div(double x, double y) { return x / y; }
+    }
+
+    /// <summary>
+    /// The 'Proxy Object' class
+    /// </summary>
+
+    public class MathProxy : IMath
+    {
+        private Math math = new Math();
+
+        public double Add(double x, double y)
         {
-            // The client code.
-            var subject = new Subject();
-            var observerA = new ConcreteObserverA();
-            subject.Attach(observerA);
-
-            var observerB = new ConcreteObserverB();
-            subject.Attach(observerB);
-
-            subject.SomeBusinessLogic();
-            subject.SomeBusinessLogic();
-
-            subject.Detach(observerB);
-
-            subject.SomeBusinessLogic();
+            return math.Add(x, y);
+        }
+        public double Sub(double x, double y)
+        {
+            return math.Sub(x, y);
+        }
+        public double Mul(double x, double y)
+        {
+            return math.Mul(x, y);
+        }
+        public double Div(double x, double y)
+        {
+            return math.Div(x, y);
         }
     }
 }
+
