@@ -1,90 +1,191 @@
 ﻿using System;
+using System.Collections.Generic;
 
-
-namespace Memento.Structural
+namespace Visitor.RealWorld
 {
     /// <summary>
-    /// Memento Design Pattern
+    /// Visitor Design Pattern
     /// </summary>
+
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Originator o = new Originator();
-            o.State = "On";
+            // Setup employee collection
 
-            Caretaker c = new Caretaker();
-            c.Memento = o.CreateMemento();
+            Employees employee = new Employees();
+            employee.Attach(new Clerk());
+            employee.Attach(new Director());
+            employee.Attach(new President());
 
-            o.State = "Off";
+            // Employees are 'visited'
 
-            o.SetMemento(c.Memento);
+            employee.Accept(new IncomeVisitor());
+            employee.Accept(new VacationVisitor());
+
+            // Wait for user
 
             Console.ReadKey();
-
         }
     }
 
     /// <summary>
-    /// The 'Originator' class
+    /// The 'Visitor' interface
     /// </summary>
 
-    public class Originator
+    public interface IVisitor
     {
-        string state;
+        void Visit(Element element);
+    }
 
-        public string State
+    /// <summary>
+    /// A 'ConcreteVisitor' class
+    /// </summary>
+
+    public class IncomeVisitor : IVisitor
+    {
+        public void Visit(Element element)
         {
-            get { return state; }
-            set
+            Employee employee = element as Employee;
+
+            // Provide 10% pay raise
+
+            employee.Income *= 1.10;
+
+            Console.WriteLine("{0} {1}'s new income: {2:C}",
+                employee.GetType().Name, employee.Name,
+                employee.Income);
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteVisitor' class
+    /// </summary>
+
+    public class VacationVisitor : IVisitor
+    {
+        public void Visit(Element element)
+        {
+            Employee employee = element as Employee;
+
+            // Provide 3 extra vacation days
+
+            employee.VacationDays += 3;
+
+            Console.WriteLine("{0} {1}'s new vacation days: {2}",
+                employee.GetType().Name, employee.Name,
+                employee.VacationDays);
+        }
+    }
+
+    /// <summary>
+    /// The 'Element' abstract class
+    /// </summary>
+
+    public abstract class Element
+    {
+        public abstract void Accept(IVisitor visitor);
+    }
+
+    /// <summary>
+    /// The 'ConcreteElement' class
+    /// </summary>
+
+    public class Employee : Element
+    {
+        private string name;
+        private double income;
+        private int vacationDays;
+
+        // Constructor
+
+        public Employee(string name, double income,
+            int vacationDays)
+        {
+            this.name = name;
+            this.income = income;
+            this.vacationDays = vacationDays;
+        }
+
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        public double Income
+        {
+            get { return income; }
+            set { income = value; }
+        }
+
+        public int VacationDays
+        {
+            get { return vacationDays; }
+            set { vacationDays = value; }
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+    }
+
+    /// <summary>
+    /// The 'ObjectStructure' class
+    /// </summary>
+
+    public class Employees
+    {
+        private List<Employee> employees = new List<Employee>();
+
+        public void Attach(Employee employee)
+        {
+            employees.Add(employee);
+        }
+
+        public void Detach(Employee employee)
+        {
+            employees.Remove(employee);
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            foreach (Employee employee in employees)
             {
-                state = value;
-                Console.WriteLine("Satate = " + state);
+                employee.Accept(visitor);
             }
-        }
-
-        public Memento CreateMemento()
-        {
-            return (new Memento(state));
-        }
-
-        public void SetMemento(Memento memento)
-        {
-            Console.WriteLine("Restoring state...");
-            State = memento.State;
-        }
-    }
-    /// <summary>
-    /// The 'Memento' class
-    /// </summary>
-    public class Memento
-    {
-        string state;
-
-        public Memento(string state)
-        {
-            this.state = state;
-        }
-
-        public string State
-        {
-            get { return state; }
+            Console.WriteLine();
         }
     }
 
-    /// <summary>
-    /// The 'Caretaker' class
-    /// </summary>
+    // Three employee types
 
-
-    public class Caretaker
+    public class Clerk : Employee
     {
-        Memento memento;
+        // Constructor
 
-        public Memento Memento
+        public Clerk()
+            : base("Kevin", 25000.0, 14)
         {
-            set { memento = value; }
-            get { return memento; }
+        }
+    }
+
+    public class Director : Employee
+    {
+        // Constructor
+        public Director()
+            : base("Elly", 35000.0, 16)
+        {
+        }
+    }
+
+    public class President : Employee
+    {
+        // Constructor
+        public President()
+            : base("Eric", 45000.0, 21)
+        {
         }
     }
 }
