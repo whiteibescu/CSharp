@@ -1,171 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
-namespace Decorator.RealWorld
+namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
 {
-    /// <summary>
-    /// Decorator Design Pattern
-    /// </summary>
-
-    public class Program
+    public interface IObserver
     {
-        public static void Main(string[] args)
-        {
-            // Create book
-
-            Book book = new Book("Worley", "Inside ASP.NET", 10);
-            book.Display();
-
-            // Create video
-
-            Video video = new Video("Spielberg", "Jaws", 23, 92);
-            video.Display();
-
-            // Make video borrowable, then borrow and display
-
-            Console.WriteLine("\nMaking video borrowable:");
-
-            Borrowable borrowvideo = new Borrowable(video);
-            borrowvideo.BorrowItem("Customer #1");
-            borrowvideo.BorrowItem("Customer #2");
-
-            borrowvideo.Display();
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-    /// <summary>
-    /// The 'Component' abstract class
-    /// </summary>
-
-    public abstract class LibraryItem
-    {
-        private int numCopies;
-
-        public int NumCopies
-        {
-            get { return numCopies; }
-            set { numCopies = value; }
-        }
-
-        public abstract void Display();
+        // Receive update from subject
+        void Update(ISubject subject);
     }
 
-    /// <summary>
-    /// The 'ConcreteComponent' class
-    /// </summary>
-
-    public class Book : LibraryItem
+    public interface ISubject
     {
-        private string author;
-        private string title;
+        // Attach an observer to the subject.
+        void Attach(IObserver observer);
 
-        // Constructor
+        // Detach an observer from the subject.
+        void Detach(IObserver observer);
 
-        public Book(string author, string title, int numCopies)
-        {
-            this.author = author;
-            this.title = title;
-            this.NumCopies = numCopies;
-        }
-
-        public override void Display()
-        {
-            Console.WriteLine("\nBook ------ ");
-            Console.WriteLine(" Author: {0}", author);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
-        }
+        // Notify all observers about an event.
+        void Notify();
     }
 
-    /// <summary>
-    /// The 'ConcreteComponent' class
-    /// </summary>
-
-    public class Video : LibraryItem
+    // The Subject owns some important state and notifies observers when the
+    // state changes.
+    public class Subject : ISubject
     {
-        private string director;
-        private string title;
-        private int playTime;
+        // For the sake of simplicity, the Subject's state, essential to all
+        // subscribers, is stored in this variable.
+        public int State { get; set; } = -0;
 
-        // Constructor
+        // List of subscribers. In real life, the list of subscribers can be
+        // stored more comprehensively (categorized by event type, etc.).
+        private List<IObserver> _observers = new List<IObserver>();
 
-        public Video(string director, string title, int numCopies, int playTime)
+        // The subscription management methods.
+        public void Attach(IObserver observer)
         {
-            this.director = director;
-            this.title = title;
-            this.NumCopies = numCopies;
-            this.playTime = playTime;
+            Console.WriteLine("Subject: Attached an observer.");
+            this._observers.Add(observer);
         }
 
-        public override void Display()
+        public void Detach(IObserver observer)
         {
-            Console.WriteLine("\nVideo ----- ");
-            Console.WriteLine(" Director: {0}", director);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
-            Console.WriteLine(" Playtime: {0}\n", playTime);
-        }
-    }
-
-    /// <summary>
-    /// The 'Decorator' abstract class
-    /// </summary>
-
-    public abstract class Decorator : LibraryItem
-    {
-        protected LibraryItem libraryItem;
-
-        // Constructor
-
-        public Decorator(LibraryItem libraryItem)
-        {
-            this.libraryItem = libraryItem;
+            this._observers.Remove(observer);
+            Console.WriteLine("Subject: Detached an observer.");
         }
 
-        public override void Display()
+        // Trigger an update in each subscriber.
+        public void Notify()
         {
-            libraryItem.Display();
-        }
-    }
+            Console.WriteLine("Subject: Notifying observers...");
 
-    /// <summary>
-    /// The 'ConcreteDecorator' class
-    /// </summary>
-
-    public class Borrowable : Decorator
-    {
-        protected readonly List<string> borrowers = new List<string>();
-
-        // Constructor
-
-        public Borrowable(LibraryItem libraryItem)
-            : base(libraryItem)
-        {
-        }
-
-        public void BorrowItem(string name)
-        {
-            borrowers.Add(name);
-            libraryItem.NumCopies--;
-        }
-
-        public void ReturnItem(string name)
-        {
-            borrowers.Remove(name);
-            libraryItem.NumCopies++;
-        }
-
-        public override void Display()
-        {
-            base.Display();
-
-            foreach (string borrower in borrowers)
+            foreach (var observer in _observers)
             {
-                Console.WriteLine(" borrower: " + borrower);
+                observer.Update(this);
             }
+        }
+
+        // Usually, the subscription logic is only a fraction of what a Subject
+        // can really do. Subjects commonly hold some important business logic,
+        // that triggers a notification method whenever something important is
+        // about to happen (or after it).
+        public void SomeBusinessLogic()
+        {
+            Console.WriteLine("\nSubject: I'm doing something important.");
+            this.State = new Random().Next(0, 10);
+
+            Thread.Sleep(15);
+
+            Console.WriteLine("Subject: My state has just changed to: " + this.State);
+            this.Notify();
+        }
+    }
+
+    // Concrete Observers react to the updates issued by the Subject they had
+    // been attached to.
+    class ConcreteObserverA : IObserver
+    {
+        public void Update(ISubject subject)
+        {
+            if ((subject as Subject).State < 3)
+            {
+                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
+            }
+        }
+    }
+
+    class ConcreteObserverB : IObserver
+    {
+        public void Update(ISubject subject)
+        {
+            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
+            {
+                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
+            }
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // The client code.
+            var subject = new Subject();
+            var observerA = new ConcreteObserverA();
+            subject.Attach(observerA);
+
+            var observerB = new ConcreteObserverB();
+            subject.Attach(observerB);
+
+            subject.SomeBusinessLogic();
+            subject.SomeBusinessLogic();
+
+            subject.Detach(observerB);
+
+            subject.SomeBusinessLogic();
         }
     }
 }
