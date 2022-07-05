@@ -1,191 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
+namespace Factory
 
-namespace Visitor.RealWorld
 {
-    /// <summary>
-    /// Visitor Design Pattern
-    /// </summary>
-
-    public class Program
+    public interface IFactory
     {
-        public static void Main(string[] args)
+        void Drive(int miles);
+    }
+
+    public class Scooter : IFactory
+    {
+        public void Drive(int miles)
         {
-            // Setup employee collection
+            Console.WriteLine("Drive the Scooter : " + miles.ToString() + "km");
+        }
+    }
 
-            Employees employee = new Employees();
-            employee.Attach(new Clerk());
-            employee.Attach(new Director());
-            employee.Attach(new President());
+    public class Bike : IFactory
+    {
+        public void Drive(int miles)
+        {
+            Console.WriteLine("Drive the Bike : " + miles.ToString() + "km");
+        }
+    }
 
-            // Employees are 'visited'
+    public abstract class VehicleFactory
+    {
+        public abstract IFactory GetVehicle(string Vehicle);
 
-            employee.Accept(new IncomeVisitor());
-            employee.Accept(new VacationVisitor());
+    }
 
-            // Wait for user
+    public class ConcreteVehicleFacotry : VehicleFactory
+    {
+        public override IFactory GetVehicle(string Vehicle)
+        {
+            switch(Vehicle)
+            {
+                case "Scooter":
+                    return new Scooter();
+                case "Bike":
+                    return new Bike();
+                default:
+                    throw new ApplicationException(string.Format("Vehicle '{0}' cannot be created", Vehicle));
+            }
+
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            VehicleFactory factory = new ConcreteVehicleFacotry();
+
+            IFactory scooter = factory.GetVehicle("Scooter");
+            scooter.Drive(10);
+
+            IFactory bike = factory.GetVehicle("Bike");
+            bike.Drive(10);
 
             Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'Visitor' interface
-    /// </summary>
-
-    public interface IVisitor
-    {
-        void Visit(Element element);
-    }
-
-    /// <summary>
-    /// A 'ConcreteVisitor' class
-    /// </summary>
-
-    public class IncomeVisitor : IVisitor
-    {
-        public void Visit(Element element)
-        {
-            Employee employee = element as Employee;
-
-            // Provide 10% pay raise
-
-            employee.Income *= 1.10;
-
-            Console.WriteLine("{0} {1}'s new income: {2:C}",
-                employee.GetType().Name, employee.Name,
-                employee.Income);
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteVisitor' class
-    /// </summary>
-
-    public class VacationVisitor : IVisitor
-    {
-        public void Visit(Element element)
-        {
-            Employee employee = element as Employee;
-
-            // Provide 3 extra vacation days
-
-            employee.VacationDays += 3;
-
-            Console.WriteLine("{0} {1}'s new vacation days: {2}",
-                employee.GetType().Name, employee.Name,
-                employee.VacationDays);
-        }
-    }
-
-    /// <summary>
-    /// The 'Element' abstract class
-    /// </summary>
-
-    public abstract class Element
-    {
-        public abstract void Accept(IVisitor visitor);
-    }
-
-    /// <summary>
-    /// The 'ConcreteElement' class
-    /// </summary>
-
-    public class Employee : Element
-    {
-        private string name;
-        private double income;
-        private int vacationDays;
-
-        // Constructor
-
-        public Employee(string name, double income,
-            int vacationDays)
-        {
-            this.name = name;
-            this.income = income;
-            this.vacationDays = vacationDays;
-        }
-
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public double Income
-        {
-            get { return income; }
-            set { income = value; }
-        }
-
-        public int VacationDays
-        {
-            get { return vacationDays; }
-            set { vacationDays = value; }
-        }
-
-        public override void Accept(IVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-    }
-
-    /// <summary>
-    /// The 'ObjectStructure' class
-    /// </summary>
-
-    public class Employees
-    {
-        private List<Employee> employees = new List<Employee>();
-
-        public void Attach(Employee employee)
-        {
-            employees.Add(employee);
-        }
-
-        public void Detach(Employee employee)
-        {
-            employees.Remove(employee);
-        }
-
-        public void Accept(IVisitor visitor)
-        {
-            foreach (Employee employee in employees)
-            {
-                employee.Accept(visitor);
-            }
-            Console.WriteLine();
-        }
-    }
-
-    // Three employee types
-
-    public class Clerk : Employee
-    {
-        // Constructor
-
-        public Clerk()
-            : base("Kevin", 25000.0, 14)
-        {
-        }
-    }
-
-    public class Director : Employee
-    {
-        // Constructor
-        public Director()
-            : base("Elly", 35000.0, 16)
-        {
-        }
-    }
-
-    public class President : Employee
-    {
-        // Constructor
-        public President()
-            : base("Eric", 45000.0, 21)
-        {
         }
     }
 }
