@@ -1,82 +1,141 @@
 ﻿using System;
-namespace Factory
+
+namespace Proxy.Structural
 {
     /// <summary>
-    /// The 'Product' interface
+    /// Proxy Design Pattern
     /// </summary>
-    public interface IFactory
-    {
-        void Drive(int miles);
-    }
 
-    /// <summary>
-    /// A 'ConcreteProduct' class
-    /// </summary>
-    public class Scooter : IFactory
+    public class Program
     {
-        public void Drive(int miles)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Drive the Scooter : " + miles.ToString() + "km");
-        }
-    }
+            // Create proxy and request a service
 
-    /// <summary>
-    /// A 'ConcreteProduct' class
-    /// </summary>
-    public class Bike : IFactory
-    {
-        public void Drive(int miles)
-        {
-            Console.WriteLine("Drive the Bike : " + miles.ToString() + "km");
-        }
-    }
+            Proxy proxy = new Proxy();
+            proxy.Request();
 
-    /// <summary>
-    /// The Creator Abstract Class
-    /// </summary>
-    public abstract class VehicleFactory
-    {
-        public abstract IFactory GetVehicle(string Vehicle);
-
-    }
-
-    /// <summary>
-    /// A 'ConcreteCreator' class
-    /// </summary>
-    public class ConcreteVehicleFactory : VehicleFactory
-    {
-        public override IFactory GetVehicle(string Vehicle)
-        {
-            switch (Vehicle)
-            {
-                case "Scooter":
-                    return new Scooter();
-                case "Bike":
-                    return new Bike();
-                default:
-                    throw new ApplicationException(string.Format("Vehicle '{0}' cannot be created", Vehicle));
-            }
-        }
-
-    }
-
-    /// <summary>
-    /// Factory Pattern Demo
-    /// </summary>
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            VehicleFactory factory = new ConcreteVehicleFactory();
-
-            IFactory scooter = factory.GetVehicle("Scooter");
-            scooter.Drive(10);
-
-            IFactory bike = factory.GetVehicle("Bike");
-            bike.Drive(20);
+            // Wait for user
 
             Console.ReadKey();
+        }
+    }
 
+    /// <summary>
+    /// The 'Subject' abstract class
+    /// </summary>
+
+    public abstract class Subject
+    {
+        public abstract void Request();
+    }
+
+    /// <summary>
+    /// The 'RealSubject' class
+    /// </summary>
+
+    public class RealSubject : Subject
+    {
+        public override void Request()
+        {
+            Console.WriteLine("Called RealSubject.Request()");
+        }
+    }
+
+    /// <summary>
+    /// The 'Proxy' class
+    /// </summary>
+
+    public class Proxy : Subject
+    {
+        private RealSubject realSubject;
+
+        public override void Request()
+        {
+            // Use 'lazy initialization'
+
+            if (realSubject == null)
+            {
+                realSubject = new RealSubject();
+            }
+
+            realSubject.Request();
+        }
+    }
+
+    /// Real Live 
+    /// Proxy Design Pattern
+    /// </summary>
+
+    public class Program5
+    {
+        public static void Main(string[] args)
+        {
+            // Create math proxy
+
+            MathProxy proxy = new MathProxy();
+
+            // Do the math
+
+            Console.WriteLine("4 + 2 = " + proxy.Add(4, 2));
+            Console.WriteLine("4 - 2 = " + proxy.Sub(4, 2));
+            Console.WriteLine("4 * 2 = " + proxy.Mul(4, 2));
+            Console.WriteLine("4 / 2 = " + proxy.Div(4, 2));
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
+    /// The 'Subject interface
+    /// </summary>
+
+    public interface IMath
+    {
+        double Add(double x, double y);
+        double Sub(double x, double y);
+        double Mul(double x, double y);
+        double Div(double x, double y);
+    }
+
+    /// <summary>
+    /// The 'RealSubject' class
+    /// </summary>
+
+    public class Math : IMath
+    {
+        public double Add(double x, double y) { return x + y; }
+        public double Sub(double x, double y) { return x - y; }
+        public double Mul(double x, double y) { return x * y; }
+        public double Div(double x, double y) { return x / y; }
+    }
+
+    /// <summary>
+    /// The 'Proxy Object' class
+    /// </summary>
+
+    public class MathProxy : IMath
+    {
+        private Math math = new Math();
+
+        public double Add(double x, double y)
+        {
+            return math.Add(x, y);
+        }
+        public double Sub(double x, double y)
+        {
+            return math.Sub(x, y);
+        }
+        public double Mul(double x, double y)
+        {
+            return math.Mul(x, y);
+        }
+        public double Div(double x, double y)
+        {
+            return math.Div(x, y);
         }
     }
 }
+
