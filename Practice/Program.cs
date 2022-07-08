@@ -1,260 +1,82 @@
 ﻿using System;
-using System.Collections.Generic;
-
-namespace Template.RealWorld
+namespace Factory
 {
     /// <summary>
-    /// Template Design Pattern
+    /// The 'Product' interface
     /// </summary>
-
-    public class Program
+    public interface IFactory
     {
-        public static void Main(string[] args)
+        void Drive(int miles);
+    }
+
+    /// <summary>
+    /// A 'ConcreteProduct' class
+    /// </summary>
+    public class Scooter : IFactory
+    {
+        public void Drive(int miles)
         {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+            Console.WriteLine("Drive the Scooter : " + miles.ToString() + "km");
+        }
+    }
 
-            DataAccessor products = new Products();
-            products.Run(3);
+    /// <summary>
+    /// A 'ConcreteProduct' class
+    /// </summary>
+    public class Bike : IFactory
+    {
+        public void Drive(int miles)
+        {
+            Console.WriteLine("Drive the Bike : " + miles.ToString() + "km");
+        }
+    }
 
-            // Wait for user
+    /// <summary>
+    /// The Creator Abstract Class
+    /// </summary>
+    public abstract class VehicleFactory
+    {
+        public abstract IFactory GetVehicle(string Vehicle);
+
+    }
+
+    /// <summary>
+    /// A 'ConcreteCreator' class
+    /// </summary>
+    public class ConcreteVehicleFactory : VehicleFactory
+    {
+        public override IFactory GetVehicle(string Vehicle)
+        {
+            switch (Vehicle)
+            {
+                case "Scooter":
+                    return new Scooter();
+                case "Bike":
+                    return new Bike();
+                default:
+                    throw new ApplicationException(string.Format("Vehicle '{0}' cannot be created", Vehicle));
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// Factory Pattern Demo
+    /// </summary>
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            VehicleFactory factory = new ConcreteVehicleFactory();
+
+            IFactory scooter = factory.GetVehicle("Scooter");
+            scooter.Drive(10);
+
+            IFactory bike = factory.GetVehicle("Bike");
+            bike.Drive(20);
 
             Console.ReadKey();
-        }
-    }
 
-    /// <summary>
-    /// The 'AbstractClass' abstract class
-    /// </summary>
-
-    public abstract class DataAccessor
-    {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
-
-        // The 'Template Method' 
-
-        public void Run(int top)
-        {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Categories : DataAccessor
-    {
-        private List<string> categories;
-
-        public override void Connect()
-        {
-            categories = new List<string>();
-        }
-
-        public override void Select()
-        {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
-    }
-}
-
-namespace Template.RealWorlds
-{
-    /// <summary>
-    /// Template Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
-
-            DataAccessor products = new Products();
-            products.Run(3);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'AbstractClass' abstract class
-    /// </summary>
-
-    public abstract class DataAccessor
-    {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
-
-        // The 'Template Method' 
-
-        public void Run(int top)
-        {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Categories : DataAccessor
-    {
-        private List<string> categories;
-
-        public override void Connect()
-        {
-            categories = new List<string>();
-        }
-
-        public override void Select()
-        {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
         }
     }
 }
