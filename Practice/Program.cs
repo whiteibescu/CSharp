@@ -1,260 +1,164 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Template.RealWorld
+namespace DoFactory.GangOfFour.Abstract.RealWorld
 {
     /// <summary>
-    /// Template Design Pattern
+    /// MainApp startup class for Real-World
+    /// Abstract Factory Design Pattern.
     /// </summary>
 
-    public class Program
+    class MainApp
     {
-        public static void Main(string[] args)
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+
+        public static void Main()
         {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+            // Create and run the African animal world
 
-            DataAccessor products = new Products();
-            products.Run(3);
+            ContinentFactory africa = new AfricaFactory();
+            AnimalWorld world = new AnimalWorld(africa);
+            world.RunFoodChain();
 
-            // Wait for user
+            // Create and run the American animal world
+
+            ContinentFactory america = new AmericaFactory();
+            world = new AnimalWorld(america);
+            world.RunFoodChain();
+
+            // Wait for user input
 
             Console.ReadKey();
         }
     }
 
+
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'AbstractFactory' abstract class
     /// </summary>
 
-    public abstract class DataAccessor
+    abstract class ContinentFactory
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+        public abstract Herbivore CreateHerbivore();
+        public abstract Carnivore CreateCarnivore();
+    }
 
-        // The 'Template Method' 
+    /// <summary>
+    /// The 'ConcreteFactory1' class
+    /// </summary>
 
-        public void Run(int top)
+    class AfricaFactory : ContinentFactory
+    {
+        public override Herbivore CreateHerbivore()
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
+            return new Wildebeest();
+        }
+        public override Carnivore CreateCarnivore()
+        {
+            return new Lion();
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'ConcreteFactory2' class
     /// </summary>
 
-    public class Categories : DataAccessor
+    class AmericaFactory : ContinentFactory
     {
-        private List<string> categories;
-
-        public override void Connect()
+        public override Herbivore CreateHerbivore()
         {
-            categories = new List<string>();
+            return new Bison();
         }
-
-        public override void Select()
+        public override Carnivore CreateCarnivore()
         {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
+            return new Wolf();
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'AbstractProductA' abstract class
     /// </summary>
 
-    public class Products : DataAccessor
+    abstract class Herbivore
     {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
     }
-}
 
-namespace Template.RealWorlds
-{
     /// <summary>
-    /// Template Design Pattern
+    /// The 'AbstractProductB' abstract class
     /// </summary>
 
-    public class Program
+    abstract class Carnivore
     {
-        public static void Main(string[] args)
+        public abstract void Eat(Herbivore h);
+    }
+
+    /// <summary>
+    /// The 'ProductA1' class
+    /// </summary>
+
+    class Wildebeest : Herbivore
+    {
+    }
+
+    /// <summary>
+    /// The 'ProductB1' class
+    /// </summary>
+
+    class Lion : Carnivore
+    {
+        public override void Eat(Herbivore h)
         {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+            // Eat Wildebeest
 
-            DataAccessor products = new Products();
-            products.Run(3);
-
-            // Wait for user
-
-            Console.ReadKey();
+            Console.WriteLine(this.GetType().Name +
+              " eats " + h.GetType().Name);
         }
     }
 
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'ProductA2' class
     /// </summary>
 
-    public abstract class DataAccessor
+    class Bison : Herbivore
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+    }
 
-        // The 'Template Method' 
+    /// <summary>
+    /// The 'ProductB2' class
+    /// </summary>
 
-        public void Run(int top)
+    class Wolf : Carnivore
+    {
+        public override void Eat(Herbivore h)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
+            // Eat Bison
+
+            Console.WriteLine(this.GetType().Name +
+              " eats " + h.GetType().Name);
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'Client' class 
     /// </summary>
 
-    public class Categories : DataAccessor
+    class AnimalWorld
     {
-        private List<string> categories;
+        private Herbivore _herbivore;
+        private Carnivore _carnivore;
 
-        public override void Connect()
+        // Constructor
+
+        public AnimalWorld(ContinentFactory factory)
         {
-            categories = new List<string>();
+            _carnivore = factory.CreateCarnivore();
+            _herbivore = factory.CreateHerbivore();
         }
 
-        public override void Select()
+        public void RunFoodChain()
         {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
+            _carnivore.Eat(_herbivore);
         }
     }
 }
