@@ -1,39 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Composite.RealWorld
+namespace Proxy.Structural
 {
     /// <summary>
-    /// Composite Design Pattern
+    /// Proxy Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create a tree structure 
+            // Create proxy and request a service
 
-            CompositeElement root = new CompositeElement("Picture");
-            root.Add(new PrimitiveElement("Red Line"));
-            root.Add(new PrimitiveElement("Blue Circle"));
-            root.Add(new PrimitiveElement("Green Box"));
-
-            // Create a branch
-
-            CompositeElement comp = new CompositeElement("Two Circles");
-            comp.Add(new PrimitiveElement("Black Circle"));
-            comp.Add(new PrimitiveElement("White Circle"));
-            root.Add(comp);
-
-            // Add and remove a PrimitiveElement
-
-            PrimitiveElement pe = new PrimitiveElement("Yellow Line");
-            root.Add(pe);
-            root.Remove(pe);
-
-            // Recursively display nodes
-
-            root.Display(1);
+            Proxy proxy = new Proxy();
+            proxy.Request();
 
             // Wait for user
 
@@ -42,93 +22,120 @@ namespace Composite.RealWorld
     }
 
     /// <summary>
-    /// The 'Component' Treenode
+    /// The 'Subject' abstract class
     /// </summary>
 
-    public abstract class DrawingElement
+    public abstract class Subject
     {
-        protected string name;
-
-        // Constructor
-
-        public DrawingElement(string name)
-        {
-            this.name = name;
-        }
-
-        public abstract void Add(DrawingElement d);
-        public abstract void Remove(DrawingElement d);
-        public abstract void Display(int indent);
+        public abstract void Request();
     }
 
     /// <summary>
-    /// The 'Leaf' class
+    /// The 'RealSubject' class
     /// </summary>
 
-    public class PrimitiveElement : DrawingElement
+    public class RealSubject : Subject
     {
-        // Constructor
-
-        public PrimitiveElement(string name)
-            : base(name)
+        public override void Request()
         {
-        }
-
-        public override void Add(DrawingElement c)
-        {
-            Console.WriteLine(
-                "Cannot add to a PrimitiveElement");
-        }
-
-        public override void Remove(DrawingElement c)
-        {
-            Console.WriteLine(
-                "Cannot remove from a PrimitiveElement");
-        }
-
-        public override void Display(int indent)
-        {
-            Console.WriteLine(
-                new String('-', indent) + " " + name);
+            Console.WriteLine("Called RealSubject.Request()");
         }
     }
 
     /// <summary>
-    /// The 'Composite' class
+    /// The 'Proxy' class
     /// </summary>
 
-    public class CompositeElement : DrawingElement
+    public class Proxy : Subject
     {
-        List<DrawingElement> elements = new List<DrawingElement>();
+        private RealSubject realSubject;
 
-        // Constructor
-
-        public CompositeElement(string name)
-            : base(name)
+        public override void Request()
         {
-        }
+            // Use 'lazy initialization'
 
-        public override void Add(DrawingElement d)
-        {
-            elements.Add(d);
-        }
-
-        public override void Remove(DrawingElement d)
-        {
-            elements.Remove(d);
-        }
-
-        public override void Display(int indent)
-        {
-            Console.WriteLine(new String('-', indent) +
-                "+ " + name);
-
-            // Display each child element on this node
-
-            foreach (DrawingElement d in elements)
+            if (realSubject == null)
             {
-                d.Display(indent + 2);
+                realSubject = new RealSubject();
             }
+
+            realSubject.Request();
+        }
+    }
+
+    /// Real Live 
+    /// Proxy Design Pattern
+    /// </summary>
+
+    public class Program5
+    {
+        public static void Main(string[] args)
+        {
+            // Create math proxy
+
+            MathProxy proxy = new MathProxy();
+
+            // Do the math
+
+            Console.WriteLine("4 + 2 = " + proxy.Add(4, 2));
+            Console.WriteLine("4 - 2 = " + proxy.Sub(4, 2));
+            Console.WriteLine("4 * 2 = " + proxy.Mul(4, 2));
+            Console.WriteLine("4 / 2 = " + proxy.Div(4, 2));
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
+    /// The 'Subject interface
+    /// </summary>
+
+    public interface IMath
+    {
+        double Add(double x, double y);
+        double Sub(double x, double y);
+        double Mul(double x, double y);
+        double Div(double x, double y);
+    }
+
+    /// <summary>
+    /// The 'RealSubject' class
+    /// </summary>
+
+    public class Math : IMath
+    {
+        public double Add(double x, double y) { return x + y; }
+        public double Sub(double x, double y) { return x - y; }
+        public double Mul(double x, double y) { return x * y; }
+        public double Div(double x, double y) { return x / y; }
+    }
+
+    /// <summary>
+    /// The 'Proxy Object' class
+    /// </summary>
+
+    public class MathProxy : IMath
+    {
+        private Math math = new Math();
+
+        public double Add(double x, double y)
+        {
+            return math.Add(x, y);
+        }
+        public double Sub(double x, double y)
+        {
+            return math.Sub(x, y);
+        }
+        public double Mul(double x, double y)
+        {
+            return math.Mul(x, y);
+        }
+        public double Div(double x, double y)
+        {
+            return math.Div(x, y);
         }
     }
 }
+
