@@ -1,21 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Template.RealWorld
+namespace Interpreter.Structural
 {
     /// <summary>
-    /// Template Design Pattern
+    /// Interpreter Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+            Context context = new Context();
 
-            DataAccessor products = new Products();
-            products.Run(3);
+            // Usually a tree 
+
+            List<AbstractExpression> list = new List<AbstractExpression>();
+
+            // Populate 'abstract syntax tree' 
+
+            list.Add(new TerminalExpression());
+            list.Add(new NonterminalExpression());
+            list.Add(new TerminalExpression());
+            list.Add(new TerminalExpression());
+
+            // Interpret
+
+            foreach (AbstractExpression exp in list)
+            {
+                exp.Interpret(context);
+            }
 
             // Wait for user
 
@@ -24,127 +38,74 @@ namespace Template.RealWorld
     }
 
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'Context' class
     /// </summary>
 
-    public abstract class DataAccessor
+    public class Context
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+    }
 
-        // The 'Template Method' 
+    /// <summary>
+    /// The 'AbstractExpression' abstract class
+    /// </summary>
 
-        public void Run(int top)
+    public abstract class AbstractExpression
+    {
+        public abstract void Interpret(Context context);
+    }
+
+    /// <summary>
+    /// The 'TerminalExpression' class
+    /// </summary>
+
+    public class TerminalExpression : AbstractExpression
+    {
+        public override void Interpret(Context context)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
+            Console.WriteLine("Called Terminal.Interpret()");
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'NonterminalExpression' class
     /// </summary>
 
-    public class Categories : DataAccessor
+    public class NonterminalExpression : AbstractExpression
     {
-        private List<string> categories;
-
-        public override void Connect()
+        public override void Interpret(Context context)
         {
-            categories = new List<string>();
-        }
-
-        public override void Select()
-        {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
+            Console.WriteLine("Called Nonterminal.Interpret()");
         }
     }
 
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
-    }
-}
-
-namespace Template.RealWorlds
-{
-    /// <summary>
-    /// Template Design Pattern
+    /// RealWorld
+    /// Interpreter Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+            string roman = "MCMXXVIII";
+            Context context = new Context(roman);
 
-            DataAccessor products = new Products();
-            products.Run(3);
+            // Build the 'parse tree'
+
+            List<Expression> tree = new List<Expression>();
+            tree.Add(new ThousandExpression());
+            tree.Add(new HundredExpression());
+            tree.Add(new TenExpression());
+            tree.Add(new OneExpression());
+
+            // Interpret
+
+            foreach (Expression exp in tree)
+            {
+                exp.Interpret(context);
+            }
+
+            Console.WriteLine("{0} = {1}",
+                roman, context.Output);
 
             // Wait for user
 
@@ -153,108 +114,136 @@ namespace Template.RealWorlds
     }
 
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'Context' class
     /// </summary>
 
-    public abstract class DataAccessor
+    public class Context
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+        string input;
+        int output;
 
-        // The 'Template Method' 
+        // Constructor
 
-        public void Run(int top)
+        public Context(string input)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
+            this.input = input;
+        }
+
+        public string Input
+        {
+            get { return input; }
+            set { input = value; }
+        }
+
+        public int Output
+        {
+            get { return output; }
+            set { output = value; }
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'AbstractExpression' class
     /// </summary>
 
-    public class Categories : DataAccessor
+    public abstract class Expression
     {
-        private List<string> categories;
-
-        public override void Connect()
+        public void Interpret(Context context)
         {
-            categories = new List<string>();
-        }
+            if (context.Input.Length == 0)
+                return;
 
-        public override void Select()
-        {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
+            if (context.Input.StartsWith(Nine()))
             {
-                Console.WriteLine(categories[i]);
+                context.Output += (9 * Multiplier());
+                context.Input = context.Input.Substring(2);
+            }
+            else if (context.Input.StartsWith(Four()))
+            {
+                context.Output += (4 * Multiplier());
+                context.Input = context.Input.Substring(2);
+            }
+            else if (context.Input.StartsWith(Five()))
+            {
+                context.Output += (5 * Multiplier());
+                context.Input = context.Input.Substring(1);
             }
 
-            Console.WriteLine();
+            while (context.Input.StartsWith(One()))
+            {
+                context.Output += (1 * Multiplier());
+                context.Input = context.Input.Substring(1);
+            }
         }
 
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
+        public abstract string One();
+        public abstract string Four();
+        public abstract string Five();
+        public abstract string Nine();
+        public abstract int Multiplier();
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// A 'TerminalExpression' class
+    /// <remarks>
+    /// Thousand checks for the Roman Numeral M 
+    /// </remarks>
     /// </summary>
 
-    public class Products : DataAccessor
+    public class ThousandExpression : Expression
     {
-        private List<string> products;
+        public override string One() { return "M"; }
+        public override string Four() { return " "; }
+        public override string Five() { return " "; }
+        public override string Nine() { return " "; }
+        public override int Multiplier() { return 1000; }
+    }
 
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
+    /// <summary>
+    /// A 'TerminalExpression' class
+    /// <remarks>
+    /// Hundred checks C, CD, D or CM
+    /// </remarks>
+    /// </summary>
 
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
+    public class HundredExpression : Expression
+    {
+        public override string One() { return "C"; }
+        public override string Four() { return "CD"; }
+        public override string Five() { return "D"; }
+        public override string Nine() { return "CM"; }
+        public override int Multiplier() { return 100; }
+    }
 
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
+    /// <summary>
+    /// A 'TerminalExpression' class
+    /// <remarks>
+    /// Ten checks for X, XL, L and XC
+    /// </remarks>
+    /// </summary>
 
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
+    public class TenExpression : Expression
+    {
+        public override string One() { return "X"; }
+        public override string Four() { return "XL"; }
+        public override string Five() { return "L"; }
+        public override string Nine() { return "XC"; }
+        public override int Multiplier() { return 10; }
+    }
 
-            Console.WriteLine();
-        }
+    /// <summary>
+    /// A 'TerminalExpression' class
+    /// <remarks>
+    /// One checks for I, II, III, IV, V, VI, VI, VII, VIII, IX
+    /// </remarks>
+    /// </summary>
 
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
+    public class OneExpression : Expression
+    {
+        public override string One() { return "I"; }
+        public override string Four() { return "IV"; }
+        public override string Five() { return "V"; }
+        public override string Nine() { return "IX"; }
+        public override int Multiplier() { return 1; }
     }
 }
