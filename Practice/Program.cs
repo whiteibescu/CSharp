@@ -1,249 +1,256 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Interpreter.Structural
+namespace Design_Pattern
 {
-    /// <summary>
-    /// Interpreter Design Pattern
-    /// </summary>
-
-    public class Program
+    public class FlyWeightPattern
     {
         public static void Main(string[] args)
         {
-            Context context = new Context();
+            // Arbitrary extrinsic state
 
-            // Usually a tree 
+            int extrinsicstate = 22;
 
-            List<AbstractExpression> list = new List<AbstractExpression>();
+            FlyweightFactory factory = new FlyweightFactory();
 
-            // Populate 'abstract syntax tree' 
+            // Work with different flyweight instances
 
-            list.Add(new TerminalExpression());
-            list.Add(new NonterminalExpression());
-            list.Add(new TerminalExpression());
-            list.Add(new TerminalExpression());
+            Flyweight fx = factory.GetFlyweight("X");
+            fx.Operation(--extrinsicstate);
 
-            // Interpret
+            Flyweight fy = factory.GetFlyweight("Y");
+            fy.Operation(--extrinsicstate);
 
-            foreach (AbstractExpression exp in list)
-            {
-                exp.Interpret(context);
-            }
+            Flyweight fz = factory.GetFlyweight("Z");
+            fz.Operation(--extrinsicstate);
+
+            UnsharedConcreteFlyweight fu = new
+                UnsharedConcreteFlyweight();
+
+            fu.Operation(--extrinsicstate);
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
-
     /// <summary>
-    /// The 'Context' class
+    /// The 'FlyweightFactory' class
     /// </summary>
 
-    public class Context
+    public class FlyweightFactory
     {
-    }
-
-    /// <summary>
-    /// The 'AbstractExpression' abstract class
-    /// </summary>
-
-    public abstract class AbstractExpression
-    {
-        public abstract void Interpret(Context context);
-    }
-
-    /// <summary>
-    /// The 'TerminalExpression' class
-    /// </summary>
-
-    public class TerminalExpression : AbstractExpression
-    {
-        public override void Interpret(Context context)
-        {
-            Console.WriteLine("Called Terminal.Interpret()");
-        }
-    }
-
-    /// <summary>
-    /// The 'NonterminalExpression' class
-    /// </summary>
-
-    public class NonterminalExpression : AbstractExpression
-    {
-        public override void Interpret(Context context)
-        {
-            Console.WriteLine("Called Nonterminal.Interpret()");
-        }
-    }
-
-    /// RealWorld
-    /// Interpreter Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            string roman = "MCMXXVIII";
-            Context context = new Context(roman);
-
-            // Build the 'parse tree'
-
-            List<Expression> tree = new List<Expression>();
-            tree.Add(new ThousandExpression());
-            tree.Add(new HundredExpression());
-            tree.Add(new TenExpression());
-            tree.Add(new OneExpression());
-
-            // Interpret
-
-            foreach (Expression exp in tree)
-            {
-                exp.Interpret(context);
-            }
-
-            Console.WriteLine("{0} = {1}",
-                roman, context.Output);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'Context' class
-    /// </summary>
-
-    public class Context
-    {
-        string input;
-        int output;
+        private Dictionary<string, Flyweight> flyweights { get; set; } = new Dictionary<string, Flyweight>();
 
         // Constructor
 
-        public Context(string input)
+        public FlyweightFactory()
         {
-            this.input = input;
+            flyweights.Add("X", new ConcreteFlyweight());
+            flyweights.Add("Y", new ConcreteFlyweight());
+            flyweights.Add("Z", new ConcreteFlyweight());
         }
 
-        public string Input
+        public Flyweight GetFlyweight(string key)
         {
-            get { return input; }
-            set { input = value; }
-        }
-
-        public int Output
-        {
-            get { return output; }
-            set { output = value; }
+            return ((Flyweight)flyweights[key]);
         }
     }
 
     /// <summary>
-    /// The 'AbstractExpression' class
+    /// The 'Flyweight' abstract class
     /// </summary>
 
-    public abstract class Expression
+    public abstract class Flyweight
     {
-        public void Interpret(Context context)
+        public abstract void Operation(int extrinsicstate);
+    }
+
+    /// <summary>
+    /// The 'ConcreteFlyweight' class
+    /// </summary>
+
+    public class ConcreteFlyweight : Flyweight
+    {
+        public override void Operation(int extrinsicstate)
         {
-            if (context.Input.Length == 0)
-                return;
+            Console.WriteLine("ConcreteFlyweight: " + extrinsicstate);
+        }
+    }
 
-            if (context.Input.StartsWith(Nine()))
+    /// <summary>
+    /// The 'UnsharedConcreteFlyweight' class
+    /// </summary>
+
+    public class UnsharedConcreteFlyweight : Flyweight
+    {
+        public override void Operation(int extrinsicstate)
+        {
+            Console.WriteLine("UnsharedConcreteFlyweight: " +
+                extrinsicstate);
+        }
+    }
+
+    /// Real Live Coding
+    /// Flyweight Design Pattern
+    /// </summary>
+
+    public class _FlyWeight
+    {
+        public static void Main(string[] args)
+        {
+            // Build a document with text
+
+            string document = "AAZZBBZB";
+            char[] chars = document.ToCharArray();
+
+            CharacterFactory factory = new CharacterFactory();
+
+            // extrinsic state
+
+            int pointSize = 10;
+
+            // For each character use a flyweight object
+
+            foreach (char c in chars)
             {
-                context.Output += (9 * Multiplier());
-                context.Input = context.Input.Substring(2);
-            }
-            else if (context.Input.StartsWith(Four()))
-            {
-                context.Output += (4 * Multiplier());
-                context.Input = context.Input.Substring(2);
-            }
-            else if (context.Input.StartsWith(Five()))
-            {
-                context.Output += (5 * Multiplier());
-                context.Input = context.Input.Substring(1);
+                pointSize++;
+                Character character = factory.GetCharacter(c);
+                character.Display(pointSize);
             }
 
-            while (context.Input.StartsWith(One()))
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
+    /// The 'FlyweightFactory' class
+    /// </summary>
+
+    public class CharacterFactory
+    {
+        private Dictionary<char, Character> characters = new Dictionary<char, Character>();
+
+        public Character GetCharacter(char key)
+        {
+            // Uses "lazy initialization"
+
+            Character character = null;
+
+            if (characters.ContainsKey(key))
             {
-                context.Output += (1 * Multiplier());
-                context.Input = context.Input.Substring(1);
+                character = characters[key];
             }
+            else
+            {
+                switch (key)
+                {
+                    case 'A': character = new CharacterA(); break;
+                    case 'B': character = new CharacterB(); break;
+                    //...
+                    case 'Z': character = new CharacterZ(); break;
+                }
+                characters.Add(key, character);
+            }
+            return character;
+        }
+    }
+
+    /// <summary>
+    /// The 'Flyweight' abstract class
+    /// </summary>
+
+    public abstract class Character
+    {
+        protected char symbol;
+        protected int width;
+        protected int height;
+        protected int ascent;
+        protected int descent;
+        protected int pointSize;
+
+        public abstract void Display(int pointSize);
+    }
+
+    /// <summary>
+    /// A 'ConcreteFlyweight' class
+    /// </summary>
+
+    public class CharacterA : Character
+    {
+        // Constructor
+        public CharacterA()
+        {
+            symbol = 'A';
+            height = 100;
+            width = 120;
+            ascent = 70;
+            descent = 0;
         }
 
-        public abstract string One();
-        public abstract string Four();
-        public abstract string Five();
-        public abstract string Nine();
-        public abstract int Multiplier();
+        public override void Display(int pointSize)
+        {
+            this.pointSize = pointSize;
+            Console.WriteLine(symbol +
+                " (pointsize " + this.pointSize + ")");
+        }
     }
 
     /// <summary>
-    /// A 'TerminalExpression' class
-    /// <remarks>
-    /// Thousand checks for the Roman Numeral M 
-    /// </remarks>
+    /// A 'ConcreteFlyweight' class
     /// </summary>
 
-    public class ThousandExpression : Expression
+    public class CharacterB : Character
     {
-        public override string One() { return "M"; }
-        public override string Four() { return " "; }
-        public override string Five() { return " "; }
-        public override string Nine() { return " "; }
-        public override int Multiplier() { return 1000; }
+        // Constructor
+
+        public CharacterB()
+        {
+            symbol = 'B';
+            height = 100;
+            width = 140;
+            ascent = 72;
+            descent = 0;
+        }
+
+        public override void Display(int pointSize)
+        {
+            this.pointSize = pointSize;
+            Console.WriteLine(this.symbol +
+                " (pointsize " + this.pointSize + ")");
+        }
+
     }
 
-    /// <summary>
-    /// A 'TerminalExpression' class
-    /// <remarks>
-    /// Hundred checks C, CD, D or CM
-    /// </remarks>
-    /// </summary>
-
-    public class HundredExpression : Expression
-    {
-        public override string One() { return "C"; }
-        public override string Four() { return "CD"; }
-        public override string Five() { return "D"; }
-        public override string Nine() { return "CM"; }
-        public override int Multiplier() { return 100; }
-    }
+    // ... C, D, E, etc.
 
     /// <summary>
-    /// A 'TerminalExpression' class
-    /// <remarks>
-    /// Ten checks for X, XL, L and XC
-    /// </remarks>
+    /// A 'ConcreteFlyweight' class
     /// </summary>
 
-    public class TenExpression : Expression
+    public class CharacterZ : Character
     {
-        public override string One() { return "X"; }
-        public override string Four() { return "XL"; }
-        public override string Five() { return "L"; }
-        public override string Nine() { return "XC"; }
-        public override int Multiplier() { return 10; }
-    }
+        // Constructor
 
-    /// <summary>
-    /// A 'TerminalExpression' class
-    /// <remarks>
-    /// One checks for I, II, III, IV, V, VI, VI, VII, VIII, IX
-    /// </remarks>
-    /// </summary>
+        public CharacterZ()
+        {
+            symbol = 'Z';
+            height = 100;
+            width = 100;
+            ascent = 68;
+            descent = 0;
+        }
 
-    public class OneExpression : Expression
-    {
-        public override string One() { return "I"; }
-        public override string Four() { return "IV"; }
-        public override string Five() { return "V"; }
-        public override string Nine() { return "IX"; }
-        public override int Multiplier() { return 1; }
+        public override void Display(int pointSize)
+        {
+            this.pointSize = pointSize;
+            Console.WriteLine(this.symbol +
+                " (pointsize " + this.pointSize + ")");
+        }
     }
 }
