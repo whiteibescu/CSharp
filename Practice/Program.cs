@@ -1,126 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Design_Pattern
 {
-    public class FlyWeightPattern
+
+    /// Structural code in C#
+    /// Facade Design Pattern
+    /// </summary>
+
+    public class Program
     {
         public static void Main(string[] args)
         {
-            // Arbitrary extrinsic state
+            Facade facade = new Facade();
 
-            int extrinsicstate = 22;
-
-            FlyweightFactory factory = new FlyweightFactory();
-
-            // Work with different flyweight instances
-
-            Flyweight fx = factory.GetFlyweight("X");
-            fx.Operation(--extrinsicstate);
-
-            Flyweight fy = factory.GetFlyweight("Y");
-            fy.Operation(--extrinsicstate);
-
-            Flyweight fz = factory.GetFlyweight("Z");
-            fz.Operation(--extrinsicstate);
-
-            UnsharedConcreteFlyweight fu = new
-                UnsharedConcreteFlyweight();
-
-            fu.Operation(--extrinsicstate);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-    /// <summary>
-    /// The 'FlyweightFactory' class
-    /// </summary>
-
-    public class FlyweightFactory
-    {
-        private Dictionary<string, Flyweight> flyweights { get; set; } = new Dictionary<string, Flyweight>();
-
-        // Constructor
-
-        public FlyweightFactory()
-        {
-            flyweights.Add("X", new ConcreteFlyweight());
-            flyweights.Add("Y", new ConcreteFlyweight());
-            flyweights.Add("Z", new ConcreteFlyweight());
-        }
-
-        public Flyweight GetFlyweight(string key)
-        {
-            return ((Flyweight)flyweights[key]);
-        }
-    }
-
-    /// <summary>
-    /// The 'Flyweight' abstract class
-    /// </summary>
-
-    public abstract class Flyweight
-    {
-        public abstract void Operation(int extrinsicstate);
-    }
-
-    /// <summary>
-    /// The 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class ConcreteFlyweight : Flyweight
-    {
-        public override void Operation(int extrinsicstate)
-        {
-            Console.WriteLine("ConcreteFlyweight: " + extrinsicstate);
-        }
-    }
-
-    /// <summary>
-    /// The 'UnsharedConcreteFlyweight' class
-    /// </summary>
-
-    public class UnsharedConcreteFlyweight : Flyweight
-    {
-        public override void Operation(int extrinsicstate)
-        {
-            Console.WriteLine("UnsharedConcreteFlyweight: " +
-                extrinsicstate);
-        }
-    }
-
-    /// Real Live Coding
-    /// Flyweight Design Pattern
-    /// </summary>
-
-    public class _FlyWeight
-    {
-        public static void Main(string[] args)
-        {
-            // Build a document with text
-
-            string document = "AAZZBBZB";
-            char[] chars = document.ToCharArray();
-
-            CharacterFactory factory = new CharacterFactory();
-
-            // extrinsic state
-
-            int pointSize = 10;
-
-            // For each character use a flyweight object
-
-            foreach (char c in chars)
-            {
-                pointSize++;
-                Character character = factory.GetCharacter(c);
-                character.Display(pointSize);
-            }
+            facade.MethodA();
+            facade.MethodB();
 
             // Wait for user
 
@@ -129,128 +23,180 @@ namespace Design_Pattern
     }
 
     /// <summary>
-    /// The 'FlyweightFactory' class
+    /// The 'Subsystem ClassA' class
     /// </summary>
 
-    public class CharacterFactory
+    public class SubSystemOne
     {
-        private Dictionary<char, Character> characters = new Dictionary<char, Character>();
-
-        public Character GetCharacter(char key)
+        public void MethodOne()
         {
-            // Uses "lazy initialization"
+            Console.WriteLine(" SubSystemOne Method");
+        }
+    }
 
-            Character character = null;
+    /// <summary>
+    /// The 'Subsystem ClassB' class
+    /// </summary>
 
-            if (characters.ContainsKey(key))
+    public class SubSystemTwo
+    {
+        public void MethodTwo()
+        {
+            Console.WriteLine(" SubSystemTwo Method");
+        }
+    }
+
+    /// <summary>
+    /// The 'Subsystem ClassC' class
+    /// </summary>
+
+    public class SubSystemThree
+    {
+        public void MethodThree()
+        {
+            Console.WriteLine(" SubSystemThree Method");
+        }
+    }
+
+    /// <summary>
+    /// The 'Subsystem ClassD' class
+    /// </summary>
+
+    public class SubSystemFour
+    {
+        public void MethodFour()
+        {
+            Console.WriteLine(" SubSystemFour Method");
+        }
+    }
+
+    /// <summary>
+    /// The 'Facade' class
+    /// </summary>
+
+    public class Facade
+    {
+        SubSystemOne one;
+        SubSystemTwo two;
+        SubSystemThree three;
+        SubSystemFour four;
+
+        public Facade()
+        {
+            one = new SubSystemOne();
+            two = new SubSystemTwo();
+            three = new SubSystemThree();
+            four = new SubSystemFour();
+        }
+
+        public void MethodA()
+        {
+            Console.WriteLine("\nMethodA() ---- ");
+            one.MethodOne();
+            two.MethodTwo();
+            four.MethodFour();
+        }
+
+        public void MethodB()
+        {
+            Console.WriteLine("\nMethodB() ---- ");
+            two.MethodTwo();
+            three.MethodThree();
+        }
+    }
+    public class Program2
+    {
+        public static void Main(string[] args)
+        {
+            // Facade
+            Mortgage mortgage = new Mortgage();
+            // Evaluate mortgage eligibility for customer
+            Customer customer = new Customer("Ann McKinsey");
+            bool eligible = mortgage.IsEligible(customer, 125000);
+            Console.WriteLine("\n" + customer.Name +
+                    " has been " + (eligible ? "Approved" : "Rejected"));
+            // Wait for user
+            Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassA' class
+    /// </summary>
+    public class Bank
+    {
+        public bool HasSufficientSavings(Customer c, int amount)
+        {
+            Console.WriteLine("Check bank for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassB' class
+    /// </summary>
+    public class Credit
+    {
+        public bool HasGoodCredit(Customer c)
+        {
+            Console.WriteLine("Check credit for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassC' class
+    /// </summary>
+    public class Loan
+    {
+        public bool HasNoBadLoans(Customer c)
+        {
+            Console.WriteLine("Check loans for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// Customer class
+    /// </summary>
+    public class Customer
+    {
+        private string name;
+        // Constructor
+        public Customer(string name)
+        {
+            this.name = name;
+        }
+        public string Name
+        {
+            get { return name; }
+        }
+    }
+
+    /// <summary>
+    /// The 'Facade' class
+    /// </summary>
+    public class Mortgage
+    {
+        Bank bank = new Bank();
+        Loan loan = new Loan();
+        Credit credit = new Credit();
+        public bool IsEligible(Customer cust, int amount)
+        {
+            Console.WriteLine("{0} applies for {1:C} loan\n",
+                cust.Name, amount);
+            bool eligible = true;
+            // Check creditworthyness of applicant
+            if (!bank.HasSufficientSavings(cust, amount))
             {
-                character = characters[key];
+                eligible = false;
             }
-            else
+            else if (!loan.HasNoBadLoans(cust))
             {
-                switch (key)
-                {
-                    case 'A': character = new CharacterA(); break;
-                    case 'B': character = new CharacterB(); break;
-                    //...
-                    case 'Z': character = new CharacterZ(); break;
-                }
-                characters.Add(key, character);
+                eligible = false;
             }
-            return character;
+            else if (!credit.HasGoodCredit(cust))
+            {
+                eligible = false;
+            }
+            return eligible;
         }
     }
 
-    /// <summary>
-    /// The 'Flyweight' abstract class
-    /// </summary>
-
-    public abstract class Character
-    {
-        protected char symbol;
-        protected int width;
-        protected int height;
-        protected int ascent;
-        protected int descent;
-        protected int pointSize;
-
-        public abstract void Display(int pointSize);
-    }
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterA : Character
-    {
-        // Constructor
-        public CharacterA()
-        {
-            symbol = 'A';
-            height = 100;
-            width = 120;
-            ascent = 70;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(symbol +
-                " (pointsize " + this.pointSize + ")");
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterB : Character
-    {
-        // Constructor
-
-        public CharacterB()
-        {
-            symbol = 'B';
-            height = 100;
-            width = 140;
-            ascent = 72;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(this.symbol +
-                " (pointsize " + this.pointSize + ")");
-        }
-
-    }
-
-    // ... C, D, E, etc.
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterZ : Character
-    {
-        // Constructor
-
-        public CharacterZ()
-        {
-            symbol = 'Z';
-            height = 100;
-            width = 100;
-            ascent = 68;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(this.symbol +
-                " (pointsize " + this.pointSize + ")");
-        }
-    }
 }
