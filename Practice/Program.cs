@@ -1,164 +1,90 @@
 ﻿using System;
 
-namespace DoFactory.GangOfFour.Abstract.RealWorld
+
+namespace Memento.Structural
 {
     /// <summary>
-    /// MainApp startup class for Real-World
-    /// Abstract Factory Design Pattern.
+    /// Memento Design Pattern
     /// </summary>
-
-    class MainApp
+    public class Program
     {
-        /// <summary>
-        /// Entry point into console application.
-        /// </summary>c
-
-        public static void Main()
+        static void Main(string[] args)
         {
-            // Create and run the African animal world
+            Originator o = new Originator();
+            o.State = "On";
 
-            ContinentFactory africa = new AfricaFactory();
-            AnimalWorld world = new AnimalWorld(africa);
-            world.RunFoodChain();
+            Caretaker c = new Caretaker();
+            c.Memento = o.CreateMemento();
 
-            // Create and run the American animal world
+            o.State = "Off";
 
-            ContinentFactory america = new AmericaFactory();
-            world = new AnimalWorld(america);
-            world.RunFoodChain();
-
-            // Wait for user input
+            o.SetMemento(c.Memento);
 
             Console.ReadKey();
-        }
-    }
 
-
-    /// <summary>
-    /// The 'AbstractFactory' abstract class
-    /// </summary>
-
-    abstract class ContinentFactory
-    {
-        public abstract Herbivore CreateHerbivore();
-        public abstract Carnivore CreateCarnivore();
-    }
-
-    /// <summary>
-    /// The 'ConcreteFactory1' class
-    /// </summary>
-
-    class AfricaFactory : ContinentFactory
-    {
-        public override Herbivore CreateHerbivore()
-        {
-            return new Wildebeest();
-        }
-        public override Carnivore CreateCarnivore()
-        {
-            return new Lion();
         }
     }
 
     /// <summary>
-    /// The 'ConcreteFactory2' class
+    /// The 'Originator' class
     /// </summary>
 
-    class AmericaFactory : ContinentFactory
+    public class Originator
     {
-        public override Herbivore CreateHerbivore()
+        string state;
+
+        public string State
         {
-            return new Bison();
+            get { return state; }
+            set
+            {
+                state = value;
+                Console.WriteLine("Satate = " + state);
+            }
         }
-        public override Carnivore CreateCarnivore()
+
+        public Memento CreateMemento()
         {
-            return new Wolf();
+            return (new Memento(state));
+        }
+
+        public void SetMemento(Memento memento)
+        {
+            Console.WriteLine("Restoring state...");
+            State = memento.State;
         }
     }
-
     /// <summary>
-    /// The 'AbstractProductA' abstract class
+    /// The 'Memento' class
     /// </summary>
-
-    abstract class Herbivore
+    public class Memento
     {
-    }
+        string state;
 
-    /// <summary>
-    /// The 'AbstractProductB' abstract class
-    /// </summary>
-
-    abstract class Carnivore
-    {
-        public abstract void Eat(Herbivore h);
-    }
-
-    /// <summary>
-    /// The 'ProductA1' class
-    /// </summary>
-
-    class Wildebeest : Herbivore
-    {
-    }
-
-    /// <summary>
-    /// The 'ProductB1' class
-    /// </summary>
-
-    class Lion : Carnivore
-    {
-        public override void Eat(Herbivore h)
+        public Memento(string state)
         {
-            // Eat Wildebeest
+            this.state = state;
+        }
 
-            Console.WriteLine(this.GetType().Name +
-              " eats " + h.GetType().Name);
+        public string State
+        {
+            get { return state; }
         }
     }
 
     /// <summary>
-    /// The 'ProductA2' class
+    /// The 'Caretaker' class
     /// </summary>
 
-    class Bison : Herbivore
+
+    public class Caretaker
     {
-    }
+        Memento memento;
 
-    /// <summary>
-    /// The 'ProductB2' class
-    /// </summary>
-
-    class Wolf : Carnivore
-    {
-        public override void Eat(Herbivore h)
+        public Memento Memento
         {
-            // Eat Bison
-
-            Console.WriteLine(this.GetType().Name +
-              " eats " + h.GetType().Name);
-        }
-    }
-
-    /// <summary>
-    /// The 'Client' class 
-    /// </summary>
-
-    class AnimalWorld
-    {
-        private Herbivore _herbivore;
-        private Carnivore _carnivore;
-
-        // Constructor
-
-        public AnimalWorld(ContinentFactory factory)
-        {
-            _carnivore = factory.CreateCarnivore();
-            _herbivore = factory.CreateHerbivore();
-        }
-
-        public void RunFoodChain()
-        {
-            _carnivore.Eat(_herbivore);
+            set { memento = value; }
+            get { return memento; }
         }
     }
 }
