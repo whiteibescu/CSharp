@@ -1,129 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Command.Structural2
+namespace Prototype.RealWorld
 {
     /// <summary>
-    /// Command Design Pattern
+    /// Prototype Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create receiver, command, and invoker
+            ColorManager colormanager = new ColorManager();
 
-            Receiver receiver = new Receiver();
-            Command command = new ConcreteCommand(receiver);
-            Invoker invoker = new Invoker();
+            // Initialize with standard colors
 
-            // Set and execute command
+            colormanager["red"] = new Color(255, 0, 0);
+            colormanager["green"] = new Color(0, 255, 0);
+            colormanager["blue"] = new Color(0, 0, 255);
 
-            invoker.SetCommand(command);
-            invoker.ExecuteCommand();
+            // User adds personalized colors
 
-            // Wait for user
+            colormanager["angry"] = new Color(255, 54, 0);
+            colormanager["peace"] = new Color(128, 211, 128);
+            colormanager["flame"] = new Color(211, 34, 20);
 
-            Console.ReadKey();
-        }
-    }
+            // User clones selected colors
 
-    /// <summary>
-    /// The 'Command' abstract class
-    /// </summary>
-
-    public abstract class Command
-    {
-        protected Receiver receiver;
-
-        // Constructor
-
-        public Command(Receiver receiver)
-        {
-            this.receiver = receiver;
-        }
-
-        public abstract void Execute();
-    }
-
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
-
-    public class ConcreteCommand : Command
-    {
-        // Constructor
-
-        public ConcreteCommand(Receiver receiver) :
-            base(receiver)
-        {
-        }
-
-        public override void Execute()
-        {
-            receiver.Action();
-        }
-    }
-
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Receiver
-    {
-        public void Action()
-        {
-            Console.WriteLine("Called Receiver.Action()");
-        }
-    }
-
-    /// <summary>
-    /// The 'Invoker' class
-    /// </summary>
-
-    public class Invoker
-    {
-        Command command;
-
-        public void SetCommand(Command command)
-        {
-            this.command = command;
-        }
-
-        public void ExecuteCommand()
-        {
-            command.Execute();
-        }
-    }
-}
-
-namespace Command.RealWorld
-{
-    /// <summary>
-    /// Command Design Pattern
-    /// </summary>
-
-    public class Program23
-    {
-        public static void Main(string[] args)
-        {
-            // Create user and let her compute
-
-            User user = new User();
-
-            // User presses calculator buttons
-
-            user.Compute('+', 100);
-            user.Compute('-', 50);
-            user.Compute('*', 10);
-            user.Compute('/', 2);
-
-            // Undo 4 commands
-
-            user.Undo(4);
-
-            // Redo 3 commands
-
-            user.Redo(3);
+            Color color1 = colormanager["red"].Clone() as Color;
+            Color color2 = colormanager["peace"].Clone() as Color;
+            Color color3 = colormanager["flame"].Clone() as Color;
 
             // Wait for user
 
@@ -132,156 +38,60 @@ namespace Command.RealWorld
     }
 
     /// <summary>
-    /// The 'Command' abstract class
+    /// The 'Prototype' abstract class
     /// </summary>
 
-    public abstract class Command
+    public abstract class ColorPrototype
     {
-        public abstract void Execute();
-        public abstract void UnExecute();
+        public abstract ColorPrototype Clone();
     }
 
     /// <summary>
-    /// The 'ConcreteCommand' class
+    /// The 'ConcretePrototype' class
     /// </summary>
 
-    public class CalculatorCommand : Command
+    public class Color : ColorPrototype
     {
-        char @operator;
-        int operand;
-        Calculator calculator;
+        int red;
+        int green;
+        int blue;
 
         // Constructor
 
-        public CalculatorCommand(Calculator calculator,
-            char @operator, int operand)
+        public Color(int red, int green, int blue)
         {
-            this.calculator = calculator;
-            this.@operator = @operator;
-            this.operand = operand;
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
         }
 
-        // Gets operator
+        // Create a shallow copy
 
-        public char Operator
+        public override ColorPrototype Clone()
         {
-            set { @operator = value; }
-        }
-
-        // Get operand
-
-        public int Operand
-        {
-            set { operand = value; }
-        }
-
-        // Execute new command
-
-        public override void Execute()
-        {
-            calculator.Operation(@operator, operand);
-        }
-
-        // Unexecute last command
-
-        public override void UnExecute()
-        {
-            calculator.Operation(Undo(@operator), operand);
-        }
-
-        // Returns opposite operator for given operator
-
-        private char Undo(char @operator)
-        {
-            switch (@operator)
-            {
-                case '+': return '-';
-                case '-': return '+';
-                case '*': return '/';
-                case '/': return '*';
-                default:
-                    throw new
-             ArgumentException("@operator");
-            }
-        }
-    }
-
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
-
-    public class Calculator
-    {
-        int curr = 0;
-
-        public void Operation(char @operator, int operand)
-        {
-            switch (@operator)
-            {
-                case '+': curr += operand; break;
-                case '-': curr -= operand; break;
-                case '*': curr *= operand; break;
-                case '/': curr /= operand; break;
-            }
             Console.WriteLine(
-                "Current value = {0,3} (following {1} {2})",
-                curr, @operator, operand);
+                "Cloning color RGB: {0,3},{1,3},{2,3}",
+                red, green, blue);
+
+            return this.MemberwiseClone() as ColorPrototype;
         }
     }
 
     /// <summary>
-    /// The 'Invoker' class
+    /// Prototype manager
     /// </summary>
 
-    public class User
+    public class ColorManager
     {
-        // Initializers
+        private Dictionary<string, ColorPrototype> colors =
+            new Dictionary<string, ColorPrototype>();
 
-        Calculator calculator = new Calculator();
-        List<Command> commands = new List<Command>();
-        int current = 0;
+        // Indexer
 
-        public void Redo(int levels)
+        public ColorPrototype this[string key]
         {
-            Console.WriteLine("\n---- Redo {0} levels ", levels);
-            // Perform redo operations
-            for (int i = 0; i < levels; i++)
-            {
-                if (current < commands.Count - 1)
-                {
-                    Command command = commands[current++];
-                    command.Execute();
-                }
-            }
-        }
-
-        public void Undo(int levels)
-        {
-            Console.WriteLine("\n---- Undo {0} levels ", levels);
-
-            // Perform undo operations
-
-            for (int i = 0; i < levels; i++)
-            {
-                if (current > 0)
-                {
-                    Command command = commands[--current] as Command;
-                    command.UnExecute();
-                }
-            }
-        }
-
-        public void Compute(char @operator, int operand)
-        {
-            // Create command operation and execute it
-
-            Command command = new CalculatorCommand(calculator, @operator, operand);
-            command.Execute();
-
-            // Add command to undo list
-
-            commands.Add(command);
-            current++;
+            get { return colors[key]; }
+            set { colors.Add(key, value); }
         }
     }
 }
