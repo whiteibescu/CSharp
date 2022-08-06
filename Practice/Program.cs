@@ -1,145 +1,164 @@
 ﻿using System;
 
-namespace Adapter.RealWorld
+namespace DoFactory.GangOfFour.Abstract.RealWorld
 {
     /// <summary>
-    /// Adapter Design Pattern
+    /// MainApp startup class for Real-World
+    /// Abstract Factory Design Pattern.
     /// </summary>
 
-    public class Program
+    class MainApp
     {
-        public static void Main(string[] args)
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+
+        public static void Main()
         {
-            // Non-adapted chemical compound
+            // Create and run the African animal world
 
-            Compound unknown = new Compound();
-            unknown.Display();
+            ContinentFactory africa = new AfricaFactory();
+            AnimalWorld world = new AnimalWorld(africa);
+            world.RunFoodChain();
 
-            // Adapted chemical compounds
+            // Create and run the American animal world
 
-            Compound water = new RichCompound("Water");
-            water.Display();
+            ContinentFactory america = new AmericaFactory();
+            world = new AnimalWorld(america);
+            world.RunFoodChain();
 
-            Compound benzene = new RichCompound("Benzene");
-            benzene.Display();
-
-            Compound ethanol = new RichCompound("Ethanol");
-            ethanol.Display();
-
-            // Wait for user
+            // Wait for user input
 
             Console.ReadKey();
         }
     }
 
+
     /// <summary>
-    /// The 'Target' class
+    /// The 'AbstractFactory' abstract class
     /// </summary>
 
-    public class Compound
+    abstract class ContinentFactory
     {
-        protected float boilingPoint;
-        protected float meltingPoint;
-        protected double molecularWeight;
-        protected string molecularFormula;
+        public abstract Herbivore CreateHerbivore();
+        public abstract Carnivore CreateCarnivore();
+    }
 
-        public virtual void Display()
+    /// <summary>
+    /// The 'ConcreteFactory1' class
+    /// </summary>
+
+    class AfricaFactory : ContinentFactory
+    {
+        public override Herbivore CreateHerbivore()
         {
-            Console.WriteLine("\nCompound: Unknown ------ ");
+            return new Wildebeest();
+        }
+        public override Carnivore CreateCarnivore()
+        {
+            return new Lion();
         }
     }
 
     /// <summary>
-    /// The 'Adapter' class
+    /// The 'ConcreteFactory2' class
     /// </summary>
 
-    public class RichCompound : Compound
+    class AmericaFactory : ContinentFactory
     {
-        private string chemical;
-        private ChemicalDatabank bank;
+        public override Herbivore CreateHerbivore()
+        {
+            return new Bison();
+        }
+        public override Carnivore CreateCarnivore()
+        {
+            return new Wolf();
+        }
+    }
+
+    /// <summary>
+    /// The 'AbstractProductA' abstract class
+    /// </summary>
+
+    abstract class Herbivore
+    {
+    }
+
+    /// <summary>
+    /// The 'AbstractProductB' abstract class
+    /// </summary>
+
+    abstract class Carnivore
+    {
+        public abstract void Eat(Herbivore h);
+    }
+
+    /// <summary>
+    /// The 'ProductA1' class
+    /// </summary>
+
+    class Wildebeest : Herbivore
+    {
+    }
+
+    /// <summary>
+    /// The 'ProductB1' class
+    /// </summary>
+
+    class Lion : Carnivore
+    {
+        public override void Eat(Herbivore h)
+        {
+            // Eat Wildebeest
+
+            Console.WriteLine(this.GetType().Name +
+              " eats " + h.GetType().Name);
+        }
+    }
+
+    /// <summary>
+    /// The 'ProductA2' class
+    /// </summary>
+
+    class Bison : Herbivore
+    {
+    }
+
+    /// <summary>
+    /// The 'ProductB2' class
+    /// </summary>
+
+    class Wolf : Carnivore
+    {
+        public override void Eat(Herbivore h)
+        {
+            // Eat Bison
+
+            Console.WriteLine(this.GetType().Name +
+              " eats " + h.GetType().Name);
+        }
+    }
+
+    /// <summary>
+    /// The 'Client' class 
+    /// </summary>
+
+    class AnimalWorld
+    {
+        private Herbivore _herbivore;
+        private Carnivore _carnivore;
 
         // Constructor
 
-        public RichCompound(string chemical)
+        public AnimalWorld(ContinentFactory factory)
         {
-            this.chemical = chemical;
+            _carnivore = factory.CreateCarnivore();
+            _herbivore = factory.CreateHerbivore();
         }
 
-        public override void Display()
+        public void RunFoodChain()
         {
-            // The Adaptee
-
-            bank = new ChemicalDatabank();
-
-            boilingPoint = bank.GetCriticalPoint(chemical, "B");
-            meltingPoint = bank.GetCriticalPoint(chemical, "M");
-            molecularWeight = bank.GetMolecularWeight(chemical);
-            molecularFormula = bank.GetMolecularStructure(chemical);
-
-            Console.WriteLine("\nCompound: {0} ------ ", chemical);
-            Console.WriteLine(" Formula: {0}", molecularFormula);
-            Console.WriteLine(" Weight : {0}", molecularWeight);
-            Console.WriteLine(" Melting Pt: {0}", meltingPoint);
-            Console.WriteLine(" Boiling Pt: {0}", boilingPoint);
-        }
-    }
-
-    /// <summary>
-    /// The 'Adaptee' class
-    /// </summary>
-
-    public class ChemicalDatabank
-    {
-        // The databank 'legacy API'
-
-        public float GetCriticalPoint(string compound, string point)
-        {
-            // Melting Point
-            if (point == "M")
-            {
-                switch (compound.ToLower())
-                {
-                    case "water": return 0.0f;
-                    case "benzene": return 5.5f;
-                    case "ethanol": return -114.1f;
-                    default: return 0f;
-                }
-            }
-
-            // Boiling Point
-
-            else
-            {
-                switch (compound.ToLower())
-                {
-                    case "water": return 100.0f;
-                    case "benzene": return 80.1f;
-                    case "ethanol": return 78.3f;
-                    default: return 0f;
-                }
-            }
-        }
-
-        public string GetMolecularStructure(string compound)
-        {
-            switch (compound.ToLower())
-            {
-                case "water": return "H20";
-                case "benzene": return "C6H6";
-                case "ethanol": return "C2H5OH";
-                default: return "";
-            }
-        }
-
-        public double GetMolecularWeight(string compound)
-        {
-            switch (compound.ToLower())
-            {
-                case "water": return 18.015;
-                case "benzene": return 78.1134;
-                case "ethanol": return 46.0688;
-                default: return 0d;
-            }
+            _carnivore.Eat(_herbivore);
         }
     }
 }
