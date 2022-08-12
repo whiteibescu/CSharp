@@ -1,35 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Prototype.RealWorld
+namespace Template.RealWorld
 {
     /// <summary>
-    /// Prototype Design Pattern
+    /// Template Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            ColorManager colormanager = new ColorManager();
+            DataAccessor categories = new Categories();
+            categories.Run(5);
 
-            // Initialize with standard colors
-
-            colormanager["red"] = new Color(255, 0, 0);
-            colormanager["green"] = new Color(0, 255, 0);
-            colormanager["blue"] = new Color(0, 0, 255);
-
-            // User adds personalized colors
-
-            colormanager["angry"] = new Color(255, 54, 0);
-            colormanager["peace"] = new Color(128, 211, 128);
-            colormanager["flame"] = new Color(211, 34, 20);
-
-            // User clones selected colors
-
-            Color color1 = colormanager["red"].Clone() as Color;
-            Color color2 = colormanager["peace"].Clone() as Color;
-            Color color3 = colormanager["flame"].Clone() as Color;
+            DataAccessor products = new Products();
+            products.Run(3);
 
             // Wait for user
 
@@ -38,60 +24,237 @@ namespace Prototype.RealWorld
     }
 
     /// <summary>
-    /// The 'Prototype' abstract class
+    /// The 'AbstractClass' abstract class
     /// </summary>
 
-    public abstract class ColorPrototype
+    public abstract class DataAccessor
     {
-        public abstract ColorPrototype Clone();
-    }
+        public abstract void Connect();
+        public abstract void Select();
+        public abstract void Process(int top);
+        public abstract void Disconnect();
 
-    /// <summary>
-    /// The 'ConcretePrototype' class
-    /// </summary>
+        // The 'Template Method' 
 
-    public class Color : ColorPrototype
-    {
-        int red;
-        int green;
-        int blue;
-
-        // Constructor
-
-        public Color(int red, int green, int blue)
+        public void Run(int top)
         {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-        }
-
-        // Create a shallow copy
-
-        public override ColorPrototype Clone()
-        {
-            Console.WriteLine(
-                "Cloning color RGB: {0,3},{1,3},{2,3}",
-                red, green, blue);
-
-            return this.MemberwiseClone() as ColorPrototype;
+            Connect();
+            Select();
+            Process(top);
+            Disconnect();
         }
     }
 
     /// <summary>
-    /// Prototype manager
+    /// A 'ConcreteClass' class
     /// </summary>
 
-    public class ColorManager
+    public class Categories : DataAccessor
     {
-        private Dictionary<string, ColorPrototype> colors =
-            new Dictionary<string, ColorPrototype>();
+        private List<string> categories;
 
-        // Indexer
-
-        public ColorPrototype this[string key]
+        public override void Connect()
         {
-            get { return colors[key]; }
-            set { colors.Add(key, value); }
+            categories = new List<string>();
+        }
+
+        public override void Select()
+        {
+            categories.Add("Red");
+            categories.Add("Green");
+            categories.Add("Blue");
+            categories.Add("Yellow");
+            categories.Add("Purple");
+            categories.Add("White");
+            categories.Add("Black");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Categories ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(categories[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            categories.Clear();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Products : DataAccessor
+    {
+        private List<string> products;
+
+        public override void Connect()
+        {
+            products = new List<string>();
+        }
+
+        public override void Select()
+        {
+            products.Add("Car");
+            products.Add("Bike");
+            products.Add("Boat");
+            products.Add("Truck");
+            products.Add("Moped");
+            products.Add("Rollerskate");
+            products.Add("Stroller");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Products ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(products[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            products.Clear();
+        }
+    }
+}
+
+namespace Template.RealWorlds
+{
+    /// <summary>
+    /// Template Design Pattern
+    /// </summary>
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            DataAccessor categories = new Categories();
+            categories.Run(5);
+
+            DataAccessor products = new Products();
+            products.Run(3);
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
+    /// The 'AbstractClass' abstract class
+    /// </summary>
+
+    public abstract class DataAccessor
+    {
+        public abstract void Connect();
+        public abstract void Select();
+        public abstract void Process(int top);
+        public abstract void Disconnect();
+
+        // The 'Template Method' 
+
+        public void Run(int top)
+        {
+            Connect();
+            Select();
+            Process(top);
+            Disconnect();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Categories : DataAccessor
+    {
+        private List<string> categories;
+
+        public override void Connect()
+        {
+            categories = new List<string>();
+        }
+
+        public override void Select()
+        {
+            categories.Add("Red");
+            categories.Add("Green");
+            categories.Add("Blue");
+            categories.Add("Yellow");
+            categories.Add("Purple");
+            categories.Add("White");
+            categories.Add("Black");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Categories ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(categories[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            categories.Clear();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Products : DataAccessor
+    {
+        private List<string> products;
+
+        public override void Connect()
+        {
+            products = new List<string>();
+        }
+
+        public override void Select()
+        {
+            products.Add("Car");
+            products.Add("Bike");
+            products.Add("Boat");
+            products.Add("Truck");
+            products.Add("Moped");
+            products.Add("Rollerskate");
+            products.Add("Stroller");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Products ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(products[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            products.Clear();
         }
     }
 }
