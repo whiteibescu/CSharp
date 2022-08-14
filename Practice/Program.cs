@@ -1,121 +1,202 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
 
-namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
+namespace Design_Pattern
 {
-    public interface IObserver
+
+    /// Structural code in C#
+    /// Facade Design Pattern
+    /// </summary>
+
+    public class Program
     {
-        // Receive update from subject
-        void Update(ISubject subject);
+        public static void Main(string[] args)
+        {
+            Facade facade = new Facade();
+
+            facade.MethodA();
+            facade.MethodB();
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
     }
 
-    public interface ISubject
+    /// <summary>
+    /// The 'Subsystem ClassA' class
+    /// </summary>
+
+    public class SubSystemOne
     {
-        // Attach an observer to the subject.
-        void Attach(IObserver observer);
-
-        // Detach an observer from the subject.
-        void Detach(IObserver observer);
-
-        // Notify all observers about an event.
-        void Notify();
+        public void MethodOne()
+        {
+            Console.WriteLine(" SubSystemOne Method");
+        }
     }
 
-    // The Subject owns some important state and notifies observers when the
-    // state changes.
-    public class Subject : ISubject
+    /// <summary>
+    /// The 'Subsystem ClassB' class
+    /// </summary>
+
+    public class SubSystemTwo
     {
-        // For the sake of simplicity, the Subject's state, essential to all
-        // subscribers, is stored in this variable.
-        public int State { get; set; } = -0;
-
-        // List of subscribers. In real life, the list of subscribers can be
-        // stored more comprehensively (categorized by event type, etc.).
-        private List<IObserver> _observers = new List<IObserver>();
-
-        // The subscription management methods.
-        public void Attach(IObserver observer)
+        public void MethodTwo()
         {
-            Console.WriteLine("Subject: Attached an observer.");
-            this._observers.Add(observer);
+            Console.WriteLine(" SubSystemTwo Method");
+        }
+    }
+
+    /// <summary>
+    /// The 'Subsystem ClassC' class
+    /// </summary>
+
+    public class SubSystemThree
+    {
+        public void MethodThree()
+        {
+            Console.WriteLine(" SubSystemThree Method");
+        }
+    }
+
+    /// <summary>
+    /// The 'Subsystem ClassD' class
+    /// </summary>
+
+    public class SubSystemFour
+    {
+        public void MethodFour()
+        {
+            Console.WriteLine(" SubSystemFour Method");
+        }
+    }
+
+    /// <summary>
+    /// The 'Facade' class
+    /// </summary>
+
+    public class Facade
+    {
+        SubSystemOne one;
+        SubSystemTwo two;
+        SubSystemThree three;
+        SubSystemFour four;
+
+        public Facade()
+        {
+            one = new SubSystemOne();
+            two = new SubSystemTwo();
+            three = new SubSystemThree();
+            four = new SubSystemFour();
         }
 
-        public void Detach(IObserver observer)
+        public void MethodA()
         {
-            this._observers.Remove(observer);
-            Console.WriteLine("Subject: Detached an observer.");
+            Console.WriteLine("\nMethodA() ---- ");
+            one.MethodOne();
+            two.MethodTwo();
+            four.MethodFour();
         }
 
-        // Trigger an update in each subscriber.
-        public void Notify()
+        public void MethodB()
         {
-            Console.WriteLine("Subject: Notifying observers...");
+            Console.WriteLine("\nMethodB() ---- ");
+            two.MethodTwo();
+            three.MethodThree();
+        }
+    }
+    public class Program2
+    {
+        public static void Main(string[] args)
+        {
+            // Facade
+            Mortgage mortgage = new Mortgage();
+            // Evaluate mortgage eligibility for customer
+            Customer customer = new Customer("Ann McKinsey");
+            bool eligible = mortgage.IsEligible(customer, 125000);
+            Console.WriteLine("\n" + customer.Name +
+                    " has been " + (eligible ? "Approved" : "Rejected"));
+            // Wait for user
+            Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassA' class
+    /// </summary>
+    public class Bank
+    {
+        public bool HasSufficientSavings(Customer c, int amount)
+        {
+            Console.WriteLine("Check bank for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassB' class
+    /// </summary>
+    public class Credit
+    {
+        public bool HasGoodCredit(Customer c)
+        {
+            Console.WriteLine("Check credit for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// The 'Subsystem ClassC' class
+    /// </summary>
+    public class Loan
+    {
+        public bool HasNoBadLoans(Customer c)
+        {
+            Console.WriteLine("Check loans for " + c.Name);
+            return true;
+        }
+    }
+    /// <summary>
+    /// Customer class
+    /// </summary>
+    public class Customer
+    {
+        private string name;
+        // Constructor
+        public Customer(string name)
+        {
+            this.name = name;
+        }
+        public string Name
+        {
+            get { return name; }
+        }
+    }
 
-            foreach (var observer in _observers)
+    /// <summary>
+    /// The 'Facade' class
+    /// </summary>
+    public class Mortgage
+    {
+        Bank bank = new Bank();
+        Loan loan = new Loan();
+        Credit credit = new Credit();
+        public bool IsEligible(Customer cust, int amount)
+        {
+            Console.WriteLine("{0} applies for {1:C} loan\n",
+                cust.Name, amount);
+            bool eligible = true;
+            // Check creditworthyness of applicant
+            if (!bank.HasSufficientSavings(cust, amount))
             {
-                observer.Update(this);
+                eligible = false;
             }
-        }
-
-        // Usually, the subscription logic is only a fraction of what a Subject
-        // can really do. Subjects commonly hold some important business logic,
-        // that triggers a notification method whenever something important is
-        // about to happen (or after it).
-        public void SomeBusinessLogic()
-        {
-            Console.WriteLine("\nSubject: I'm doing something important.");
-            this.State = new Random().Next(0, 10);
-
-            Thread.Sleep(15);
-
-            Console.WriteLine("Subject: My state has just changed to: " + this.State);
-            this.Notify();
-        }
-    }
-
-    // Concrete Observers react to the updates issued by the Subject they had
-    // been attached to.
-    class ConcreteObserverA : IObserver
-    {
-        public void Update(ISubject subject)
-        {
-            if ((subject as Subject).State < 3)
+            else if (!loan.HasNoBadLoans(cust))
             {
-                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
+                eligible = false;
             }
-        }
-    }
-
-    class ConcreteObserverB : IObserver
-    {
-        public void Update(ISubject subject)
-        {
-            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
+            else if (!credit.HasGoodCredit(cust))
             {
-                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
+                eligible = false;
             }
+            return eligible;
         }
     }
 
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            // The client code.
-            var subject = new Subject();
-            var observerA = new ConcreteObserverA();
-            subject.Attach(observerA);
-
-            var observerB = new ConcreteObserverB();
-            subject.Attach(observerB);
-
-            subject.SomeBusinessLogic();
-            subject.SomeBusinessLogic();
-
-            subject.Detach(observerB);
-
-            subject.SomeBusinessLogic();
-        }
-    }
 }
