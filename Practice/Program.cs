@@ -1,20 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Design_Pattern
+namespace Interpreter.Structural
 {
-
-    /// Structural code in C#
-    /// Facade Design Pattern
+    /// <summary>
+    /// Interpreter Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            Facade facade = new Facade();
+            Context context = new Context();
 
-            facade.MethodA();
-            facade.MethodB();
+            // Usually a tree 
+
+            List<AbstractExpression> list = new List<AbstractExpression>();
+
+            // Populate 'abstract syntax tree' 
+
+            list.Add(new TerminalExpression());
+            list.Add(new NonterminalExpression());
+            list.Add(new TerminalExpression());
+            list.Add(new TerminalExpression());
+
+            // Interpret
+
+            foreach (AbstractExpression exp in list)
+            {
+                exp.Interpret(context);
+            }
 
             // Wait for user
 
@@ -23,180 +38,212 @@ namespace Design_Pattern
     }
 
     /// <summary>
-    /// The 'Subsystem ClassA' class
+    /// The 'Context' class
     /// </summary>
 
-    public class SubSystemOne
+    public class Context
     {
-        public void MethodOne()
+    }
+
+    /// <summary>
+    /// The 'AbstractExpression' abstract class
+    /// </summary>
+
+    public abstract class AbstractExpression
+    {
+        public abstract void Interpret(Context context);
+    }
+
+    /// <summary>
+    /// The 'TerminalExpression' class
+    /// </summary>
+
+    public class TerminalExpression : AbstractExpression
+    {
+        public override void Interpret(Context context)
         {
-            Console.WriteLine(" SubSystemOne Method");
+            Console.WriteLine("Called Terminal.Interpret()");
         }
     }
 
     /// <summary>
-    /// The 'Subsystem ClassB' class
+    /// The 'NonterminalExpression' class
     /// </summary>
 
-    public class SubSystemTwo
+    public class NonterminalExpression : AbstractExpression
     {
-        public void MethodTwo()
+        public override void Interpret(Context context)
         {
-            Console.WriteLine(" SubSystemTwo Method");
+            Console.WriteLine("Called Nonterminal.Interpret()");
         }
     }
 
-    /// <summary>
-    /// The 'Subsystem ClassC' class
+    /// RealWorld
+    /// Interpreter Design Pattern
     /// </summary>
 
-    public class SubSystemThree
-    {
-        public void MethodThree()
-        {
-            Console.WriteLine(" SubSystemThree Method");
-        }
-    }
-
-    /// <summary>
-    /// The 'Subsystem ClassD' class
-    /// </summary>
-
-    public class SubSystemFour
-    {
-        public void MethodFour()
-        {
-            Console.WriteLine(" SubSystemFour Method");
-        }
-    }
-
-    /// <summary>
-    /// The 'Facade' class
-    /// </summary>
-
-    public class Facade
-    {
-        SubSystemOne one;
-        SubSystemTwo two;
-        SubSystemThree three;
-        SubSystemFour four;
-
-        public Facade()
-        {
-            one = new SubSystemOne();
-            two = new SubSystemTwo();
-            three = new SubSystemThree();
-            four = new SubSystemFour();
-        }
-
-        public void MethodA()
-        {
-            Console.WriteLine("\nMethodA() ---- ");
-            one.MethodOne();
-            two.MethodTwo();
-            four.MethodFour();
-        }
-
-        public void MethodB()
-        {
-            Console.WriteLine("\nMethodB() ---- ");
-            two.MethodTwo();
-            three.MethodThree();
-        }
-    }
-    public class Program2
+    public class Program
     {
         public static void Main(string[] args)
         {
-            // Facade
-            Mortgage mortgage = new Mortgage();
-            // Evaluate mortgage eligibility for customer
-            Customer customer = new Customer("Ann McKinsey");
-            bool eligible = mortgage.IsEligible(customer, 125000);
-            Console.WriteLine("\n" + customer.Name +
-                    " has been " + (eligible ? "Approved" : "Rejected"));
+            string roman = "MCMXXVIII";
+            Context context = new Context(roman);
+
+            // Build the 'parse tree'
+
+            List<Expression> tree = new List<Expression>();
+            tree.Add(new ThousandExpression());
+            tree.Add(new HundredExpression());
+            tree.Add(new TenExpression());
+            tree.Add(new OneExpression());
+
+            // Interpret
+
+            foreach (Expression exp in tree)
+            {
+                exp.Interpret(context);
+            }
+
+            Console.WriteLine("{0} = {1}",
+                roman, context.Output);
+
             // Wait for user
+
             Console.ReadKey();
         }
     }
+
     /// <summary>
-    /// The 'Subsystem ClassA' class
+    /// The 'Context' class
     /// </summary>
-    public class Bank
+
+    public class Context
     {
-        public bool HasSufficientSavings(Customer c, int amount)
-        {
-            Console.WriteLine("Check bank for " + c.Name);
-            return true;
-        }
-    }
-    /// <summary>
-    /// The 'Subsystem ClassB' class
-    /// </summary>
-    public class Credit
-    {
-        public bool HasGoodCredit(Customer c)
-        {
-            Console.WriteLine("Check credit for " + c.Name);
-            return true;
-        }
-    }
-    /// <summary>
-    /// The 'Subsystem ClassC' class
-    /// </summary>
-    public class Loan
-    {
-        public bool HasNoBadLoans(Customer c)
-        {
-            Console.WriteLine("Check loans for " + c.Name);
-            return true;
-        }
-    }
-    /// <summary>
-    /// Customer class
-    /// </summary>
-    public class Customer
-    {
-        private string name;
+        string input;
+        int output;
+
         // Constructor
-        public Customer(string name)
+
+        public Context(string input)
         {
-            this.name = name;
+            this.input = input;
         }
-        public string Name
+
+        public string Input
         {
-            get { return name; }
+            get { return input; }
+            set { input = value; }
+        }
+
+        public int Output
+        {
+            get { return output; }
+            set { output = value; }
         }
     }
 
     /// <summary>
-    /// The 'Facade' class
+    /// The 'AbstractExpression' class
     /// </summary>
-    public class Mortgage
+
+    public abstract class Expression
     {
-        Bank bank = new Bank();
-        Loan loan = new Loan();
-        Credit credit = new Credit();
-        public bool IsEligible(Customer cust, int amount)
+        public void Interpret(Context context)
         {
-            Console.WriteLine("{0} applies for {1:C} loan\n",
-                cust.Name, amount);
-            bool eligible = true;
-            // Check creditworthyness of applicant
-            if (!bank.HasSufficientSavings(cust, amount))
+            if (context.Input.Length == 0)
+                return;
+
+            if (context.Input.StartsWith(Nine()))
             {
-                eligible = false;
+                context.Output += (9 * Multiplier());
+                context.Input = context.Input.Substring(2);
             }
-            else if (!loan.HasNoBadLoans(cust))
+            else if (context.Input.StartsWith(Four()))
             {
-                eligible = false;
+                context.Output += (4 * Multiplier());
+                context.Input = context.Input.Substring(2);
             }
-            else if (!credit.HasGoodCredit(cust))
+            else if (context.Input.StartsWith(Five()))
             {
-                eligible = false;
+                context.Output += (5 * Multiplier());
+                context.Input = context.Input.Substring(1);
             }
-            return eligible;
+
+            while (context.Input.StartsWith(One()))
+            {
+                context.Output += (1 * Multiplier());
+                context.Input = context.Input.Substring(1);
+            }
         }
+
+        public abstract string One();
+        public abstract string Four();
+        public abstract string Five();
+        public abstract string Nine();
+        public abstract int Multiplier();
     }
 
+    /// <summary>
+    /// A 'TerminalExpression' class
+    /// <remarks>
+    /// Thousand checks for the Roman Numeral M 
+    /// </remarks>
+    /// </summary>
+
+    public class ThousandExpression : Expression
+    {
+        public override string One() { return "M"; }
+        public override string Four() { return " "; }
+        public override string Five() { return " "; }
+        public override string Nine() { return " "; }
+        public override int Multiplier() { return 1000; }
+    }
+
+    /// <summary>
+    /// A 'TerminalExpression' class
+    /// <remarks>
+    /// Hundred checks C, CD, D or CM
+    /// </remarks>
+    /// </summary>
+
+    public class HundredExpression : Expression
+    {
+        public override string One() { return "C"; }
+        public override string Four() { return "CD"; }
+        public override string Five() { return "D"; }
+        public override string Nine() { return "CM"; }
+        public override int Multiplier() { return 100; }
+    }
+
+    /// <summary>
+    /// A 'TerminalExpression' class
+    /// <remarks>
+    /// Ten checks for X, XL, L and XC
+    /// </remarks>
+    /// </summary>
+
+    public class TenExpression : Expression
+    {
+        public override string One() { return "X"; }
+        public override string Four() { return "XL"; }
+        public override string Five() { return "L"; }
+        public override string Nine() { return "XC"; }
+        public override int Multiplier() { return 10; }
+    }
+
+    /// <summary>
+    /// A 'TerminalExpression' class
+    /// <remarks>
+    /// One checks for I, II, III, IV, V, VI, VI, VII, VIII, IX
+    /// </remarks>
+    /// </summary>
+
+    public class OneExpression : Expression
+    {
+        public override string One() { return "I"; }
+        public override string Four() { return "IV"; }
+        public override string Five() { return "V"; }
+        public override string Nine() { return "IX"; }
+        public override int Multiplier() { return 1; }
+    }
 }

@@ -73,11 +73,11 @@ namespace Template.RealWorld
         {
             Console.WriteLine("Categories ---- ");
 
-            for (int i = 0; i < top; i++)
+            for(int i = 0; i < top; i++)
             {
                 Console.WriteLine(categories[i]);
             }
-
+            
             Console.WriteLine();
         }
 
