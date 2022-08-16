@@ -1,36 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Design_Pattern
+namespace Decorator.RealWorld
 {
-    public class FlyWeightPattern
+    /// <summary>
+    /// Decorator Design Pattern
+    /// </summary>
+
+    public class Program
     {
         public static void Main(string[] args)
         {
-            // Arbitrary extrinsic state
+            // Create book
 
-            int extrinsicstate = 22;
+            Book book = new Book("Worley", "Inside ASP.NET", 10);
+            book.Display();
 
-            FlyweightFactory factory = new FlyweightFactory();
+            // Create video
 
-            // Work with different flyweight instances
+            Video video = new Video("Spielberg", "Jaws", 23, 92);
+            video.Display();
 
-            Flyweight fx = factory.GetFlyweight("X");
-            fx.Operation(--extrinsicstate);
+            // Make video borrowable, then borrow and display
 
-            Flyweight fy = factory.GetFlyweight("Y");
-            fy.Operation(--extrinsicstate);
+            Console.WriteLine("\nMaking video borrowable:");
 
-            Flyweight fz = factory.GetFlyweight("Z");
-            fz.Operation(--extrinsicstate);
+            Borrowable borrowvideo = new Borrowable(video);
+            borrowvideo.BorrowItem("Customer #1");
+            borrowvideo.BorrowItem("Customer #2");
 
-            UnsharedConcreteFlyweight fu = new
-                UnsharedConcreteFlyweight();
-
-            fu.Operation(--extrinsicstate);
+            borrowvideo.Display();
 
             // Wait for user
 
@@ -38,219 +37,135 @@ namespace Design_Pattern
         }
     }
     /// <summary>
-    /// The 'FlyweightFactory' class
+    /// The 'Component' abstract class
     /// </summary>
 
-    public class FlyweightFactory
+    public abstract class LibraryItem
     {
-        private Dictionary<string, Flyweight> flyweights { get; set; } = new Dictionary<string, Flyweight>();
+        private int numCopies;
+
+        public int NumCopies
+        {
+            get { return numCopies; }
+            set { numCopies = value; }
+        }
+
+        public abstract void Display();
+    }
+
+    /// <summary>
+    /// The 'ConcreteComponent' class
+    /// </summary>
+
+    public class Book : LibraryItem
+    {
+        private string author;
+        private string title;
 
         // Constructor
 
-        public FlyweightFactory()
+        public Book(string author, string title, int numCopies)
         {
-            flyweights.Add("X", new ConcreteFlyweight());
-            flyweights.Add("Y", new ConcreteFlyweight());
-            flyweights.Add("Z", new ConcreteFlyweight());
+            this.author = author;
+            this.title = title;
+            this.NumCopies = numCopies;
         }
 
-        public Flyweight GetFlyweight(string key)
+        public override void Display()
         {
-            return ((Flyweight)flyweights[key]);
-        }
-    }
-
-    /// <summary>
-    /// The 'Flyweight' abstract class
-    /// </summary>
-
-    public abstract class Flyweight
-    {
-        public abstract void Operation(int extrinsicstate);
-    }
-
-    /// <summary>
-    /// The 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class ConcreteFlyweight : Flyweight
-    {
-        public override void Operation(int extrinsicstate)
-        {
-            Console.WriteLine("ConcreteFlyweight: " + extrinsicstate);
+            Console.WriteLine("\nBook ------ ");
+            Console.WriteLine(" Author: {0}", author);
+            Console.WriteLine(" Title: {0}", title);
+            Console.WriteLine(" # Copies: {0}", NumCopies);
         }
     }
 
     /// <summary>
-    /// The 'UnsharedConcreteFlyweight' class
+    /// The 'ConcreteComponent' class
     /// </summary>
 
-    public class UnsharedConcreteFlyweight : Flyweight
+    public class Video : LibraryItem
     {
-        public override void Operation(int extrinsicstate)
+        private string director;
+        private string title;
+        private int playTime;
+
+        // Constructor
+
+        public Video(string director, string title, int numCopies, int playTime)
         {
-            Console.WriteLine("UnsharedConcreteFlyweight: " +
-                extrinsicstate);
+            this.director = director;
+            this.title = title;
+            this.NumCopies = numCopies;
+            this.playTime = playTime;
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine("\nVideo ----- ");
+            Console.WriteLine(" Director: {0}", director);
+            Console.WriteLine(" Title: {0}", title);
+            Console.WriteLine(" # Copies: {0}", NumCopies);
+            Console.WriteLine(" Playtime: {0}\n", playTime);
         }
     }
 
-    /// Real Live Coding
-    /// Flyweight Design Pattern
+    /// <summary>
+    /// The 'Decorator' abstract class
     /// </summary>
 
-    public class _FlyWeight
+    public abstract class Decorator : LibraryItem
     {
-        public static void Main(string[] args)
+        protected LibraryItem libraryItem;
+
+        // Constructor
+
+        public Decorator(LibraryItem libraryItem)
         {
-            // Build a document with text
+            this.libraryItem = libraryItem;
+        }
 
-            string document = "AAZZBBZB";
-            char[] chars = document.ToCharArray();
+        public override void Display()
+        {
+            libraryItem.Display();
+        }
+    }
 
-            CharacterFactory factory = new CharacterFactory();
+    /// <summary>
+    /// The 'ConcreteDecorator' class
+    /// </summary>
 
-            // extrinsic state
+    public class Borrowable : Decorator
+    {
+        protected readonly List<string> borrowers = new List<string>();
 
-            int pointSize = 10;
+        // Constructor
 
-            // For each character use a flyweight object
+        public Borrowable(LibraryItem libraryItem)
+            : base(libraryItem)
+        {
+        }
 
-            foreach (char c in chars)
+        public void BorrowItem(string name)
+        {
+            borrowers.Add(name);
+            libraryItem.NumCopies--;
+        }
+
+        public void ReturnItem(string name)
+        {
+            borrowers.Remove(name);
+            libraryItem.NumCopies++;
+        }
+
+        public override void Display()
+        {
+            base.Display();
+
+            foreach (string borrower in borrowers)
             {
-                pointSize++;
-                Character character = factory.GetCharacter(c);
-                character.Display(pointSize);
+                Console.WriteLine(" borrower: " + borrower);
             }
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'FlyweightFactory' class
-    /// </summary>
-
-    public class CharacterFactory
-    {
-        private Dictionary<char, Character> characters = new Dictionary<char, Character>();
-
-        public Character GetCharacter(char key)
-        {
-            // Uses "lazy initialization"
-
-            Character character = null;
-
-            if (characters.ContainsKey(key))
-            {
-                character = characters[key];
-            }
-            else
-            {
-                switch (key)
-                {
-                    case 'A': character = new CharacterA(); break;
-                    case 'B': character = new CharacterB(); break;
-                    //...
-                    case 'Z': character = new CharacterZ(); break;
-                }
-                characters.Add(key, character);
-            }
-            return character;
-        }
-    }
-
-    /// <summary>
-    /// The 'Flyweight' abstract class
-    /// </summary>
-
-    public abstract class Character
-    {
-        protected char symbol;
-        protected int width;
-        protected int height;
-        protected int ascent;
-        protected int descent;
-        protected int pointSize;
-
-        public abstract void Display(int pointSize);
-    }
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterA : Character
-    {
-        // Constructor
-        public CharacterA()
-        {
-            symbol = 'A';
-            height = 100;
-            width = 120;
-            ascent = 70;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(symbol +
-                " (pointsize " + this.pointSize + ")");
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterB : Character
-    {
-        // Constructor
-
-        public CharacterB()
-        {
-            symbol = 'B';
-            height = 100;
-            width = 140;
-            ascent = 72;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(this.symbol +
-                " (pointsize " + this.pointSize + ")");
-        }
-
-    }
-
-    // ... C, D, E, etc.
-
-    /// <summary>
-    /// A 'ConcreteFlyweight' class
-    /// </summary>
-
-    public class CharacterZ : Character
-    {
-        // Constructor
-
-        public CharacterZ()
-        {
-            symbol = 'Z';
-            height = 100;
-            width = 100;
-            ascent = 68;
-            descent = 0;
-        }
-
-        public override void Display(int pointSize)
-        {
-            this.pointSize = pointSize;
-            Console.WriteLine(this.symbol +
-                " (pointsize " + this.pointSize + ")");
         }
     }
 }
