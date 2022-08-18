@@ -1,30 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Adapter.RealWorld
+namespace Iterator.Structural
 {
     /// <summary>
-    /// Adapter Design Pattern
+    /// Iterator Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Non-adapted chemical compound
+            ConcreteAggregate a = new ConcreteAggregate();
+            a[0] = "Item A";
+            a[1] = "Item B";
+            a[2] = "Item C";
+            a[3] = "Item D";
 
-            Compound unknown = new Compound();
-            unknown.Display();
+            // Create Iterator and provide aggregate
 
-            // Adapted chemical compounds
+            Iterator i = a.CreateIterator();
 
-            Compound water = new RichCompound("Water");
-            water.Display();
+            Console.WriteLine("Iterating over collection:");
 
-            Compound benzene = new RichCompound("Benzene");
-            benzene.Display();
+            object item = i.First();
 
-            Compound ethanol = new RichCompound("Ethanol");
-            ethanol.Display();
+            while (item != null)
+            {
+                Console.WriteLine(item);
+                item = i.Next();
+            }
 
             // Wait for user
 
@@ -33,113 +38,275 @@ namespace Adapter.RealWorld
     }
 
     /// <summary>
-    /// The 'Target' class
+    /// The 'Aggregate' abstract class
     /// </summary>
 
-    public class Compound
+    public abstract class Aggregate
     {
-        protected float boilingPoint;
-        protected float meltingPoint;
-        protected double molecularWeight;
-        protected string molecularFormula;
+        public abstract Iterator CreateIterator();
+    }
 
-        public virtual void Display()
+    /// <summary>
+    /// The 'ConcreteAggregate' class
+    /// </summary>
+
+    public class ConcreteAggregate : Aggregate
+    {
+        List<object> items = new List<object>();
+
+        public override Iterator CreateIterator()
         {
-            Console.WriteLine("\nCompound: Unknown ------ ");
+            return new ConcreteIterator(this);
+        }
+
+        // Get item count
+
+        public int Count
+        {
+            get { return items.Count; }
+        }
+
+        // Indexer
+
+        public object this[int index]
+        {
+            get { return items[index]; }
+            set { items.Insert(index, value); }
         }
     }
 
     /// <summary>
-    /// The 'Adapter' class
+    /// The 'Iterator' abstract class
     /// </summary>
 
-    public class RichCompound : Compound
+    public abstract class Iterator
     {
-        private string chemical;
-        private ChemicalDatabank bank;
+        public abstract object First();
+        public abstract object Next();
+        public abstract bool IsDone();
+        public abstract object CurrentItem();
+    }
+
+    /// <summary>
+    /// The 'ConcreteIterator' class
+    /// </summary>
+
+    public class ConcreteIterator : Iterator
+    {
+        ConcreteAggregate aggregate;
+        int current = 0;
 
         // Constructor
 
-        public RichCompound(string chemical)
+        public ConcreteIterator(ConcreteAggregate aggregate)
         {
-            this.chemical = chemical;
+            this.aggregate = aggregate;
         }
 
-        public override void Display()
+        // Gets first iteration item
+
+        public override object First()
         {
-            // The Adaptee
+            return aggregate[0];
+        }
 
-            bank = new ChemicalDatabank();
+        // Gets next iteration item
 
-            boilingPoint = bank.GetCriticalPoint(chemical, "B");
-            meltingPoint = bank.GetCriticalPoint(chemical, "M");
-            molecularWeight = bank.GetMolecularWeight(chemical);
-            molecularFormula = bank.GetMolecularStructure(chemical);
+        public override object Next()
+        {
+            object ret = null;
+            if (current < aggregate.Count - 1)
+            {
+                ret = aggregate[++current];
+            }
 
-            Console.WriteLine("\nCompound: {0} ------ ", chemical);
-            Console.WriteLine(" Formula: {0}", molecularFormula);
-            Console.WriteLine(" Weight : {0}", molecularWeight);
-            Console.WriteLine(" Melting Pt: {0}", meltingPoint);
-            Console.WriteLine(" Boiling Pt: {0}", boilingPoint);
+            return ret;
+        }
+
+        // Gets current iteration item
+
+        public override object CurrentItem()
+        {
+            return aggregate[current];
+        }
+
+        // Gets whether iterations are complete
+
+        public override bool IsDone()
+        {
+            return current >= aggregate.Count;
+        }
+    }
+
+    /// Real World
+    /// Iterator Design Pattern
+    /// </summary>
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Build a collection
+
+            Collection collection = new Collection();
+            collection[0] = new Item("Item 0");
+            collection[1] = new Item("Item 1");
+            collection[2] = new Item("Item 2");
+            collection[3] = new Item("Item 3");
+            collection[4] = new Item("Item 4");
+            collection[5] = new Item("Item 5");
+            collection[6] = new Item("Item 6");
+            collection[7] = new Item("Item 7");
+            collection[8] = new Item("Item 8");
+
+            // Create iterator
+
+            Iterator iterator = collection.CreateIterator();
+
+            // Skip every other item
+
+            iterator.Step = 2;
+
+            Console.WriteLine("Iterating over collection:");
+
+            for (Item item = iterator.First();
+                !iterator.IsDone; item = iterator.Next())
+            {
+                Console.WriteLine(item.Name);
+            }
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// A collection item
+    /// </summary>
+
+    public class Item
+    {
+        string name;
+
+        // Constructor
+
+        public Item(string name)
+        {
+            this.name = name;
+        }
+
+        public string Name
+        {
+            get { return name; }
         }
     }
 
     /// <summary>
-    /// The 'Adaptee' class
+    /// The 'Aggregate' interface
     /// </summary>
 
-    public class ChemicalDatabank
+    public interface IAbstractCollection
     {
-        // The databank 'legacy API'
+        Iterator CreateIterator();
+    }
 
-        public float GetCriticalPoint(string compound, string point)
+    /// <summary>
+    /// The 'ConcreteAggregate' class
+    /// </summary>
+
+    public class Collection : IAbstractCollection
+    {
+        List<Item> items = new List<Item>();
+
+        public Iterator CreateIterator()
         {
-            // Melting Point
-            if (point == "M")
-            {
-                switch (compound.ToLower())
-                {
-                    case "water": return 0.0f;
-                    case "benzene": return 5.5f;
-                    case "ethanol": return -114.1f;
-                    default: return 0f;
-                }
-            }
+            return new Iterator(this);
+        }
 
-            // Boiling Point
+        // Gets item count
 
+        public int Count
+        {
+            get { return items.Count; }
+        }
+
+        // Indexer
+
+        public Item this[int index]
+        {
+            get { return items[index]; }
+            set { items.Add(value); }
+        }
+    }
+
+    /// <summary>
+    /// The 'Iterator' interface
+    /// </summary>
+
+    public interface IAbstractIterator
+    {
+        Item First();
+        Item Next();
+        bool IsDone { get; }
+        Item CurrentItem { get; }
+    }
+
+    /// <summary>
+    /// The 'ConcreteIterator' class
+    /// </summary>
+
+    public class Iterator : IAbstractIterator
+    {
+        Collection collection;
+        int current = 0;
+        int step = 1;
+
+        // Constructor
+
+        public Iterator(Collection collection)
+        {
+            this.collection = collection;
+        }
+
+        // Gets first item
+
+        public Item First()
+        {
+            current = 0;
+            return collection[current] as Item;
+        }
+
+        // Gets next item
+
+        public Item Next()
+        {
+            current += step;
+            if (!IsDone)
+                return collection[current] as Item;
             else
-            {
-                switch (compound.ToLower())
-                {
-                    case "water": return 100.0f;
-                    case "benzene": return 80.1f;
-                    case "ethanol": return 78.3f;
-                    default: return 0f;
-                }
-            }
+                return null;
         }
 
-        public string GetMolecularStructure(string compound)
+        // Gets or sets stepsize
+
+        public int Step
         {
-            switch (compound.ToLower())
-            {
-                case "water": return "H20";
-                case "benzene": return "C6H6";
-                case "ethanol": return "C2H5OH";
-                default: return "";
-            }
+            get { return step; }
+            set { step = value; }
         }
 
-        public double GetMolecularWeight(string compound)
+        // Gets current iterator item
+
+        public Item CurrentItem
         {
-            switch (compound.ToLower())
-            {
-                case "water": return 18.015;
-                case "benzene": return 78.1134;
-                case "ethanol": return 46.0688;
-                default: return 0d;
-            }
+            get { return collection[current] as Item; }
+        }
+
+        // Gets whether iteration is complete
+
+        public bool IsDone
+        {
+            get { return current >= collection.Count; }
         }
     }
 }
