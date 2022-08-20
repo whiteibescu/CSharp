@@ -1,39 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Composite.RealWorld
+namespace Adapter.RealWorld
 {
     /// <summary>
-    /// Composite Design Pattern
+    /// Adapter Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create a tree structure 
+            // Non-adapted chemical compound
 
-            CompositeElement root = new CompositeElement("Picture");
-            root.Add(new PrimitiveElement("Red Line"));
-            root.Add(new PrimitiveElement("Blue Circle"));
-            root.Add(new PrimitiveElement("Green Box"));
+            Compound unknown = new Compound();
+            unknown.Display();
 
-            // Create a branch
+            // Adapted chemical compounds
 
-            CompositeElement comp = new CompositeElement("Two Circles");
-            comp.Add(new PrimitiveElement("Black Circle"));
-            comp.Add(new PrimitiveElement("White Circle"));
-            root.Add(comp);
+            Compound water = new RichCompound("Water");
+            water.Display();
 
-            // Add and remove a PrimitiveElement
+            Compound benzene = new RichCompound("Benzene");
+            benzene.Display();
 
-            PrimitiveElement pe = new PrimitiveElement("Yellow Line");
-            root.Add(pe);
-            root.Remove(pe);
-
-            // Recursively display nodes
-
-            root.Display(1);
+            Compound ethanol = new RichCompound("Ethanol");
+            ethanol.Display();
 
             // Wait for user
 
@@ -42,92 +33,112 @@ namespace Composite.RealWorld
     }
 
     /// <summary>
-    /// The 'Component' Treenode
+    /// The 'Target' class
     /// </summary>
 
-    public abstract class DrawingElement
+    public class Compound
     {
-        protected string name;
+        protected float boilingPoint;
+        protected float meltingPoint;
+        protected double molecularWeight;
+        protected string molecularFormula;
 
-        // Constructor
-
-        public DrawingElement(string name)
+        public virtual void Display()
         {
-            this.name = name;
-        }
-
-        public abstract void Add(DrawingElement d);
-        public abstract void Remove(DrawingElement d);
-        public abstract void Display(int indent);
-    }
-
-    /// <summary>
-    /// The 'Leaf' class
-    /// </summary>
-
-    public class PrimitiveElement : DrawingElement
-    {
-        // Constructor
-
-        public PrimitiveElement(string name)
-            : base(name)
-        {
-        }
-
-        public override void Add(DrawingElement c)
-        {
-            Console.WriteLine(
-                "Cannot add to a PrimitiveElement");
-        }
-
-        public override void Remove(DrawingElement c)
-        {
-            Console.WriteLine(
-                "Cannot remove from a PrimitiveElement");
-        }
-
-        public override void Display(int indent)
-        {
-            Console.WriteLine(
-                new String('-', indent) + " " + name);
+            Console.WriteLine("\nCompound: Unknown ------ ");
         }
     }
 
     /// <summary>
-    /// The 'Composite' class
+    /// The 'Adapter' class
     /// </summary>
 
-    public class CompositeElement : DrawingElement
+    public class RichCompound : Compound
     {
-        List<DrawingElement> elements = new List<DrawingElement>();
+        private string chemical;
+        private ChemicalDatabank bank;
 
         // Constructor
 
-        public CompositeElement(string name)
-            : base(name)
+        public RichCompound(string chemical)
         {
+            this.chemical = chemical;
         }
 
-        public override void Add(DrawingElement d)
+        public override void Display()
         {
-            elements.Add(d);
+            // The Adaptee
+
+            bank = new ChemicalDatabank();
+
+            boilingPoint = bank.GetCriticalPoint(chemical, "B");
+            meltingPoint = bank.GetCriticalPoint(chemical, "M");
+            molecularWeight = bank.GetMolecularWeight(chemical);
+            molecularFormula = bank.GetMolecularStructure(chemical);
+
+            Console.WriteLine("\nCompound: {0} ------ ", chemical);
+            Console.WriteLine(" Formula: {0}", molecularFormula);
+            Console.WriteLine(" Weight : {0}", molecularWeight);
+            Console.WriteLine(" Melting Pt: {0}", meltingPoint);
+            Console.WriteLine(" Boiling Pt: {0}", boilingPoint);
         }
+    }
 
-        public override void Remove(DrawingElement d)
+    /// <summary>
+    /// The 'Adaptee' class
+    /// </summary>
+
+    public class ChemicalDatabank
+    {
+        // The databank 'legacy API'
+
+        public float GetCriticalPoint(string compound, string point)
         {
-            elements.Remove(d);
-        }
-
-        public override void Display(int indent)
-        {
-            Console.WriteLine(new String('-', indent) +
-                "+ " + name);
-
-            // Display each child element on this node
-
-            foreach (DrawingElement d in elements)
+            // Melting Point
+            if (point == "M")
             {
-                d.Display(indent + 2);
+                switch (compound.ToLower())
+                {
+                    case "water": return 0.0f;
+                    case "benzene": return 5.5f;
+                    case "ethanol": return -114.1f;
+                    default: return 0f;
+                }
+            }
+
+            // Boiling Point
+
+            else
+            {
+                switch (compound.ToLower())
+                {
+                    case "water": return 100.0f;
+                    case "benzene": return 80.1f;
+                    case "ethanol": return 78.3f;
+                    default: return 0f;
+                }
+            }
+        }
+
+        public string GetMolecularStructure(string compound)
+        {
+            switch (compound.ToLower())
+            {
+                case "water": return "H20";
+                case "benzene": return "C6H6";
+                case "ethanol": return "C2H5OH";
+                default: return "";
+            }
+        }
+
+        public double GetMolecularWeight(string compound)
+        {
+            switch (compound.ToLower())
+            {
+                case "water": return 18.015;
+                case "benzene": return 78.1134;
+                case "ethanol": return 46.0688;
+                default: return 0d;
             }
         }
     }
