@@ -1,35 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Iterator.Structural
+namespace Command.Structural2
 {
     /// <summary>
-    /// Iterator Design Pattern
+    /// Command Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            ConcreteAggregate a = new ConcreteAggregate();
-            a[0] = "Item A";
-            a[1] = "Item B";
-            a[2] = "Item C";
-            a[3] = "Item D";
+            // Create receiver, command, and invoker
 
-            // Create Iterator and provide aggregate
+            Receiver receiver = new Receiver();
+            Command command = new ConcreteCommand(receiver);
+            Invoker invoker = new Invoker();
 
-            Iterator i = a.CreateIterator();
+            // Set and execute command
 
-            Console.WriteLine("Iterating over collection:");
-
-            object item = i.First();
-
-            while (item != null)
-            {
-                Console.WriteLine(item);
-                item = i.Next();
-            }
+            invoker.SetCommand(command);
+            invoker.ExecuteCommand();
 
             // Wait for user
 
@@ -38,275 +28,260 @@ namespace Iterator.Structural
     }
 
     /// <summary>
-    /// The 'Aggregate' abstract class
+    /// The 'Command' abstract class
     /// </summary>
 
-    public abstract class Aggregate
+    public abstract class Command
     {
-        public abstract Iterator CreateIterator();
-    }
-
-    /// <summary>
-    /// The 'ConcreteAggregate' class
-    /// </summary>
-
-    public class ConcreteAggregate : Aggregate
-    {
-        List<object> items = new List<object>();
-
-        public override Iterator CreateIterator()
-        {
-            return new ConcreteIterator(this);
-        }
-
-        // Get item count
-
-        public int Count
-        {
-            get { return items.Count; }
-        }
-
-        // Indexer
-
-        public object this[int index]
-        {
-            get { return items[index]; }
-            set { items.Insert(index, value); }
-        }
-    }
-
-    /// <summary>
-    /// The 'Iterator' abstract class
-    /// </summary>
-
-    public abstract class Iterator
-    {
-        public abstract object First();
-        public abstract object Next();
-        public abstract bool IsDone();
-        public abstract object CurrentItem();
-    }
-
-    /// <summary>
-    /// The 'ConcreteIterator' class
-    /// </summary>
-
-    public class ConcreteIterator : Iterator
-    {
-        ConcreteAggregate aggregate;
-        int current = 0;
+        protected Receiver receiver;
 
         // Constructor
 
-        public ConcreteIterator(ConcreteAggregate aggregate)
+        public Command(Receiver receiver)
         {
-            this.aggregate = aggregate;
+            this.receiver = receiver;
         }
 
-        // Gets first iteration item
+        public abstract void Execute();
+    }
 
-        public override object First()
+    /// <summary>
+    /// The 'ConcreteCommand' class
+    /// </summary>
+
+    public class ConcreteCommand : Command
+    {
+        // Constructor
+
+        public ConcreteCommand(Receiver receiver) :
+            base(receiver)
         {
-            return aggregate[0];
         }
 
-        // Gets next iteration item
-
-        public override object Next()
+        public override void Execute()
         {
-            object ret = null;
-            if (current < aggregate.Count - 1)
-            {
-                ret = aggregate[++current];
-            }
-
-            return ret;
-        }
-
-        // Gets current iteration item
-
-        public override object CurrentItem()
-        {
-            return aggregate[current];
-        }
-
-        // Gets whether iterations are complete
-
-        public override bool IsDone()
-        {
-            return current >= aggregate.Count;
+            receiver.Action();
         }
     }
 
-    /// Real World
-    /// Iterator Design Pattern
+    /// <summary>
+    /// The 'Receiver' class
     /// </summary>
 
-    public class Program
+    public class Receiver
+    {
+        public void Action()
+        {
+            Console.WriteLine("Called Receiver.Action()");
+        }
+    }
+
+    /// <summary>
+    /// The 'Invoker' class
+    /// </summary>
+
+    public class Invoker
+    {
+        Command command;
+
+        public void SetCommand(Command command)
+        {
+            this.command = command;
+        }
+
+        public void ExecuteCommand()
+        {
+            command.Execute();
+        }
+    }
+}
+
+namespace Command.RealWorld
+{
+    /// <summary>
+    /// Command Design Pattern
+    /// </summary>
+
+    public class Program23
     {
         public static void Main(string[] args)
         {
-            // Build a collection
+            // Create user and let her compute
 
-            Collection collection = new Collection();
-            collection[0] = new Item("Item 0");
-            collection[1] = new Item("Item 1");
-            collection[2] = new Item("Item 2");
-            collection[3] = new Item("Item 3");
-            collection[4] = new Item("Item 4");
-            collection[5] = new Item("Item 5");
-            collection[6] = new Item("Item 6");
-            collection[7] = new Item("Item 7");
-            collection[8] = new Item("Item 8");
+            User user = new User();
 
-            // Create iterator
+            // User presses calculator buttons
 
-            Iterator iterator = collection.CreateIterator();
+            user.Compute('+', 100);
+            user.Compute('-', 50);
+            user.Compute('*', 10);
+            user.Compute('/', 2);
 
-            // Skip every other item
+            // Undo 4 commands
 
-            iterator.Step = 2;
+            user.Undo(4);
 
-            Console.WriteLine("Iterating over collection:");
+            // Redo 3 commands
 
-            for (Item item = iterator.First();
-                !iterator.IsDone; item = iterator.Next())
-            {
-                Console.WriteLine(item.Name);
-            }
+            user.Redo(3);
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
+
     /// <summary>
-    /// A collection item
+    /// The 'Command' abstract class
     /// </summary>
 
-    public class Item
+    public abstract class Command
     {
-        string name;
+        public abstract void Execute();
+        public abstract void UnExecute();
+    }
+
+    /// <summary>
+    /// The 'ConcreteCommand' class
+    /// </summary>
+
+    public class CalculatorCommand : Command
+    {
+        char @operator;
+        int operand;
+        Calculator calculator;
 
         // Constructor
 
-        public Item(string name)
+        public CalculatorCommand(Calculator calculator,
+            char @operator, int operand)
         {
-            this.name = name;
+            this.calculator = calculator;
+            this.@operator = @operator;
+            this.operand = operand;
         }
 
-        public string Name
+        // Gets operator
+
+        public char Operator
         {
-            get { return name; }
+            set { @operator = value; }
+        }
+
+        // Get operand
+
+        public int Operand
+        {
+            set { operand = value; }
+        }
+
+        // Execute new command
+
+        public override void Execute()
+        {
+            calculator.Operation(@operator, operand);
+        }
+
+        // Unexecute last command
+
+        public override void UnExecute()
+        {
+            calculator.Operation(Undo(@operator), operand);
+        }
+
+        // Returns opposite operator for given operator
+
+        private char Undo(char @operator)
+        {
+            switch (@operator)
+            {
+                case '+': return '-';
+                case '-': return '+';
+                case '*': return '/';
+                case '/': return '*';
+                default:
+                    throw new
+             ArgumentException("@operator");
+            }
         }
     }
 
     /// <summary>
-    /// The 'Aggregate' interface
+    /// The 'Receiver' class
     /// </summary>
 
-    public interface IAbstractCollection
+    public class Calculator
     {
-        Iterator CreateIterator();
-    }
+        int curr = 0;
 
-    /// <summary>
-    /// The 'ConcreteAggregate' class
-    /// </summary>
-
-    public class Collection : IAbstractCollection
-    {
-        List<Item> items = new List<Item>();
-
-        public Iterator CreateIterator()
+        public void Operation(char @operator, int operand)
         {
-            return new Iterator(this);
-        }
-
-        // Gets item count
-
-        public int Count
-        {
-            get { return items.Count; }
-        }
-
-        // Indexer
-
-        public Item this[int index]
-        {
-            get { return items[index]; }
-            set { items.Add(value); }
+            switch (@operator)
+            {
+                case '+': curr += operand; break;
+                case '-': curr -= operand; break;
+                case '*': curr *= operand; break;
+                case '/': curr /= operand; break;
+            }
+            Console.WriteLine(
+                "Current value = {0,3} (following {1} {2})",
+                curr, @operator, operand);
         }
     }
 
     /// <summary>
-    /// The 'Iterator' interface
+    /// The 'Invoker' class
     /// </summary>
 
-    public interface IAbstractIterator
+    public class User
     {
-        Item First();
-        Item Next();
-        bool IsDone { get; }
-        Item CurrentItem { get; }
-    }
+        // Initializers
 
-    /// <summary>
-    /// The 'ConcreteIterator' class
-    /// </summary>
-
-    public class Iterator : IAbstractIterator
-    {
-        Collection collection;
+        Calculator calculator = new Calculator();
+        List<Command> commands = new List<Command>();
         int current = 0;
-        int step = 1;
 
-        // Constructor
-
-        public Iterator(Collection collection)
+        public void Redo(int levels)
         {
-            this.collection = collection;
+            Console.WriteLine("\n---- Redo {0} levels ", levels);
+            // Perform redo operations
+            for (int i = 0; i < levels; i++)
+            {
+                if (current < commands.Count - 1)
+                {
+                    Command command = commands[current++];
+                    command.Execute();
+                }
+            }
         }
 
-        // Gets first item
-
-        public Item First()
+        public void Undo(int levels)
         {
-            current = 0;
-            return collection[current] as Item;
+            Console.WriteLine("\n---- Undo {0} levels ", levels);
+
+            // Perform undo operations
+
+            for (int i = 0; i < levels; i++)
+            {
+                if (current > 0)
+                {
+                    Command command = commands[--current] as Command;
+                    command.UnExecute();
+                }
+            }
         }
 
-        // Gets next item
-
-        public Item Next()
+        public void Compute(char @operator, int operand)
         {
-            current += step;
-            if (!IsDone)
-                return collection[current] as Item;
-            else
-                return null;
-        }
+            // Create command operation and execute it
 
-        // Gets or sets stepsize
+            Command command = new CalculatorCommand(calculator, @operator, operand);
+            command.Execute();
 
-        public int Step
-        {
-            get { return step; }
-            set { step = value; }
-        }
+            // Add command to undo list
 
-        // Gets current iterator item
-
-        public Item CurrentItem
-        {
-            get { return collection[current] as Item; }
-        }
-
-        // Gets whether iteration is complete
-
-        public bool IsDone
-        {
-            get { return current >= collection.Count; }
+            commands.Add(command);
+            current++;
         }
     }
 }
