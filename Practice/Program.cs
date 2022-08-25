@@ -1,21 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Template.RealWorld
+namespace Composite.RealWorld
 {
     /// <summary>
-    /// Template Design Pattern
+    /// Composite Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
+            // Create a tree structure 
 
-            DataAccessor products = new Products();
-            products.Run(3);
+            CompositeElement root = new CompositeElement("Picture");
+            root.Add(new PrimitiveElement("Red Line"));
+            root.Add(new PrimitiveElement("Blue Circle"));
+            root.Add(new PrimitiveElement("Green Box"));
+
+            // Create a branch
+
+            CompositeElement comp = new CompositeElement("Two Circles");
+            comp.Add(new PrimitiveElement("Black Circle"));
+            comp.Add(new PrimitiveElement("White Circle"));
+            root.Add(comp);
+
+            // Add and remove a PrimitiveElement
+
+            PrimitiveElement pe = new PrimitiveElement("Yellow Line");
+            root.Add(pe);
+            root.Remove(pe);
+
+            // Recursively display nodes
+
+            root.Display(1);
 
             // Wait for user
 
@@ -24,237 +42,93 @@ namespace Template.RealWorld
     }
 
     /// <summary>
-    /// The 'AbstractClass' abstract class
+    /// The 'Component' Treenode
     /// </summary>
 
-    public abstract class DataAccessor
+    public abstract class DrawingElement
     {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
+        protected string name;
 
-        // The 'Template Method' 
+        // Constructor
 
-        public void Run(int top)
+        public DrawingElement(string name)
         {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
+            this.name = name;
+        }
+
+        public abstract void Add(DrawingElement d);
+        public abstract void Remove(DrawingElement d);
+        public abstract void Display(int indent);
+    }
+
+    /// <summary>
+    /// The 'Leaf' class
+    /// </summary>
+
+    public class PrimitiveElement : DrawingElement
+    {
+        // Constructor
+
+        public PrimitiveElement(string name)
+            : base(name)
+        {
+        }
+
+        public override void Add(DrawingElement c)
+        {
+            Console.WriteLine(
+                "Cannot add to a PrimitiveElement");
+        }
+
+        public override void Remove(DrawingElement c)
+        {
+            Console.WriteLine(
+                "Cannot remove from a PrimitiveElement");
+        }
+
+        public override void Display(int indent)
+        {
+            Console.WriteLine(
+                new String('-', indent) + " " + name);
         }
     }
 
     /// <summary>
-    /// A 'ConcreteClass' class
+    /// The 'Composite' class
     /// </summary>
 
-    public class Categories : DataAccessor
+    public class CompositeElement : DrawingElement
     {
-        private List<string> categories;
+        List<DrawingElement> elements = new List<DrawingElement>();
 
-        public override void Connect()
+        // Constructor
+
+        public CompositeElement(string name)
+            : base(name)
         {
-            categories = new List<string>();
         }
 
-        public override void Select()
+        public override void Add(DrawingElement d)
         {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
+            elements.Add(d);
         }
 
-        public override void Process(int top)
+        public override void Remove(DrawingElement d)
         {
-            Console.WriteLine("Categories ---- ");
+            elements.Remove(d);
+        }
 
-            for (int i = 0; i < top; i++)
+        public override void Display(int indent)
+        {
+            Console.WriteLine(new String('-', indent) +
+                "+ " + name);
+
+            // Display each child element on this node
+
+            foreach (DrawingElement d in elements)
             {
-                Console.WriteLine(categories[i]);
+                d.Display(indent + 2);
             }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
-        }
-    }
-}
-
-namespace Template.RealWorlds
-{
-    /// <summary>
-    /// Template Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            DataAccessor categories = new Categories();
-            categories.Run(5);
-
-            DataAccessor products = new Products();
-            products.Run(3);
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-
-    /// <summary>
-    /// The 'AbstractClass' abstract class
-    /// </summary>
-
-    public abstract class DataAccessor
-    {
-        public abstract void Connect();
-        public abstract void Select();
-        public abstract void Process(int top);
-        public abstract void Disconnect();
-
-        // The 'Template Method' 
-
-        public void Run(int top)
-        {
-            Connect();
-            Select();
-            Process(top);
-            Disconnect();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Categories : DataAccessor
-    {
-        private List<string> categories;
-
-        public override void Connect()
-        {
-            categories = new List<string>();
-        }
-
-        public override void Select()
-        {
-            categories.Add("Red");
-            categories.Add("Green");
-            categories.Add("Blue");
-            categories.Add("Yellow");
-            categories.Add("Purple");
-            categories.Add("White");
-            categories.Add("Black");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Categories ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(categories[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            categories.Clear();
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteClass' class
-    /// </summary>
-
-    public class Products : DataAccessor
-    {
-        private List<string> products;
-
-        public override void Connect()
-        {
-            products = new List<string>();
-        }
-
-        public override void Select()
-        {
-            products.Add("Car");
-            products.Add("Bike");
-            products.Add("Boat");
-            products.Add("Truck");
-            products.Add("Moped");
-            products.Add("Rollerskate");
-            products.Add("Stroller");
-        }
-
-        public override void Process(int top)
-        {
-            Console.WriteLine("Products ---- ");
-
-            for (int i = 0; i < top; i++)
-            {
-                Console.WriteLine(products[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        public override void Disconnect()
-        {
-            products.Clear();
         }
     }
 }
