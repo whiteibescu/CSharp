@@ -1,171 +1,260 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Decorator.RealWorld
+namespace Template.RealWorld
 {
     /// <summary>
-    /// Decorator Design Pattern
+    /// Template Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create book
+            DataAccessor categories = new Categories();
+            categories.Run(5);
 
-            Book book = new Book("Worley", "Inside ASP.NET", 10);
-            book.Display();
-
-            // Create video
-
-            Video video = new Video("Spielberg", "Jaws", 23, 92);
-            video.Display();
-
-            // Make video borrowable, then borrow and display
-
-            Console.WriteLine("\nMaking video borrowable:");
-
-            Borrowable borrowvideo = new Borrowable(video);
-            borrowvideo.BorrowItem("Customer #1");
-            borrowvideo.BorrowItem("Customer #2");
-
-            borrowvideo.Display();
+            DataAccessor products = new Products();
+            products.Run(3);
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
-    /// <summary>
-    /// The 'Component' abstract class
-    /// </summary>
-
-    public abstract class LibraryItem
-    {
-        private int numCopies;
-
-        public int NumCopies
-        {
-            get { return numCopies; }
-            set { numCopies = value; }
-        }
-
-        public abstract void Display();
-    }
 
     /// <summary>
-    /// The 'ConcreteComponent' class
+    /// The 'AbstractClass' abstract class
     /// </summary>
 
-    public class Book : LibraryItem
+    public abstract class DataAccessor
     {
-        private string author;
-        private string title;
+        public abstract void Connect();
+        public abstract void Select();
+        public abstract void Process(int top);
+        public abstract void Disconnect();
 
-        // Constructor
+        // The 'Template Method' 
 
-        public Book(string author, string title, int numCopies)
+        public void Run(int top)
         {
-            this.author = author;
-            this.title = title;
-            this.NumCopies = numCopies;
-        }
-
-        public override void Display()
-        {
-            Console.WriteLine("\nBook ------ ");
-            Console.WriteLine(" Author: {0}", author);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
+            Connect();
+            Select();
+            Process(top);
+            Disconnect();
         }
     }
 
     /// <summary>
-    /// The 'ConcreteComponent' class
+    /// A 'ConcreteClass' class
     /// </summary>
 
-    public class Video : LibraryItem
+    public class Categories : DataAccessor
     {
-        private string director;
-        private string title;
-        private int playTime;
+        private List<string> categories;
 
-        // Constructor
-
-        public Video(string director, string title, int numCopies, int playTime)
+        public override void Connect()
         {
-            this.director = director;
-            this.title = title;
-            this.NumCopies = numCopies;
-            this.playTime = playTime;
+            categories = new List<string>();
         }
 
-        public override void Display()
+        public override void Select()
         {
-            Console.WriteLine("\nVideo ----- ");
-            Console.WriteLine(" Director: {0}", director);
-            Console.WriteLine(" Title: {0}", title);
-            Console.WriteLine(" # Copies: {0}", NumCopies);
-            Console.WriteLine(" Playtime: {0}\n", playTime);
-        }
-    }
-
-    /// <summary>
-    /// The 'Decorator' abstract class
-    /// </summary>
-
-    public abstract class Decorator : LibraryItem
-    {
-        protected LibraryItem libraryItem;
-
-        // Constructor
-
-        public Decorator(LibraryItem libraryItem)
-        {
-            this.libraryItem = libraryItem;
+            categories.Add("Red");
+            categories.Add("Green");
+            categories.Add("Blue");
+            categories.Add("Yellow");
+            categories.Add("Purple");
+            categories.Add("White");
+            categories.Add("Black");
         }
 
-        public override void Display()
+        public override void Process(int top)
         {
-            libraryItem.Display();
-        }
-    }
+            Console.WriteLine("Categories ---- ");
 
-    /// <summary>
-    /// The 'ConcreteDecorator' class
-    /// </summary>
-
-    public class Borrowable : Decorator
-    {
-        protected readonly List<string> borrowers = new List<string>();
-
-        // Constructor
-
-        public Borrowable(LibraryItem libraryItem)
-            : base(libraryItem)
-        {
-        }
-
-        public void BorrowItem(string name)
-        {
-            borrowers.Add(name);
-            libraryItem.NumCopies--;
-        }
-
-        public void ReturnItem(string name)
-        {
-            borrowers.Remove(name);
-            libraryItem.NumCopies++;
-        }
-
-        public override void Display()
-        {
-            base.Display();
-
-            foreach (string borrower in borrowers)
+            for (int i = 0; i < top; i++)
             {
-                Console.WriteLine(" borrower: " + borrower);
+                Console.WriteLine(categories[i]);
             }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            categories.Clear();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Products : DataAccessor
+    {
+        private List<string> products;
+
+        public override void Connect()
+        {
+            products = new List<string>();
+        }
+
+        public override void Select()
+        {
+            products.Add("Car");
+            products.Add("Bike");
+            products.Add("Boat");
+            products.Add("Truck");
+            products.Add("Moped");
+            products.Add("Rollerskate");
+            products.Add("Stroller");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Products ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(products[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            products.Clear();
+        }
+    }
+}
+
+namespace Template.RealWorlds
+{
+    /// <summary>
+    /// Template Design Pattern
+    /// </summary>
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            DataAccessor categories = new Categories();
+            categories.Run(5);
+
+            DataAccessor products = new Products();
+            products.Run(3);
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
+    /// The 'AbstractClass' abstract class
+    /// </summary>
+
+    public abstract class DataAccessor
+    {
+        public abstract void Connect();
+        public abstract void Select();
+        public abstract void Process(int top);
+        public abstract void Disconnect();
+
+        // The 'Template Method' 
+
+        public void Run(int top)
+        {
+            Connect();
+            Select();
+            Process(top);
+            Disconnect();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Categories : DataAccessor
+    {
+        private List<string> categories;
+
+        public override void Connect()
+        {
+            categories = new List<string>();
+        }
+
+        public override void Select()
+        {
+            categories.Add("Red");
+            categories.Add("Green");
+            categories.Add("Blue");
+            categories.Add("Yellow");
+            categories.Add("Purple");
+            categories.Add("White");
+            categories.Add("Black");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Categories ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(categories[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            categories.Clear();
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteClass' class
+    /// </summary>
+
+    public class Products : DataAccessor
+    {
+        private List<string> products;
+
+        public override void Connect()
+        {
+            products = new List<string>();
+        }
+
+        public override void Select()
+        {
+            products.Add("Car");
+            products.Add("Bike");
+            products.Add("Boat");
+            products.Add("Truck");
+            products.Add("Moped");
+            products.Add("Rollerskate");
+            products.Add("Stroller");
+        }
+
+        public override void Process(int top)
+        {
+            Console.WriteLine("Products ---- ");
+
+            for (int i = 0; i < top; i++)
+            {
+                Console.WriteLine(products[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        public override void Disconnect()
+        {
+            products.Clear();
         }
     }
 }
