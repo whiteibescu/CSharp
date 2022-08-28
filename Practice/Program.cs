@@ -1,121 +1,304 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
 
-namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
+namespace Mediator.Structural
 {
-    public interface IObserver
+    /// <summary>
+    /// Mediator Design Pattern
+    /// </summary>
+
+    public class Program
     {
-        // Receive update from subject
-        void Update(ISubject subject);
+        public static void Main(string[] args)
+        {
+            ConcreteMediator m = new ConcreteMediator();
+
+            ConcreteColleague1 c1 = new ConcreteColleague1(m);
+            ConcreteColleague2 c2 = new ConcreteColleague2(m);
+
+            m.Colleague1 = c1;
+            m.Colleague2 = c2;
+
+            c1.Send("How are you?");
+            c2.Send("Fine, thanks");
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
     }
 
-    public interface ISubject
+    /// <summary>
+    /// The 'Mediator' abstract class
+    /// </summary>
+
+    public abstract class Mediator
     {
-        // Attach an observer to the subject.
-        void Attach(IObserver observer);
-
-        // Detach an observer from the subject.
-        void Detach(IObserver observer);
-
-        // Notify all observers about an event.
-        void Notify();
+        public abstract void Send(string message,
+            Colleague colleague);
     }
 
-    // The Subject owns some important state and notifies observers when the
-    // state changes.
-    public class Subject : ISubject
+    /// <summary>
+    /// The 'ConcreteMediator' class
+    /// </summary>
+
+    public class ConcreteMediator : Mediator
     {
-        // For the sake of simplicity, the Subject's state, essential to all
-        // subscribers, is stored in this variable.
-        public int State { get; set; } = -0;
+        ConcreteColleague1 colleague1;
+        ConcreteColleague2 colleague2;
 
-        // List of subscribers. In real life, the list of subscribers can be
-        // stored more comprehensively (categorized by event type, etc.).
-        private List<IObserver> _observers = new List<IObserver>();
-
-        // The subscription management methods.
-        public void Attach(IObserver observer)
+        public ConcreteColleague1 Colleague1
         {
-            Console.WriteLine("Subject: Attached an observer.");
-            this._observers.Add(observer);
+            set { colleague1 = value; }
         }
 
-        public void Detach(IObserver observer)
+        public ConcreteColleague2 Colleague2
         {
-            this._observers.Remove(observer);
-            Console.WriteLine("Subject: Detached an observer.");
+            set { colleague2 = value; }
         }
 
-        // Trigger an update in each subscriber.
-        public void Notify()
+        public override void Send(string message, Colleague colleague)
         {
-            Console.WriteLine("Subject: Notifying observers...");
-
-            foreach (var observer in _observers)
+            if (colleague == colleague1)
             {
-                observer.Update(this);
+                colleague2.Notify(message);
             }
-        }
-
-        // Usually, the subscription logic is only a fraction of what a Subject
-        // can really do. Subjects commonly hold some important business logic,
-        // that triggers a notification method whenever something important is
-        // about to happen (or after it).
-        public void SomeBusinessLogic()
-        {
-            Console.WriteLine("\nSubject: I'm doing something important.");
-            this.State = new Random().Next(0, 10);
-
-            Thread.Sleep(15);
-
-            Console.WriteLine("Subject: My state has just changed to: " + this.State);
-            this.Notify();
-        }
-    }
-
-    // Concrete Observers react to the updates issued by the Subject they had
-    // been attached to.
-    class ConcreteObserverA : IObserver
-    {
-        public void Update(ISubject subject)
-        {
-            if ((subject as Subject).State < 3)
+            else
             {
-                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
+                colleague1.Notify(message);
             }
         }
     }
 
-    class ConcreteObserverB : IObserver
+    /// <summary>
+    /// The 'Colleague' abstract class
+    /// </summary>
+
+    public abstract class Colleague
     {
-        public void Update(ISubject subject)
+        protected Mediator mediator;
+
+        // Constructor
+
+        public Colleague(Mediator mediator)
         {
-            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
+            this.mediator = mediator;
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteColleague' class
+    /// </summary>
+
+    public class ConcreteColleague1 : Colleague
+    {
+        // Constructor
+
+        public ConcreteColleague1(Mediator mediator)
+            : base(mediator)
+        {
+        }
+
+        public void Send(string message)
+        {
+            mediator.Send(message, this);
+        }
+
+        public void Notify(string message)
+        {
+            Console.WriteLine("Colleague1 gets message: "
+                + message);
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteColleague' class
+    /// </summary>
+
+    public class ConcreteColleague2 : Colleague
+    {
+        // Constructor
+
+        public ConcreteColleague2(Mediator mediator)
+            : base(mediator)
+        {
+        }
+
+        public void Send(string message)
+        {
+            mediator.Send(message, this);
+        }
+
+        public void Notify(string message)
+        {
+            Console.WriteLine("Colleague2 gets message: "
+                + message);
+        }
+    }
+
+    /// Real World
+    /// Mediator Design Pattern
+    /// </summary>
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Create chatroom
+
+            Chatroom chatroom = new Chatroom();
+
+            // Create participants and register them
+
+            Participant George = new Beatle("George");
+            Participant Paul = new Beatle("Paul");
+            Participant Ringo = new Beatle("Ringo");
+            Participant John = new Beatle("John");
+            Participant Yoko = new NonBeatle("Yoko");
+
+            chatroom.Register(George);
+            chatroom.Register(Paul);
+            chatroom.Register(Ringo);
+            chatroom.Register(John);
+            chatroom.Register(Yoko);
+
+            // Chatting participants
+
+            Yoko.Send("John", "Hi John!");
+            Paul.Send("Ringo", "All you need is love");
+            Ringo.Send("George", "My sweet Lord");
+            Paul.Send("John", "Can't buy me love");
+            John.Send("Yoko", "My sweet love");
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
+    /// The 'Mediator' abstract class
+    /// </summary>
+
+    public abstract class AbstractChatroom
+    {
+        public abstract void Register(Participant participant);
+        public abstract void Send(
+            string from, string to, string message);
+    }
+
+    /// <summary>
+    /// The 'ConcreteMediator' class
+    /// </summary>
+
+    public class Chatroom : AbstractChatroom
+    {
+        private Dictionary<string, Participant> participants = new Dictionary<string, Participant>();
+
+        public override void Register(Participant participant)
+        {
+            if (!participants.ContainsValue(participant))
             {
-                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
+                participants[participant.Name] = participant;
+            }
+
+            participant.Chatroom = this;
+        }
+
+        public override void Send(string from, string to, string message)
+        {
+            Participant participant = participants[to];
+
+            if (participant != null)
+            {
+                participant.Receive(from, message);
             }
         }
     }
 
-    class Program
+    /// <summary>
+    /// The 'AbstractColleague' class
+    /// </summary>
+
+    public class Participant
     {
-        static void Main(string[] args)
+        Chatroom chatroom;
+        string name;
+
+        // Constructor
+
+        public Participant(string name)
         {
-            // The client code.
-            var subject = new Subject();
-            var observerA = new ConcreteObserverA();
-            subject.Attach(observerA);
+            this.name = name;
+        }
 
-            var observerB = new ConcreteObserverB();
-            subject.Attach(observerB);
+        // Gets participant name
 
-            subject.SomeBusinessLogic();
-            subject.SomeBusinessLogic();
+        public string Name
+        {
+            get { return name; }
+        }
 
-            subject.Detach(observerB);
+        // Gets chatroom
 
-            subject.SomeBusinessLogic();
+        public Chatroom Chatroom
+        {
+            set { chatroom = value; }
+            get { return chatroom; }
+        }
+
+        // Sends message to given participant
+
+        public void Send(string to, string message)
+        {
+            chatroom.Send(name, to, message);
+        }
+
+        // Receives message from given participant
+
+        public virtual void Receive(
+            string from, string message)
+        {
+            Console.WriteLine("{0} to {1}: '{2}'",
+                from, Name, message);
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteColleague' class
+    /// </summary>
+
+    public class Beatle : Participant
+    {
+        // Constructor
+
+        public Beatle(string name)
+            : base(name)
+        {
+        }
+
+        public override void Receive(string from, string message)
+        {
+            Console.Write("To a Beatle: ");
+            base.Receive(from, message);
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteColleague' class
+    /// </summary>
+
+    public class NonBeatle : Participant
+    {
+        // Constructor
+        public NonBeatle(string name)
+            : base(name)
+        {
+        }
+
+        public override void Receive(string from, string message)
+        {
+            Console.Write("To a non-Beatle: ");
+            base.Receive(from, message);
         }
     }
 }
