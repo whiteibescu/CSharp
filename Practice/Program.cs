@@ -1,37 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace DoFactory.GangOfFour.Builder.Structural
+namespace Proxy.Structural
 {
     /// <summary>
-    /// MainApp startup class for Structural
-    /// Builder Design Pattern.
+    /// Proxy Design Pattern
     /// </summary>
 
-    public class MainApp
+    public class Program
     {
-        /// <summary>
-        /// Entry point into console application.
-        /// </summary>
-
-        public static void Main()
+        public static void Main(string[] args)
         {
-            // Create director and builders
+            // Create proxy and request a service
 
-            Director director = new Director();
-
-            Builder b1 = new ConcreteBuilder1();
-            Builder b2 = new ConcreteBuilder2();
-
-            // Construct two products
-
-            director.Construct(b1);
-            Product p1 = b1.GetResult();
-            p1.Show();
-
-            director.Construct(b2);
-            Product p2 = b2.GetResult();
-            p2.Show();
+            Proxy proxy = new Proxy();
+            proxy.Request();
 
             // Wait for user
 
@@ -40,97 +22,120 @@ namespace DoFactory.GangOfFour.Builder.Structural
     }
 
     /// <summary>
-    /// The 'Director' class
+    /// The 'Subject' abstract class
     /// </summary>
 
-    class Director
+    public abstract class Subject
     {
-        // Builder uses a complex series of steps
+        public abstract void Request();
+    }
 
-        public void Construct(Builder builder)
+    /// <summary>
+    /// The 'RealSubject' class
+    /// </summary>
+
+    public class RealSubject : Subject
+    {
+        public override void Request()
         {
-            builder.BuildPartA();
-            builder.BuildPartB();
+            Console.WriteLine("Called RealSubject.Request()");
         }
     }
 
     /// <summary>
-    /// The 'Builder' abstract class
+    /// The 'Proxy' class
     /// </summary>
 
-    abstract class Builder
+    public class Proxy : Subject
     {
-        public abstract void BuildPartA();
-        public abstract void BuildPartB();
-        public abstract Product GetResult();
-    }
+        private RealSubject realSubject;
 
-    /// <summary>
-    /// The 'ConcreteBuilder1' class
-    /// </summary>
-
-    class ConcreteBuilder1 : Builder
-    {
-        private Product _product = new Product();
-
-        public override void BuildPartA()
+        public override void Request()
         {
-            _product.Add("PartA");
-        }
+            // Use 'lazy initialization'
 
-        public override void BuildPartB()
-        {
-            _product.Add("PartB");
-        }
+            if (realSubject == null)
+            {
+                realSubject = new RealSubject();
+            }
 
-        public override Product GetResult()
-        {
-            return _product;
+            realSubject.Request();
         }
     }
 
-    /// <summary>
-    /// The 'ConcreteBuilder2' class
+    /// Real Live 
+    /// Proxy Design Pattern
     /// </summary>
 
-    class ConcreteBuilder2 : Builder
+    public class Program5
     {
-        private Product _product = new Product();
-
-        public override void BuildPartA()
+        public static void Main(string[] args)
         {
-            _product.Add("PartX");
-        }
+            // Create math proxy
 
-        public override void BuildPartB()
-        {
-            _product.Add("PartY");
-        }
+            MathProxy proxy = new MathProxy();
 
-        public override Product GetResult()
-        {
-            return _product;
+            // Do the math
+
+            Console.WriteLine("4 + 2 = " + proxy.Add(4, 2));
+            Console.WriteLine("4 - 2 = " + proxy.Sub(4, 2));
+            Console.WriteLine("4 * 2 = " + proxy.Mul(4, 2));
+            Console.WriteLine("4 / 2 = " + proxy.Div(4, 2));
+
+            // Wait for user
+
+            Console.ReadKey();
         }
     }
 
     /// <summary>
-    /// The 'Product' class
+    /// The 'Subject interface
     /// </summary>
 
-    class Product
+    public interface IMath
     {
-        private List<string> _parts = new List<string>();
+        double Add(double x, double y);
+        double Sub(double x, double y);
+        double Mul(double x, double y);
+        double Div(double x, double y);
+    }
 
-        public void Add(string part)
+    /// <summary>
+    /// The 'RealSubject' class
+    /// </summary>
+
+    public class Math : IMath
+    {
+        public double Add(double x, double y) { return x + y; }
+        public double Sub(double x, double y) { return x - y; }
+        public double Mul(double x, double y) { return x * y; }
+        public double Div(double x, double y) { return x / y; }
+    }
+
+    /// <summary>
+    /// The 'Proxy Object' class
+    /// </summary>
+
+    public class MathProxy : IMath
+    {
+        private Math math = new Math();
+
+        public double Add(double x, double y)
         {
-            _parts.Add(part);
+            return math.Add(x, y);
         }
-
-        public void Show()
+        public double Sub(double x, double y)
         {
-            Console.WriteLine("\nProduct Parts -------");
-            foreach (string part in _parts)
-                Console.WriteLine(part);
+            return math.Sub(x, y);
+        }
+        public double Mul(double x, double y)
+        {
+            return math.Mul(x, y);
+        }
+        public double Div(double x, double y)
+        {
+            return math.Div(x, y);
         }
     }
 }
+
