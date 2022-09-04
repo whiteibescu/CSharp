@@ -1,27 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Strategy.Structural
+namespace DoFactory.GangOfFour.Builder.Structural
 {
     /// <summary>
-    /// Strategy Design Pattern
+    /// MainApp startup class for Structural
+    /// Builder Design Pattern.
     /// </summary>
 
-    public class Program
+    public class MainApp
     {
-        public static void Main(string[] args)
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+
+        public static void Main()
         {
-            Context context;
+            // Create director and builders
 
-            // Three contexts following different strategies
+            Director director = new Director();
 
-            context = new Context(new ConcreteStrategyA());
-            context.ContextInterface();
+            Builder b1 = new ConcreteBuilder1();
+            Builder b2 = new ConcreteBuilder2();
 
-            context = new Context(new ConcreteStrategyB());
-            context.ContextInterface();
+            // Construct two products
 
-            context = new Context(new ConcreteStrategyC());
-            context.ContextInterface();
+            director.Construct(b1);
+            Product p1 = b1.GetResult();
+            p1.Show();
+
+            director.Construct(b2);
+            Product p2 = b2.GetResult();
+            p2.Show();
 
             // Wait for user
 
@@ -30,71 +40,97 @@ namespace Strategy.Structural
     }
 
     /// <summary>
-    /// The 'Strategy' abstract class
+    /// The 'Director' class
     /// </summary>
 
-    public abstract class Strategy
+    class Director
     {
-        public abstract void AlgorithmInterface();
-    }
+        // Builder uses a complex series of steps
 
-    /// <summary>
-    /// A 'ConcreteStrategy' class
-    /// </summary>
-
-    public class ConcreteStrategyA : Strategy
-    {
-        public override void AlgorithmInterface()
+        public void Construct(Builder builder)
         {
-            Console.WriteLine(
-                "Called ConcreteStrategyA.AlgorithmInterface()");
+            builder.BuildPartA();
+            builder.BuildPartB();
         }
     }
 
     /// <summary>
-    /// A 'ConcreteStrategy' class
+    /// The 'Builder' abstract class
     /// </summary>
 
-    public class ConcreteStrategyB : Strategy
+    abstract class Builder
     {
-        public override void AlgorithmInterface()
+        public abstract void BuildPartA();
+        public abstract void BuildPartB();
+        public abstract Product GetResult();
+    }
+
+    /// <summary>
+    /// The 'ConcreteBuilder1' class
+    /// </summary>
+
+    class ConcreteBuilder1 : Builder
+    {
+        private Product _product = new Product();
+
+        public override void BuildPartA()
         {
-            Console.WriteLine(
-                "Called ConcreteStrategyB.AlgorithmInterface()");
+            _product.Add("PartA");
+        }
+
+        public override void BuildPartB()
+        {
+            _product.Add("PartB");
+        }
+
+        public override Product GetResult()
+        {
+            return _product;
         }
     }
 
     /// <summary>
-    /// A 'ConcreteStrategy' class
+    /// The 'ConcreteBuilder2' class
     /// </summary>
 
-    public class ConcreteStrategyC : Strategy
+    class ConcreteBuilder2 : Builder
     {
-        public override void AlgorithmInterface()
+        private Product _product = new Product();
+
+        public override void BuildPartA()
         {
-            Console.WriteLine(
-                "Called ConcreteStrategyC.AlgorithmInterface()");
+            _product.Add("PartX");
+        }
+
+        public override void BuildPartB()
+        {
+            _product.Add("PartY");
+        }
+
+        public override Product GetResult()
+        {
+            return _product;
         }
     }
 
     /// <summary>
-    /// The 'Context' class
+    /// The 'Product' class
     /// </summary>
 
-    public class Context
+    class Product
     {
-        Strategy strategy;
+        private List<string> _parts = new List<string>();
 
-        // Constructor
-
-        public Context(Strategy strategy)
+        public void Add(string part)
         {
-            this.strategy = strategy;
+            _parts.Add(part);
         }
 
-        public void ContextInterface()
+        public void Show()
         {
-            strategy.AlgorithmInterface();
+            Console.WriteLine("\nProduct Parts -------");
+            foreach (string part in _parts)
+                Console.WriteLine(part);
         }
     }
 }
