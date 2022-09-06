@@ -1,27 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Visitor.RealWorld
+namespace Strategy.Structural
 {
     /// <summary>
-    /// Visitor Design Pattern
+    /// Strategy Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Setup employee collection
+            Context context;
 
-            Employees employee = new Employees();
-            employee.Attach(new Clerk());
-            employee.Attach(new Director());
-            employee.Attach(new President());
+            // Three contexts following different strategies
 
-            // Employees are 'visited'
+            context = new Context(new ConcreteStrategyA());
+            context.ContextInterface();
 
-            employee.Accept(new IncomeVisitor());
-            employee.Accept(new VacationVisitor());
+            context = new Context(new ConcreteStrategyB());
+            context.ContextInterface();
+
+            context = new Context(new ConcreteStrategyC());
+            context.ContextInterface();
 
             // Wait for user
 
@@ -30,162 +30,71 @@ namespace Visitor.RealWorld
     }
 
     /// <summary>
-    /// The 'Visitor' interface
+    /// The 'Strategy' abstract class
     /// </summary>
 
-    public interface IVisitor
+    public abstract class Strategy
     {
-        void Visit(Element element);
+        public abstract void AlgorithmInterface();
     }
 
     /// <summary>
-    /// A 'ConcreteVisitor' class
+    /// A 'ConcreteStrategy' class
     /// </summary>
 
-    public class IncomeVisitor : IVisitor
+    public class ConcreteStrategyA : Strategy
     {
-        public void Visit(Element element)
+        public override void AlgorithmInterface()
         {
-            Employee employee = element as Employee;
-
-            // Provide 10% pay raise
-
-            employee.Income *= 1.10;
-
-            Console.WriteLine("{0} {1}'s new income: {2:C}",
-                employee.GetType().Name, employee.Name,
-                employee.Income);
+            Console.WriteLine(
+                "Called ConcreteStrategyA.AlgorithmInterface()");
         }
     }
 
     /// <summary>
-    /// A 'ConcreteVisitor' class
+    /// A 'ConcreteStrategy' class
     /// </summary>
 
-    public class VacationVisitor : IVisitor
+    public class ConcreteStrategyB : Strategy
     {
-        public void Visit(Element element)
+        public override void AlgorithmInterface()
         {
-            Employee employee = element as Employee;
-
-            // Provide 3 extra vacation days
-
-            employee.VacationDays += 3;
-
-            Console.WriteLine("{0} {1}'s new vacation days: {2}",
-                employee.GetType().Name, employee.Name,
-                employee.VacationDays);
+            Console.WriteLine(
+                "Called ConcreteStrategyB.AlgorithmInterface()");
         }
     }
 
     /// <summary>
-    /// The 'Element' abstract class
+    /// A 'ConcreteStrategy' class
     /// </summary>
 
-    public abstract class Element
+    public class ConcreteStrategyC : Strategy
     {
-        public abstract void Accept(IVisitor visitor);
+        public override void AlgorithmInterface()
+        {
+            Console.WriteLine(
+                "Called ConcreteStrategyC.AlgorithmInterface()");
+        }
     }
 
     /// <summary>
-    /// The 'ConcreteElement' class
+    /// The 'Context' class
     /// </summary>
 
-    public class Employee : Element
+    public class Context
     {
-        private string name;
-        private double income;
-        private int vacationDays;
+        Strategy strategy;
 
         // Constructor
 
-        public Employee(string name, double income,
-            int vacationDays)
+        public Context(Strategy strategy)
         {
-            this.name = name;
-            this.income = income;
-            this.vacationDays = vacationDays;
+            this.strategy = strategy;
         }
 
-        public string Name
+        public void ContextInterface()
         {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public double Income
-        {
-            get { return income; }
-            set { income = value; }
-        }
-
-        public int VacationDays
-        {
-            get { return vacationDays; }
-            set { vacationDays = value; }
-        }
-
-        public override void Accept(IVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-    }
-
-    /// <summary>
-    /// The 'ObjectStructure' class
-    /// </summary>
-
-    public class Employees
-    {
-        private List<Employee> employees = new List<Employee>();
-
-        public void Attach(Employee employee)
-        {
-            employees.Add(employee);
-        }
-
-        public void Detach(Employee employee)
-        {
-            employees.Remove(employee);
-        }
-
-        public void Accept(IVisitor visitor)
-        {
-            foreach (Employee employee in employees)
-            {
-                employee.Accept(visitor);
-            }
-            Console.WriteLine();
-        }
-    }
-
-    // Three employee types
-
-    public class Clerk : Employee
-    {
-        // Constructor
-
-        public Clerk()
-            : base("Kevin", 25000.0, 14)
-        {
-        }
-    }
-
-    public class Director : Employee
-    {
-        // Constructor
-        public Director()
-            : base("Elly", 35000.0, 16)
-        {
-        }
-    }
-
-    public class President : Employee
-    {
-        // Constructor
-        public President()
-            : base("Eric", 45000.0, 21)
-        {
+            strategy.AlgorithmInterface();
         }
     }
 }
