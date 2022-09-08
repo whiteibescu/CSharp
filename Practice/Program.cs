@@ -1,145 +1,121 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 
-namespace Adapter.RealWorld
+namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
 {
-    /// <summary>
-    /// Adapter Design Pattern
-    /// </summary>
-
-    public class Program
+    public interface IObserver
     {
-        public static void Main(string[] args)
+        // Receive update from subject
+        void Update(ISubject subject);
+    }
+
+    public interface ISubject
+    {
+        // Attach an observer to the subject.
+        void Attach(IObserver observer);
+
+        // Detach an observer from the subject.
+        void Detach(IObserver observer);
+
+        // Notify all observers about an event.
+        void Notify();
+    }
+
+    // The Subject owns some important state and notifies observers when the
+    // state changes.
+    public class Subject : ISubject
+    {
+        // For the sake of simplicity, the Subject's state, essential to all
+        // subscribers, is stored in this variable.
+        public int State { get; set; } = -0;
+
+        // List of subscribers. In real life, the list of subscribers can be
+        // stored more comprehensively (categorized by event type, etc.).
+        private List<IObserver> _observers = new List<IObserver>();
+
+        // The subscription management methods.
+        public void Attach(IObserver observer)
         {
-            // Non-adapted chemical compound
+            Console.WriteLine("Subject: Attached an observer.");
+            this._observers.Add(observer);
+        }
 
-            Compound unknown = new Compound();
-            unknown.Display();
+        public void Detach(IObserver observer)
+        {
+            this._observers.Remove(observer);
+            Console.WriteLine("Subject: Detached an observer.");
+        }
 
-            // Adapted chemical compounds
+        // Trigger an update in each subscriber.
+        public void Notify()
+        {
+            Console.WriteLine("Subject: Notifying observers...");
 
-            Compound water = new RichCompound("Water");
-            water.Display();
+            foreach (var observer in _observers)
+            {
+                observer.Update(this);
+            }
+        }
 
-            Compound benzene = new RichCompound("Benzene");
-            benzene.Display();
+        // Usually, the subscription logic is only a fraction of what a Subject
+        // can really do. Subjects commonly hold some important business logic,
+        // that triggers a notification method whenever something important is
+        // about to happen (or after it).
+        public void SomeBusinessLogic()
+        {
+            Console.WriteLine("\nSubject: I'm doing something important.");
+            this.State = new Random().Next(0, 10);
 
-            Compound ethanol = new RichCompound("Ethanol");
-            ethanol.Display();
+            Thread.Sleep(15);
 
-            // Wait for user
-
-            Console.ReadKey();
+            Console.WriteLine("Subject: My state has just changed to: " + this.State);
+            this.Notify();
         }
     }
 
-    /// <summary>
-    /// The 'Target' class
-    /// </summary>
-
-    public class Compound
+    // Concrete Observers react to the updates issued by the Subject they had
+    // been attached to.
+    class ConcreteObserverA : IObserver
     {
-        protected float boilingPoint;
-        protected float meltingPoint;
-        protected double molecularWeight;
-        protected string molecularFormula;
-
-        public virtual void Display()
+        public void Update(ISubject subject)
         {
-            Console.WriteLine("\nCompound: Unknown ------ ");
+            if ((subject as Subject).State < 3)
+            {
+                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
+            }
         }
     }
 
-    /// <summary>
-    /// The 'Adapter' class
-    /// </summary>
-
-    public class RichCompound : Compound
+    class ConcreteObserverB : IObserver
     {
-        private string chemical;
-        private ChemicalDatabank bank;
-
-        // Constructor
-
-        public RichCompound(string chemical)
+        public void Update(ISubject subject)
         {
-            this.chemical = chemical;
-        }
-
-        public override void Display()
-        {
-            // The Adaptee
-
-            bank = new ChemicalDatabank();
-
-            boilingPoint = bank.GetCriticalPoint(chemical, "B");
-            meltingPoint = bank.GetCriticalPoint(chemical, "M");
-            molecularWeight = bank.GetMolecularWeight(chemical);
-            molecularFormula = bank.GetMolecularStructure(chemical);
-
-            Console.WriteLine("\nCompound: {0} ------ ", chemical);
-            Console.WriteLine(" Formula: {0}", molecularFormula);
-            Console.WriteLine(" Weight : {0}", molecularWeight);
-            Console.WriteLine(" Melting Pt: {0}", meltingPoint);
-            Console.WriteLine(" Boiling Pt: {0}", boilingPoint);
+            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
+            {
+                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
+            }
         }
     }
 
-    /// <summary>
-    /// The 'Adaptee' class
-    /// </summary>
-
-    public class ChemicalDatabank
+    class Program
     {
-        // The databank 'legacy API'
-
-        public float GetCriticalPoint(string compound, string point)
+        static void Main(string[] args)
         {
-            // Melting Point
-            if (point == "M")
-            {
-                switch (compound.ToLower())
-                {
-                    case "water": return 0.0f;
-                    case "benzene": return 5.5f;
-                    case "ethanol": return -114.1f;
-                    default: return 0f;
-                }
-            }
+            // The client code.
+            var subject = new Subject();
+            var observerA = new ConcreteObserverA();
+            subject.Attach(observerA);
 
-            // Boiling Point
+            var observerB = new ConcreteObserverB();
+            subject.Attach(observerB);
 
-            else
-            {
-                switch (compound.ToLower())
-                {
-                    case "water": return 100.0f;
-                    case "benzene": return 80.1f;
-                    case "ethanol": return 78.3f;
-                    default: return 0f;
-                }
-            }
-        }
+            subject.SomeBusinessLogic();
+            subject.SomeBusinessLogic();
 
-        public string GetMolecularStructure(string compound)
-        {
-            switch (compound.ToLower())
-            {
-                case "water": return "H20";
-                case "benzene": return "C6H6";
-                case "ethanol": return "C2H5OH";
-                default: return "";
-            }
-        }
+            subject.Detach(observerB);
 
-        public double GetMolecularWeight(string compound)
-        {
-            switch (compound.ToLower())
-            {
-                case "water": return 18.015;
-                case "benzene": return 78.1134;
-                case "ethanol": return 46.0688;
-                default: return 0d;
-            }
+            subject.SomeBusinessLogic();
         }
     }
 }
