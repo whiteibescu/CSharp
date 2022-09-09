@@ -1,121 +1,191 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
-namespace RefactoringGuru.DesignPatterns.Observer.Conceptual
+namespace Visitor.RealWorld
 {
-    public interface IObserver
+    /// <summary>
+    /// Visitor Design Pattern
+    /// </summary>
+
+    public class Program
     {
-        // Receive update from subject
-        void Update(ISubject subject);
+        public static void Main(string[] args)
+        {
+            // Setup employee collection
+
+            Employees employee = new Employees();
+            employee.Attach(new Clerk());
+            employee.Attach(new Director());
+            employee.Attach(new President());
+
+            // Employees are 'visited'
+
+            employee.Accept(new IncomeVisitor());
+            employee.Accept(new VacationVisitor());
+
+            // Wait for user
+
+            Console.ReadKey();
+        }
     }
 
-    public interface ISubject
+    /// <summary>
+    /// The 'Visitor' interface
+    /// </summary>
+
+    public interface IVisitor
     {
-        // Attach an observer to the subject.
-        void Attach(IObserver observer);
-
-        // Detach an observer from the subject.
-        void Detach(IObserver observer);
-
-        // Notify all observers about an event.
-        void Notify();
+        void Visit(Element element);
     }
 
-    // The Subject owns some important state and notifies observers when the
-    // state changes.
-    public class Subject : ISubject
+    /// <summary>
+    /// A 'ConcreteVisitor' class
+    /// </summary>
+
+    public class IncomeVisitor : IVisitor
     {
-        // For the sake of simplicity, the Subject's state, essential to all
-        // subscribers, is stored in this variable.
-        public int State { get; set; } = -0;
-
-        // List of subscribers. In real life, the list of subscribers can be
-        // stored more comprehensively (categorized by event type, etc.).
-        private List<IObserver> _observers = new List<IObserver>();
-
-        // The subscription management methods.
-        public void Attach(IObserver observer)
+        public void Visit(Element element)
         {
-            Console.WriteLine("Subject: Attached an observer.");
-            this._observers.Add(observer);
+            Employee employee = element as Employee;
+
+            // Provide 10% pay raise
+
+            employee.Income *= 1.10;
+
+            Console.WriteLine("{0} {1}'s new income: {2:C}",
+                employee.GetType().Name, employee.Name,
+                employee.Income);
+        }
+    }
+
+    /// <summary>
+    /// A 'ConcreteVisitor' class
+    /// </summary>
+
+    public class VacationVisitor : IVisitor
+    {
+        public void Visit(Element element)
+        {
+            Employee employee = element as Employee;
+
+            // Provide 3 extra vacation days
+
+            employee.VacationDays += 3;
+
+            Console.WriteLine("{0} {1}'s new vacation days: {2}",
+                employee.GetType().Name, employee.Name,
+                employee.VacationDays);
+        }
+    }
+
+    /// <summary>
+    /// The 'Element' abstract class
+    /// </summary>
+
+    public abstract class Element
+    {
+        public abstract void Accept(IVisitor visitor);
+    }
+
+    /// <summary>
+    /// The 'ConcreteElement' class
+    /// </summary>
+
+    public class Employee : Element
+    {
+        private string name;
+        private double income;
+        private int vacationDays;
+
+        // Constructor
+
+        public Employee(string name, double income,
+            int vacationDays)
+        {
+            this.name = name;
+            this.income = income;
+            this.vacationDays = vacationDays;
         }
 
-        public void Detach(IObserver observer)
+        public string Name
         {
-            this._observers.Remove(observer);
-            Console.WriteLine("Subject: Detached an observer.");
+            get { return name; }
+            set { name = value; }
         }
 
-        // Trigger an update in each subscriber.
-        public void Notify()
+        public double Income
         {
-            Console.WriteLine("Subject: Notifying observers...");
+            get { return income; }
+            set { income = value; }
+        }
 
-            foreach (var observer in _observers)
+        public int VacationDays
+        {
+            get { return vacationDays; }
+            set { vacationDays = value; }
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+    }
+
+    /// <summary>
+    /// The 'ObjectStructure' class
+    /// </summary>
+
+    public class Employees
+    {
+        private List<Employee> employees = new List<Employee>();
+
+        public void Attach(Employee employee)
+        {
+            employees.Add(employee);
+        }
+
+        public void Detach(Employee employee)
+        {
+            employees.Remove(employee);
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            foreach (Employee employee in employees)
             {
-                observer.Update(this);
+                employee.Accept(visitor);
             }
-        }
-
-        // Usually, the subscription logic is only a fraction of what a Subject
-        // can really do. Subjects commonly hold some important business logic,
-        // that triggers a notification method whenever something important is
-        // about to happen (or after it).
-        public void SomeBusinessLogic()
-        {
-            Console.WriteLine("\nSubject: I'm doing something important.");
-            this.State = new Random().Next(0, 10);
-
-            Thread.Sleep(15);
-
-            Console.WriteLine("Subject: My state has just changed to: " + this.State);
-            this.Notify();
+            Console.WriteLine();
         }
     }
 
-    // Concrete Observers react to the updates issued by the Subject they had
-    // been attached to.
-    class ConcreteObserverA : IObserver
+    // Three employee types
+
+    public class Clerk : Employee
     {
-        public void Update(ISubject subject)
+        // Constructor
+
+        public Clerk()
+            : base("Kevin", 25000.0, 14)
         {
-            if ((subject as Subject).State < 3)
-            {
-                Console.WriteLine("ConcreteObserverA: Reacted to the event.");
-            }
         }
     }
 
-    class ConcreteObserverB : IObserver
+    public class Director : Employee
     {
-        public void Update(ISubject subject)
+        // Constructor
+        public Director()
+            : base("Elly", 35000.0, 16)
         {
-            if ((subject as Subject).State == 0 || (subject as Subject).State >= 2)
-            {
-                Console.WriteLine("ConcreteObserverB: Reacted to the event.");
-            }
         }
     }
 
-    class Program
+    public class President : Employee
     {
-        static void Main(string[] args)
+        // Constructor
+        public President()
+            : base("Eric", 45000.0, 21)
         {
-            // The client code.
-            var subject = new Subject();
-            var observerA = new ConcreteObserverA();
-            subject.Attach(observerA);
-
-            var observerB = new ConcreteObserverB();
-            subject.Attach(observerB);
-
-            subject.SomeBusinessLogic();
-            subject.SomeBusinessLogic();
-
-            subject.Detach(observerB);
-
-            subject.SomeBusinessLogic();
         }
     }
 }
