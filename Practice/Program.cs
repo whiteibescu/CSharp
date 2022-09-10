@@ -1,25 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Mediator.Structural
+namespace Iterator.Structural
 {
     /// <summary>
-    /// Mediator Design Pattern
+    /// Iterator Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            ConcreteMediator m = new ConcreteMediator();
+            ConcreteAggregate a = new ConcreteAggregate();
+            a[0] = "Item A";
+            a[1] = "Item B";
+            a[2] = "Item C";
+            a[3] = "Item D";
 
-            ConcreteColleague1 c1 = new ConcreteColleague1(m);
-            ConcreteColleague2 c2 = new ConcreteColleague2(m);
+            // Create Iterator and provide aggregate
 
-            m.Colleague1 = c1;
-            m.Colleague2 = c2;
+            Iterator i = a.CreateIterator();
 
-            c1.Send("How are you?");
-            c2.Send("Fine, thanks");
+            Console.WriteLine("Iterating over collection:");
+
+            object item = i.First();
+
+            while (item != null)
+            {
+                Console.WriteLine(item);
+                item = i.Next();
+            }
 
             // Wait for user
 
@@ -28,277 +38,275 @@ namespace Mediator.Structural
     }
 
     /// <summary>
-    /// The 'Mediator' abstract class
+    /// The 'Aggregate' abstract class
     /// </summary>
 
-    public abstract class Mediator
+    public abstract class Aggregate
     {
-        public abstract void Send(string message,
-            Colleague colleague);
+        public abstract Iterator CreateIterator();
     }
 
     /// <summary>
-    /// The 'ConcreteMediator' class
+    /// The 'ConcreteAggregate' class
     /// </summary>
 
-    public class ConcreteMediator : Mediator
+    public class ConcreteAggregate : Aggregate
     {
-        ConcreteColleague1 colleague1;
-        ConcreteColleague2 colleague2;
+        List<object> items = new List<object>();
 
-        public ConcreteColleague1 Colleague1
+        public override Iterator CreateIterator()
         {
-            set { colleague1 = value; }
+            return new ConcreteIterator(this);
         }
 
-        public ConcreteColleague2 Colleague2
+        // Get item count
+
+        public int Count
         {
-            set { colleague2 = value; }
+            get { return items.Count; }
         }
 
-        public override void Send(string message, Colleague colleague)
+        // Indexer
+
+        public object this[int index]
         {
-            if (colleague == colleague1)
+            get { return items[index]; }
+            set { items.Insert(index, value); }
+        }
+    }
+
+    /// <summary>
+    /// The 'Iterator' abstract class
+    /// </summary>
+
+    public abstract class Iterator
+    {
+        public abstract object First();
+        public abstract object Next();
+        public abstract bool IsDone();
+        public abstract object CurrentItem();
+    }
+
+    /// <summary>
+    /// The 'ConcreteIterator' class
+    /// </summary>
+
+    public class ConcreteIterator : Iterator
+    {
+        ConcreteAggregate aggregate;
+        int current = 0;
+
+        // Constructor
+
+        public ConcreteIterator(ConcreteAggregate aggregate)
+        {
+            this.aggregate = aggregate;
+        }
+
+        // Gets first iteration item
+
+        public override object First()
+        {
+            return aggregate[0];
+        }
+
+        // Gets next iteration item
+
+        public override object Next()
+        {
+            object ret = null;
+            if (current < aggregate.Count - 1)
             {
-                colleague2.Notify(message);
+                ret = aggregate[++current];
             }
-            else
-            {
-                colleague1.Notify(message);
-            }
-        }
-    }
 
-    /// <summary>
-    /// The 'Colleague' abstract class
-    /// </summary>
-
-    public abstract class Colleague
-    {
-        protected Mediator mediator;
-
-        // Constructor
-
-        public Colleague(Mediator mediator)
-        {
-            this.mediator = mediator;
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteColleague' class
-    /// </summary>
-
-    public class ConcreteColleague1 : Colleague
-    {
-        // Constructor
-
-        public ConcreteColleague1(Mediator mediator)
-            : base(mediator)
-        {
+            return ret;
         }
 
-        public void Send(string message)
+        // Gets current iteration item
+
+        public override object CurrentItem()
         {
-            mediator.Send(message, this);
+            return aggregate[current];
         }
 
-        public void Notify(string message)
+        // Gets whether iterations are complete
+
+        public override bool IsDone()
         {
-            Console.WriteLine("Colleague1 gets message: "
-                + message);
-        }
-    }
-
-    /// <summary>
-    /// A 'ConcreteColleague' class
-    /// </summary>
-
-    public class ConcreteColleague2 : Colleague
-    {
-        // Constructor
-
-        public ConcreteColleague2(Mediator mediator)
-            : base(mediator)
-        {
-        }
-
-        public void Send(string message)
-        {
-            mediator.Send(message, this);
-        }
-
-        public void Notify(string message)
-        {
-            Console.WriteLine("Colleague2 gets message: "
-                + message);
+            return current >= aggregate.Count;
         }
     }
 
     /// Real World
-    /// Mediator Design Pattern
+    /// Iterator Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            // Create chatroom
+            // Build a collection
 
-            Chatroom chatroom = new Chatroom();
+            Collection collection = new Collection();
+            collection[0] = new Item("Item 0");
+            collection[1] = new Item("Item 1");
+            collection[2] = new Item("Item 2");
+            collection[3] = new Item("Item 3");
+            collection[4] = new Item("Item 4");
+            collection[5] = new Item("Item 5");
+            collection[6] = new Item("Item 6");
+            collection[7] = new Item("Item 7");
+            collection[8] = new Item("Item 8");
 
-            // Create participants and register them
+            // Create iterator
 
-            Participant George = new Beatle("George");
-            Participant Paul = new Beatle("Paul");
-            Participant Ringo = new Beatle("Ringo");
-            Participant John = new Beatle("John");
-            Participant Yoko = new NonBeatle("Yoko");
+            Iterator iterator = collection.CreateIterator();
 
-            chatroom.Register(George);
-            chatroom.Register(Paul);
-            chatroom.Register(Ringo);
-            chatroom.Register(John);
-            chatroom.Register(Yoko);
+            // Skip every other item
 
-            // Chatting participants
+            iterator.Step = 2;
 
-            Yoko.Send("John", "Hi John!");
-            Paul.Send("Ringo", "All you need is love");
-            Ringo.Send("George", "My sweet Lord");
-            Paul.Send("John", "Can't buy me love");
-            John.Send("Yoko", "My sweet love");
+            Console.WriteLine("Iterating over collection:");
+
+            for (Item item = iterator.First();
+                !iterator.IsDone; item = iterator.Next())
+            {
+                Console.WriteLine(item.Name);
+            }
 
             // Wait for user
 
             Console.ReadKey();
         }
     }
-
     /// <summary>
-    /// The 'Mediator' abstract class
+    /// A collection item
     /// </summary>
 
-    public abstract class AbstractChatroom
+    public class Item
     {
-        public abstract void Register(Participant participant);
-        public abstract void Send(
-            string from, string to, string message);
-    }
-
-    /// <summary>
-    /// The 'ConcreteMediator' class
-    /// </summary>
-
-    public class Chatroom : AbstractChatroom
-    {
-        private Dictionary<string, Participant> participants = new Dictionary<string, Participant>();
-
-        public override void Register(Participant participant)
-        {
-            if (!participants.ContainsValue(participant))
-            {
-                participants[participant.Name] = participant;
-            }
-
-            participant.Chatroom = this;
-        }
-
-        public override void Send(string from, string to, string message)
-        {
-            Participant participant = participants[to];
-
-            if (participant != null)
-            {
-                participant.Receive(from, message);
-            }
-        }
-    }
-
-    /// <summary>
-    /// The 'AbstractColleague' class
-    /// </summary>
-
-    public class Participant
-    {
-        Chatroom chatroom;
         string name;
 
         // Constructor
 
-        public Participant(string name)
+        public Item(string name)
         {
             this.name = name;
         }
-
-        // Gets participant name
 
         public string Name
         {
             get { return name; }
         }
+    }
 
-        // Gets chatroom
+    /// <summary>
+    /// The 'Aggregate' interface
+    /// </summary>
 
-        public Chatroom Chatroom
+    public interface IAbstractCollection
+    {
+        Iterator CreateIterator();
+    }
+
+    /// <summary>
+    /// The 'ConcreteAggregate' class
+    /// </summary>
+
+    public class Collection : IAbstractCollection
+    {
+        List<Item> items = new List<Item>();
+
+        public Iterator CreateIterator()
         {
-            set { chatroom = value; }
-            get { return chatroom; }
+            return new Iterator(this);
         }
 
-        // Sends message to given participant
+        // Gets item count
 
-        public void Send(string to, string message)
+        public int Count
         {
-            chatroom.Send(name, to, message);
+            get { return items.Count; }
         }
 
-        // Receives message from given participant
+        // Indexer
 
-        public virtual void Receive(
-            string from, string message)
+        public Item this[int index]
         {
-            Console.WriteLine("{0} to {1}: '{2}'",
-                from, Name, message);
+            get { return items[index]; }
+            set { items.Add(value); }
         }
     }
 
     /// <summary>
-    /// A 'ConcreteColleague' class
+    /// The 'Iterator' interface
     /// </summary>
 
-    public class Beatle : Participant
+    public interface IAbstractIterator
     {
-        // Constructor
-
-        public Beatle(string name)
-            : base(name)
-        {
-        }
-
-        public override void Receive(string from, string message)
-        {
-            Console.Write("To a Beatle: ");
-            base.Receive(from, message);
-        }
+        Item First();
+        Item Next();
+        bool IsDone { get; }
+        Item CurrentItem { get; }
     }
 
     /// <summary>
-    /// A 'ConcreteColleague' class
+    /// The 'ConcreteIterator' class
     /// </summary>
 
-    public class NonBeatle : Participant
+    public class Iterator : IAbstractIterator
     {
+        Collection collection;
+        int current = 0;
+        int step = 1;
+
         // Constructor
-        public NonBeatle(string name)
-            : base(name)
+
+        public Iterator(Collection collection)
         {
+            this.collection = collection;
         }
 
-        public override void Receive(string from, string message)
+        // Gets first item
+
+        public Item First()
         {
-            Console.Write("To a non-Beatle: ");
-            base.Receive(from, message);
+            current = 0;
+            return collection[current] as Item;
+        }
+
+        // Gets next item
+
+        public Item Next()
+        {
+            current += step;
+            if (!IsDone)
+                return collection[current] as Item;
+            else
+                return null;
+        }
+
+        // Gets or sets stepsize
+
+        public int Step
+        {
+            get { return step; }
+            set { step = value; }
+        }
+
+        // Gets current iterator item
+
+        public Item CurrentItem
+        {
+            get { return collection[current] as Item; }
+        }
+
+        // Gets whether iteration is complete
+
+        public bool IsDone
+        {
+            get { return current >= collection.Count; }
         }
     }
 }
