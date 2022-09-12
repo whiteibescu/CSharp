@@ -1,35 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Iterator.Structural
+namespace Visitor.RealWorld
 {
     /// <summary>
-    /// Iterator Design Pattern
+    /// Visitor Design Pattern
     /// </summary>
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            ConcreteAggregate a = new ConcreteAggregate();
-            a[0] = "Item A";
-            a[1] = "Item B";
-            a[2] = "Item C";
-            a[3] = "Item D";
+            // Setup employee collection
 
-            // Create Iterator and provide aggregate
+            Employees employee = new Employees();
+            employee.Attach(new Clerk());
+            employee.Attach(new Director());
+            employee.Attach(new President());
 
-            Iterator i = a.CreateIterator();
+            // Employees are 'visited'
 
-            Console.WriteLine("Iterating over collection:");
-
-            object item = i.First();
-
-            while (item != null)
-            {
-                Console.WriteLine(item);
-                item = i.Next();
-            }
+            employee.Accept(new IncomeVisitor());
+            employee.Accept(new VacationVisitor());
 
             // Wait for user
 
@@ -38,275 +30,162 @@ namespace Iterator.Structural
     }
 
     /// <summary>
-    /// The 'Aggregate' abstract class
+    /// The 'Visitor' interface
     /// </summary>
 
-    public abstract class Aggregate
+    public interface IVisitor
     {
-        public abstract Iterator CreateIterator();
+        void Visit(Element element);
     }
 
     /// <summary>
-    /// The 'ConcreteAggregate' class
+    /// A 'ConcreteVisitor' class
     /// </summary>
 
-    public class ConcreteAggregate : Aggregate
+    public class IncomeVisitor : IVisitor
     {
-        List<object> items = new List<object>();
-
-        public override Iterator CreateIterator()
+        public void Visit(Element element)
         {
-            return new ConcreteIterator(this);
-        }
+            Employee employee = element as Employee;
 
-        // Get item count
+            // Provide 10% pay raise
 
-        public int Count
-        {
-            get { return items.Count; }
-        }
+            employee.Income *= 1.10;
 
-        // Indexer
-
-        public object this[int index]
-        {
-            get { return items[index]; }
-            set { items.Insert(index, value); }
+            Console.WriteLine("{0} {1}'s new income: {2:C}",
+                employee.GetType().Name, employee.Name,
+                employee.Income);
         }
     }
 
     /// <summary>
-    /// The 'Iterator' abstract class
+    /// A 'ConcreteVisitor' class
     /// </summary>
 
-    public abstract class Iterator
+    public class VacationVisitor : IVisitor
     {
-        public abstract object First();
-        public abstract object Next();
-        public abstract bool IsDone();
-        public abstract object CurrentItem();
+        public void Visit(Element element)
+        {
+            Employee employee = element as Employee;
+
+            // Provide 3 extra vacation days
+
+            employee.VacationDays += 3;
+
+            Console.WriteLine("{0} {1}'s new vacation days: {2}",
+                employee.GetType().Name, employee.Name,
+                employee.VacationDays);
+        }
     }
 
     /// <summary>
-    /// The 'ConcreteIterator' class
+    /// The 'Element' abstract class
     /// </summary>
 
-    public class ConcreteIterator : Iterator
+    public abstract class Element
     {
-        ConcreteAggregate aggregate;
-        int current = 0;
+        public abstract void Accept(IVisitor visitor);
+    }
+
+    /// <summary>
+    /// The 'ConcreteElement' class
+    /// </summary>
+
+    public class Employee : Element
+    {
+        private string name;
+        private double income;
+        private int vacationDays;
 
         // Constructor
 
-        public ConcreteIterator(ConcreteAggregate aggregate)
-        {
-            this.aggregate = aggregate;
-        }
-
-        // Gets first iteration item
-
-        public override object First()
-        {
-            return aggregate[0];
-        }
-
-        // Gets next iteration item
-
-        public override object Next()
-        {
-            object ret = null;
-            if (current < aggregate.Count - 1)
-            {
-                ret = aggregate[++current];
-            }
-
-            return ret;
-        }
-
-        // Gets current iteration item
-
-        public override object CurrentItem()
-        {
-            return aggregate[current];
-        }
-
-        // Gets whether iterations are complete
-
-        public override bool IsDone()
-        {
-            return current >= aggregate.Count;
-        }
-    }
-
-    /// Real World
-    /// Iterator Design Pattern
-    /// </summary>
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            // Build a collection
-
-            Collection collection = new Collection();
-            collection[0] = new Item("Item 0");
-            collection[1] = new Item("Item 1");
-            collection[2] = new Item("Item 2");
-            collection[3] = new Item("Item 3");
-            collection[4] = new Item("Item 4");
-            collection[5] = new Item("Item 5");
-            collection[6] = new Item("Item 6");
-            collection[7] = new Item("Item 7");
-            collection[8] = new Item("Item 8");
-
-            // Create iterator
-
-            Iterator iterator = collection.CreateIterator();
-
-            // Skip every other item
-
-            iterator.Step = 2;
-
-            Console.WriteLine("Iterating over collection:");
-
-            for (Item item = iterator.First();
-                !iterator.IsDone; item = iterator.Next())
-            {
-                Console.WriteLine(item.Name);
-            }
-
-            // Wait for user
-
-            Console.ReadKey();
-        }
-    }
-    /// <summary>
-    /// A collection item
-    /// </summary>
-
-    public class Item
-    {
-        string name;
-
-        // Constructor
-
-        public Item(string name)
+        public Employee(string name, double income,
+            int vacationDays)
         {
             this.name = name;
+            this.income = income;
+            this.vacationDays = vacationDays;
         }
 
         public string Name
         {
             get { return name; }
+            set { name = value; }
         }
-    }
 
-    /// <summary>
-    /// The 'Aggregate' interface
-    /// </summary>
-
-    public interface IAbstractCollection
-    {
-        Iterator CreateIterator();
-    }
-
-    /// <summary>
-    /// The 'ConcreteAggregate' class
-    /// </summary>
-
-    public class Collection : IAbstractCollection
-    {
-        List<Item> items = new List<Item>();
-
-        public Iterator CreateIterator()
+        public double Income
         {
-            return new Iterator(this);
+            get { return income; }
+            set { income = value; }
         }
 
-        // Gets item count
-
-        public int Count
+        public int VacationDays
         {
-            get { return items.Count; }
+            get { return vacationDays; }
+            set { vacationDays = value; }
         }
 
-        // Indexer
-
-        public Item this[int index]
+        public override void Accept(IVisitor visitor)
         {
-            get { return items[index]; }
-            set { items.Add(value); }
+            visitor.Visit(this);
         }
     }
 
     /// <summary>
-    /// The 'Iterator' interface
+    /// The 'ObjectStructure' class
     /// </summary>
 
-    public interface IAbstractIterator
+    public class Employees
     {
-        Item First();
-        Item Next();
-        bool IsDone { get; }
-        Item CurrentItem { get; }
+        private List<Employee> employees = new List<Employee>();
+
+        public void Attach(Employee employee)
+        {
+            employees.Add(employee);
+        }
+
+        public void Detach(Employee employee)
+        {
+            employees.Remove(employee);
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            foreach (Employee employee in employees)
+            {
+                employee.Accept(visitor);
+            }
+            Console.WriteLine();
+        }
     }
 
-    /// <summary>
-    /// The 'ConcreteIterator' class
-    /// </summary>
+    // Three employee types
 
-    public class Iterator : IAbstractIterator
+    public class Clerk : Employee
     {
-        Collection collection;
-        int current = 0;
-        int step = 1;
-
         // Constructor
 
-        public Iterator(Collection collection)
+        public Clerk()
+            : base("Kevin", 25000.0, 14)
         {
-            this.collection = collection;
         }
+    }
 
-        // Gets first item
-
-        public Item First()
+    public class Director : Employee
+    {
+        // Constructor
+        public Director()
+            : base("Elly", 35000.0, 16)
         {
-            current = 0;
-            return collection[current] as Item;
         }
+    }
 
-        // Gets next item
-
-        public Item Next()
+    public class President : Employee
+    {
+        // Constructor
+        public President()
+            : base("Eric", 45000.0, 21)
         {
-            current += step;
-            if (!IsDone)
-                return collection[current] as Item;
-            else
-                return null;
-        }
-
-        // Gets or sets stepsize
-
-        public int Step
-        {
-            get { return step; }
-            set { step = value; }
-        }
-
-        // Gets current iterator item
-
-        public Item CurrentItem
-        {
-            get { return collection[current] as Item; }
-        }
-
-        // Gets whether iteration is complete
-
-        public bool IsDone
-        {
-            get { return current >= collection.Count; }
         }
     }
 }
