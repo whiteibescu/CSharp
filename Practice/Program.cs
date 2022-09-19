@@ -1,71 +1,48 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class LoadGallery : MonoBehaviour
+namespace HustarDay08
 {
-    public GameObject previewImage;
-    private void Start()
+
+    class Enemy
     {
-        if (File.Exists(Application.persistentDataPath + "/Image"))
+        public Enemy(string EnemyName)
         {
-            File.ReadAllBytes(Application.persistentDataPath + "/Image");
-        }
-    }
-
-
-
-
-    public void OnClickLoadImage()
-    {
-        NativeGallery.GetImageFromGallery((file) => {
-            FileInfo selected = new FileInfo(file);
-
-            //용량 제한
-            if (selected.Length > 500000000000)
-            {
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(file))
-            {
-                StartCoroutine(LoadImage(file));
-            }
-        });
-    }
-
-    IEnumerator LoadImage(string path)
-    {
-        yield return null;
-
-        byte[] fileData = File.ReadAllBytes(path);
-        string fileName = Path.GetFileName(path).Split('.')[0];
-        string savePath = Application.persistentDataPath + "/Image";
-
-        if (!Directory.Exists(savePath))
-        {
-            Directory.CreateDirectory(savePath);
+            m_EnemyName = EnemyName;
+            EnemyMgr.StopGameEvent += () => { };
         }
 
-        File.WriteAllBytes(savePath + fileName + ".png", fileData);
-
-        var temp = File.ReadAllBytes(savePath + fileName + ".png");
-
-        Texture2D texture = new Texture2D(0, 0);
-        var result = texture.LoadImage(temp);
-
-        var logo = Resources.Load("SceneInfoCanvas") as GameObject;
-        logo.GetComponentInChildren<Image>().sprite = Sprite.Create(text, new Rect(0f, 0f, text.width, text.height), new Vector2(0.5f, 0.5f));
-        $"이미지 변경 성공".Log();
-
-        previewImage.GetComponentInChildren<Image>().sprite = Sprite.Create(text, new Rect(0f, 0f, text.width, text.height), new Vector2(0.5f, 0.5f));
+        private void EnemyMgr_StopGameEvent()
+        {
+            throw new NotImplementedException();
+        }
+        private string m_EnemyName;
     }
+    delegate void StopGameDelegate();
 
-    private void LoadingImage(Texture2D text)
+    class EnemyMgr
     {
-
+        public void DiePlayer()
+        {
+            StopGameEvent();
+        }
+        public static event StopGameDelegate StopGameEvent;
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            EnemyMgr mgr = new EnemyMgr();
+            Enemy m1 = new Enemy("적군1");
+            Enemy m2 = new Enemy("적군2");
+            Enemy m3 = new Enemy("적군3");
+            Enemy m4 = new Enemy("적군4");
+            Enemy m5 = new Enemy("적군5");
+            Enemy m6 = new Enemy("적군6");
+            mgr.DiePlayer();
+        }
     }
 }
