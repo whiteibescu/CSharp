@@ -1,17 +1,27 @@
-﻿using System;
+﻿// Store single color
+using System.Drawing;
 
-class Program
+Color color;
+PlayerPrefs.SetString("ColorKey", ColorUtility.ToHtmlStringRGB(color)); // without alpha
+PlayerPrefs.SetString("ColorKey", ColorUtility.ToHtmlStringRGBA(color)); // with alpha
+
+// Load single color
+Color color;
+ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("ColorKey"), out color);
+
+// store color array
+Color[] colors;
+//// fill array with your colors ////
+int numberOfColors = colors.Length;
+for (int i = 0; i < numberOfColors; i++)
 {
-    public static void Main(string[] args)
-    {
-        int x = 3;
-        Add(out x);
-        Console.WriteLine(x);
-        Console.ReadLine();
-    }
+    Color color = colors[i];
+    PlayerPrefs.SetString("ColorKey" + i, ColorUtility.ToHtmlStringRGBA(color)); // with alpha
+}
 
-    public static void Add(out int x)
-    {
-        x = 3;
-    }
+// load color array
+Color[] colors = new Color[numberOfColors];
+for (int i = 0; i < numberOfColors; i++)
+{
+    ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("ColorKey" + i), out colors[i]);
 }
