@@ -1,27 +1,66 @@
-﻿// Store single color
-using System.Drawing;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.IO;
+using Newtonsoft.Json;
 
-Color color;
-PlayerPrefs.SetString("ColorKey", ColorUtility.ToHtmlStringRGB(color)); // without alpha
-PlayerPrefs.SetString("ColorKey", ColorUtility.ToHtmlStringRGBA(color)); // with alpha
-
-// Load single color
-Color color;
-ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("ColorKey"), out color);
-
-// store color array
-Color[] colors;
-//// fill array with your colors ////
-int numberOfColors = colors.Length;
-for (int i = 0; i < numberOfColors; i++)
+public class RelativeLstEditorScript : RelativeListbutton
 {
-    Color color = colors[i];
-    PlayerPrefs.SetString("ColorKey" + i, ColorUtility.ToHtmlStringRGBA(color)); // with alpha
+    private void Awake()
+    {
+        AddTestButtonList(new Action[] {
+            Test1,Test2,Test3,LoadDatabase, CreateDatabase,
+        });
+    }
+    public void Test1() => $"Test1 : {functionIndex}".Log();
+    public void Test2() => $"Test2 : {functionIndex}".Log();
+    public void Test3() => $"Test3 : {functionIndex}".Log();
+    public void Test4()
+    {
+        functionDic.Clear();
+        AddTestButtonList(new Action[] {
+            Test1,Test2,Test3,Test4, ()=>$"Test5 : {functionIndex}".Log()
+        });
+    }
+
+    public void CreateDatabase()
+    {
+        GameDatabase gameDatabase = new GameDatabase();
+        gameDatabase.hp = "100";
+        gameDatabase.mana = "100";
+        gameDatabase.name = "James";
+        gameDatabase.pairData.Add("a", "red");
+        var data = JsonConvert.SerializeObject(gameDatabase);
+        PlayerPrefs.SetString("data", data);
+    }
+
+    public void LoadDatabase()
+    {
+        if (PlayerPrefs.HasKey("data"))
+        {
+            string jsonData = PlayerPrefs.GetString("data");
+            var data = JsonConvert.DeserializeObject<GameDatabase>(jsonData);
+            data.pairData.ContainsKey("a").Log();
+            data.pairData.TryGetValue("a", out var a);
+            a.Log();
+            data.hp.Log();
+            data.mana.Log();
+            data.name.Log();
+        }
+    }
 }
 
-// load color array
-Color[] colors = new Color[numberOfColors];
-for (int i = 0; i < numberOfColors; i++)
+public class GameDatabase
 {
-    ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("ColorKey" + i), out colors[i]);
+    public string hp;
+    public string mana;
+    public string name;
+
+    public Dictionary<string, string> pairData;
+    public GameDatabase()
+    {
+        pairData = new Dictionary<string, string>();
+    }
 }
