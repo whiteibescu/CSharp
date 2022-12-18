@@ -47,6 +47,19 @@ namespace Test13
             b.m_authors.Add("2");
             b.m_authors.Add("3");
             b.m_authors.Add("4");
+            var iChoice = int.Parse(Console.ReadLine());
+            switch (iChoice)
+            {
+                case 1:
+                    b.CompareFunc("홍길동", b.CompareTitle)
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
+            }
             if (b.CompareFunc("홍길동", b.CompareTitle))
             {
                 Console.WriteLine("홍길동 Found");
