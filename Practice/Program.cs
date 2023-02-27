@@ -1,16 +1,20 @@
 ﻿using System;
 
-namespace SimpleLambda
+namespace FuncTest
 {
     class MainApp
     {
-        delegate int Calculate(int a, int b);
-
         static void Main(string[] args)
         {
-            Calculate calc = (a, b) => a + b;
+            Func<int> func = () => 10;
+            Console.WriteLine(func());
 
-            Console.WriteLine($"{3} + {4} : {calc(3,4)}");
+            Func<int, int> func2 = (x) => x * 2;
+            Console.WriteLine(func2(4));
+
+            Func<double, double, double> func3 = (x, y) => x / y;
+            Console.WriteLine(func3(22, 7));
         }
     }
+
 }
