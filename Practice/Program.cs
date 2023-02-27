@@ -1,20 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace FuncTest
+namespace Delegate
 {
-    class MainApp
+    delegate bool CompareFuncDele(string str);
+    class Book
     {
-        static void Main(string[] args)
+        public bool CompareISBN(string str)
         {
-            Func<int> func = () => 10;
-            Console.WriteLine(func());
-
-            Func<int, int> func2 = (x) => x * 2;
-            Console.WriteLine(func2(4));
-
-            Func<double, double, double> func3 = (x, y) => x / y;
-            Console.WriteLine(func3(22, 7));
+            return m_ISBNCode == str;
         }
-    }
+        public bool CompareTitle(string str)
+        {
+            return m_Title == str;
+        }
+        public bool CompareAuthor(string str)
+        {
+            for (int i = 0; i < m_authors.Count; i++)
+            {
+                if (str == m_authors[i])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
+
+        public string m_ISBNCode;
+        public string m_Title;
+        public List<string> m_authors = new List<string>();
+
+    }
 }
